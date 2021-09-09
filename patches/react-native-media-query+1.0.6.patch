@@ -1,0 +1,25 @@
+diff --git a/node_modules/react-native-media-query/utils/common.js b/node_modules/react-native-media-query/utils/common.js
+index fa2e6db..2ea37ce 100644
+--- a/node_modules/react-native-media-query/utils/common.js
++++ b/node_modules/react-native-media-query/utils/common.js
+@@ -1,15 +1,18 @@
+ const isMedia = (query) => query.indexOf('@media') === 0;
++const isHover = (query) => query.indexOf('&:hover') === 0;
+ const isPseudo = (query) => query.indexOf(':') === 0;
+-const isMediaOrPseudo = (query) =>  isMedia(query) || isPseudo(query)
++const isMediaOrPseudo = (query) =>  isMedia(query) || isPseudo(query) || isHover(query)
+ 
+ const deepClone = (obj) => JSON.parse(JSON.stringify(obj));
+ 
+ const createCssRule = (query, stringHash, css) => {
+     let rule;
+     const dataMediaSelector = `[data-media~="${stringHash}"]`;
+-
+       if (isMedia(query)) {
+         rule = `${query} {${dataMediaSelector} ${css}}`;
++      } else if (isHover(query)){
++        rule = `${dataMediaSelector}:hover ${css}`;
++
+       } else {
+         rule = `${dataMediaSelector}${query} ${css}`;
+       }

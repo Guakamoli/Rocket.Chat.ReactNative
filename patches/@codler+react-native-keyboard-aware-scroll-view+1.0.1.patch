@@ -1,0 +1,64 @@
+diff --git a/node_modules/@codler/react-native-keyboard-aware-scroll-view/lib/KeyboardAwareHOC.js b/node_modules/@codler/react-native-keyboard-aware-scroll-view/lib/KeyboardAwareHOC.js
+index 855c968..5fc452f 100644
+--- a/node_modules/@codler/react-native-keyboard-aware-scroll-view/lib/KeyboardAwareHOC.js
++++ b/node_modules/@codler/react-native-keyboard-aware-scroll-view/lib/KeyboardAwareHOC.js
+@@ -273,6 +273,7 @@ function KeyboardAwareHOC(
+           return
+         }
+         const responder = this.getScrollResponder()
++
+         responder &&
+           responder.scrollResponderScrollNativeHandleToKeyboard(
+             reactNode,
+@@ -332,6 +333,7 @@ function KeyboardAwareHOC(
+     // Keyboard actions
+     _updateKeyboardSpace = (frames: Object) => {
+       // Automatically scroll to focused TextInput
++      
+       if (this.props.enableAutomaticScroll) {
+         let keyboardSpace: number =
+           frames.endCoordinates.height + this.props.extraScrollHeight
+@@ -339,8 +341,14 @@ function KeyboardAwareHOC(
+           keyboardSpace -= _KAM_DEFAULT_TAB_BAR_HEIGHT
+         }
+         this.setState({ keyboardSpace })
+-        const currentlyFocusedField = TextInput.State.currentlyFocusedInput ? findNodeHandle(TextInput.State.currentlyFocusedInput()) : TextInput.State.currentlyFocusedField()
++        const hitNode = TextInput.State.currentlyFocusedInput()
++        if (hitNode && hitNode._internalFiberInstanceHandleDEV && hitNode._internalFiberInstanceHandleDEV.memoizedProps.multiline && hitNode._internalFiberInstanceHandleDEV.memoizedProps.numberOfLines > 1) {
++          return
++        }
++        const currentlyFocusedField = TextInput.State.currentlyFocusedInput ? findNodeHandle(hitNode) : TextInput.State.currentlyFocusedField()
++     
+         const responder = this.getScrollResponder()
++
+         if (!currentlyFocusedField || !responder) {
+           return
+         }
+@@ -359,8 +367,8 @@ function KeyboardAwareHOC(
+                     this.props.extraScrollHeight + this.props.extraHeight
+                   if (Platform.OS === 'ios') {
+                     if (
+-                      textInputBottomPosition >
+-                      keyboardPosition - totalExtraHeight
++                      parseInt(textInputBottomPosition) >
++                      parseInt(keyboardPosition - totalExtraHeight)
+                     ) {
+                       this._scrollToFocusedInputWithNodeHandle(
+                         currentlyFocusedField
+@@ -394,11 +402,11 @@ function KeyboardAwareHOC(
+           }
+         )
+       }
+-      if (!this.props.resetScrollToCoords) {
+-        if (!this.defaultResetScrollToCoords) {
+-          this.defaultResetScrollToCoords = this.position
+-        }
+-      }
++      // if (!this.props.resetScrollToCoords) {
++      //   if (!this.defaultResetScrollToCoords) {
++      //     this.defaultResetScrollToCoords = this.position
++      //   }
++      // }
+     }
+ 
+     _resetKeyboardSpace = () => {

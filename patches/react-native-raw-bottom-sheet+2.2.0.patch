@@ -1,0 +1,38 @@
+diff --git a/node_modules/react-native-raw-bottom-sheet/src/index.js b/node_modules/react-native-raw-bottom-sheet/src/index.js
+index 0b3eab0..cf13f0a 100644
+--- a/node_modules/react-native-raw-bottom-sheet/src/index.js
++++ b/node_modules/react-native-raw-bottom-sheet/src/index.js
+@@ -96,6 +96,7 @@ class RBSheet extends Component {
+       closeOnPressBack,
+       children,
+       customStyles,
++      statusBarTranslucent,
+       keyboardAvoidingViewEnabled
+     } = this.props;
+     const { animatedHeight, pan, modalVisible } = this.state;
+@@ -106,6 +107,7 @@ class RBSheet extends Component {
+     return (
+       <Modal
+         transparent
++        statusBarTranslucent={statusBarTranslucent}
+         animationType={animationType}
+         visible={modalVisible}
+         supportedOrientations={SUPPORTED_ORIENTATIONS}
+@@ -157,7 +159,8 @@ RBSheet.propTypes = {
+   customStyles: PropTypes.objectOf(PropTypes.object),
+   onClose: PropTypes.func,
+   onOpen: PropTypes.func,
+-  children: PropTypes.node
++  children: PropTypes.node,
++  statusBarTranslucent: PropTypes.bool
+ };
+ 
+ RBSheet.defaultProps = {
+@@ -174,6 +177,7 @@ RBSheet.defaultProps = {
+   customStyles: {},
+   onClose: null,
+   onOpen: null,
++  statusBarTranslucent: false,
+   children: <View />
+ };
+ 

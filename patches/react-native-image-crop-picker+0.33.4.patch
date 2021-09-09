@@ -1,0 +1,23 @@
+diff --git a/node_modules/react-native-image-crop-picker/android/src/main/AndroidManifest.xml b/node_modules/react-native-image-crop-picker/android/src/main/AndroidManifest.xml
+index 187de42..4f0400e 100644
+--- a/node_modules/react-native-image-crop-picker/android/src/main/AndroidManifest.xml
++++ b/node_modules/react-native-image-crop-picker/android/src/main/AndroidManifest.xml
+@@ -6,7 +6,7 @@
+     <application>
+ 
+         <provider
+-            android:name="androidx.core.content.FileProvider"
++            android:name="com.reactnative.ivpusic.imagepicker.CropFileProvider"
+             android:authorities="${applicationId}.provider"
+             android:exported="false"
+             android:grantUriPermissions="true">
+diff --git a/node_modules/react-native-image-crop-picker/android/src/main/java/com/reactnative/ivpusic/imagepicker/CropFileProvider.java b/node_modules/react-native-image-crop-picker/android/src/main/java/com/reactnative/ivpusic/imagepicker/CropFileProvider.java
+new file mode 100644
+index 0000000..217db69
+--- /dev/null
++++ b/node_modules/react-native-image-crop-picker/android/src/main/java/com/reactnative/ivpusic/imagepicker/CropFileProvider.java
+@@ -0,0 +1,4 @@
++package com.reactnative.ivpusic.imagepicker;
++
++public class CropFileProvider extends androidx.core.content.FileProvider{
++}

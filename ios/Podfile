@@ -10,6 +10,27 @@ def all_pods
     :path => config[:reactNativePath],
     :hermes_enabled => true
   )
+  permissions_path = '../node_modules/react-native-permissions/ios'
+
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
+  pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
+  pod 'Permission-PhotoLibraryAddOnly', :path => "#{permissions_path}/PhotoLibraryAddOnly"
+  pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications"
+  
+  # 友盟分享
+  pod 'UMCCommon'
+
+  pod 'UMCShare/UI'
+  # pod 'UMCShare/Social/WeChat'
+  pod 'UMCShare/Social/Sina'
+  pod 'UMCShare/Social/Email'
+  pod 'UMCShare/Social/SMS'
+  pod 'JPush', :path => '../node_modules/jpush-react-native'
+  pod 'JCore', :path => '../node_modules/jcore-react-native'
+
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
   use_flipper!()
 end
 

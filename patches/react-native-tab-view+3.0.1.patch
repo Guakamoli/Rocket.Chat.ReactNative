@@ -1,0 +1,205 @@
+diff --git a/node_modules/react-native-tab-view/.DS_Store b/node_modules/react-native-tab-view/.DS_Store
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-tab-view/lib/commonjs/TabBar.js b/node_modules/react-native-tab-view/lib/commonjs/TabBar.js
+index a6cc9c6..8cda63c 100644
+--- a/node_modules/react-native-tab-view/lib/commonjs/TabBar.js
++++ b/node_modules/react-native-tab-view/lib/commonjs/TabBar.js
+@@ -208,6 +208,7 @@ class TabBar extends React.Component {
+       labelStyle,
+       indicatorStyle,
+       contentContainerStyle,
++      scrollViewStyle,
+       style,
+       indicatorContainerStyle
+     } = this.props;
+@@ -252,6 +253,7 @@ class TabBar extends React.Component {
+       keyboardShouldPersistTaps: "handled",
+       scrollEnabled: scrollEnabled,
+       bounces: bounces,
++      style:scrollViewStyle,
+       alwaysBounceHorizontal: false,
+       scrollsToTop: false,
+       showsHorizontalScrollIndicator: false,
+diff --git a/node_modules/react-native-tab-view/lib/commonjs/TabBarIndicator.js b/node_modules/react-native-tab-view/lib/commonjs/TabBarIndicator.js
+index 699c7eb..2289569 100644
+--- a/node_modules/react-native-tab-view/lib/commonjs/TabBarIndicator.js
++++ b/node_modules/react-native-tab-view/lib/commonjs/TabBarIndicator.js
+@@ -81,7 +81,6 @@ class TabBarIndicator extends React.Component {
+       routes
+     } = navigationState;
+     const transform = [];
+-
+     if (layout.width) {
+       const translateX = routes.length > 1 ? this.getTranslateX(position, routes, getTabWidth) : 0;
+       transform.push({
+diff --git a/node_modules/react-native-tab-view/lib/module/Pager.js b/node_modules/react-native-tab-view/lib/module/Pager.js
+index 73cc8c3..819ec50 100644
+--- a/node_modules/react-native-tab-view/lib/module/Pager.js
++++ b/node_modules/react-native-tab-view/lib/module/Pager.js
+@@ -20,7 +20,8 @@ export default function Pager({
+   onSwipeStart,
+   onSwipeEnd,
+   children,
+-  style
++  style,
++  noAnimation=false,
+ }) {
+   const {
+     routes,
+@@ -36,7 +37,16 @@ export default function Pager({
+   const swipeVelocityThreshold = 0.15;
+   const swipeDistanceThreshold = layout.width / 1.75;
+   const jumpToIndex = React.useCallback(index => {
++
+     const offset = -index * layoutRef.current.width;
++    if (noAnimation) {
++      panX.setValue(offset)
++      pendingIndexRef.current = index;
++      onIndexChangeRef.current(index);
++      pendingIndexRef.current = undefined;
++      return 
++    }
++
+     const {
+       timing,
+       ...transitionConfig
+@@ -44,9 +54,8 @@ export default function Pager({
+     Animated.parallel([timing(panX, { ...transitionConfig,
+       toValue: offset,
+       useNativeDriver: false
+-    })]).start(({
+-      finished
+-    }) => {
++    })]).start((result) => {
++      const {finished} = result
+       if (finished) {
+         onIndexChangeRef.current(index);
+         pendingIndexRef.current = undefined;
+diff --git a/node_modules/react-native-tab-view/lib/module/TabBar.js b/node_modules/react-native-tab-view/lib/module/TabBar.js
+index e0178ee..7f753fe 100644
+--- a/node_modules/react-native-tab-view/lib/module/TabBar.js
++++ b/node_modules/react-native-tab-view/lib/module/TabBar.js
+@@ -7,10 +7,15 @@ import TabBarIndicator from './TabBarIndicator';
+ export default class TabBar extends React.Component {
+   constructor(...args) {
+     super(...args);
+-
++    var width = 0
++    if (args && args[0] && args[0].layout) {
++      width = args[0].layout.width
++    } else if (args.layout) {
++      width = args.layout.width
++    }
+     _defineProperty(this, "state", {
+       layout: {
+-        width: 0,
++        width,
+         height: 0
+       },
+       tabWidths: {}
+@@ -190,8 +195,10 @@ export default class TabBar extends React.Component {
+       labelStyle,
+       indicatorStyle,
+       contentContainerStyle,
++      scrollViewStyle,
+       style,
+-      indicatorContainerStyle
++      indicatorContainerStyle,
++      noAnimation,
+     } = this.props;
+     const {
+       layout,
+@@ -239,6 +246,7 @@ export default class TabBar extends React.Component {
+       showsHorizontalScrollIndicator: false,
+       automaticallyAdjustContentInsets: false,
+       overScrollMode: "never",
++      style:scrollViewStyle,
+       contentContainerStyle: [styles.tabContent, scrollEnabled ? {
+         width: tabBarWidth || tabBarWidthPercent
+       } : styles.container, contentContainerStyle],
+@@ -294,7 +302,6 @@ export default class TabBar extends React.Component {
+           if (event.defaultPrevented) {
+             return;
+           }
+-
+           this.props.jumpTo(route.key);
+         },
+         onLongPress: () => onTabLongPress === null || onTabLongPress === void 0 ? void 0 : onTabLongPress({
+@@ -312,7 +319,7 @@ export default class TabBar extends React.Component {
+ _defineProperty(TabBar, "defaultProps", {
+   getLabelText: ({
+     route
+-  }) => typeof route.title === 'string' ? route.title.toUpperCase() : route.title,
++  }) => typeof route.title === 'string' ? route.title : route.title,
+   getAccessible: ({
+     route
+   }) => typeof route.accessible !== 'undefined' ? route.accessible : true,
+diff --git a/node_modules/react-native-tab-view/lib/module/TabBarIndicator.js b/node_modules/react-native-tab-view/lib/module/TabBarIndicator.js
+index 90c96c4..77c0b2a 100644
+--- a/node_modules/react-native-tab-view/lib/module/TabBarIndicator.js
++++ b/node_modules/react-native-tab-view/lib/module/TabBarIndicator.js
+@@ -67,7 +67,6 @@ export default class TabBarIndicator extends React.Component {
+       routes
+     } = navigationState;
+     const transform = [];
+-
+     if (layout.width) {
+       const translateX = routes.length > 1 ? this.getTranslateX(position, routes, getTabWidth) : 0;
+       transform.push({
+@@ -88,7 +87,6 @@ export default class TabBarIndicator extends React.Component {
+         translateX: 0.5
+       });
+     }
+-
+     return /*#__PURE__*/React.createElement(Animated.View, {
+       style: [styles.indicator, {
+         width: width === 'auto' ? 1 : width
+diff --git a/node_modules/react-native-tab-view/lib/module/TabView.js b/node_modules/react-native-tab-view/lib/module/TabView.js
+index 886240f..78e0745 100644
+--- a/node_modules/react-native-tab-view/lib/module/TabView.js
++++ b/node_modules/react-native-tab-view/lib/module/TabView.js
+@@ -19,6 +19,7 @@ export default function TabView({
+   renderTabBar = props => /*#__PURE__*/React.createElement(TabBar, props),
+   sceneContainerStyle,
+   style,
++  noAnimation=false,
+   swipeEnabled = true,
+   tabBarPosition = 'top'
+ }) {
+@@ -56,6 +57,7 @@ export default function TabView({
+     style: [styles.pager, style]
+   }, /*#__PURE__*/React.createElement(Pager, {
+     layout: layout,
++    noAnimation,
+     navigationState: navigationState,
+     keyboardDismissMode: keyboardDismissMode,
+     swipeEnabled: swipeEnabled,
+diff --git a/node_modules/react-native-tab-view/src/TabBar.tsx b/node_modules/react-native-tab-view/src/TabBar.tsx
+index 07a4630..dea4c6f 100644
+--- a/node_modules/react-native-tab-view/src/TabBar.tsx
++++ b/node_modules/react-native-tab-view/src/TabBar.tsx
+@@ -58,6 +58,7 @@ export type Props<T extends Route> = SceneRendererProps & {
+   indicatorContainerStyle?: StyleProp<ViewStyle>;
+   labelStyle?: StyleProp<TextStyle>;
+   contentContainerStyle?: StyleProp<ViewStyle>;
++  scrollViewStyle?: StyleProp<ViewStyle>;
+   style?: StyleProp<ViewStyle>;
+ };
+ 
+@@ -298,6 +299,7 @@ export default class TabBar<T extends Route> extends React.Component<
+       labelStyle,
+       indicatorStyle,
+       contentContainerStyle,
++      scrollViewStyle,
+       style,
+       indicatorContainerStyle,
+     } = this.props;
+@@ -357,6 +359,7 @@ export default class TabBar<T extends Route> extends React.Component<
+             bounces={bounces}
+             alwaysBounceHorizontal={false}
+             scrollsToTop={false}
++            style={scrollViewStyle}
+             showsHorizontalScrollIndicator={false}
+             automaticallyAdjustContentInsets={false}
+             overScrollMode="never"

@@ -1,8 +1,16 @@
 PODS:
+  - Base64 (1.1.2)
   - boost-for-react-native (1.63.0)
   - BugsnagReactNative (7.10.5):
     - React-Core
+  - BVLinearGradient (2.5.6):
+    - React
   - CocoaAsyncSocket (7.6.5)
+  - CodePush (6.4.1):
+    - Base64 (~> 1.1)
+    - JWT (~> 3.0.0-beta.12)
+    - React-Core
+    - SSZipArchive (~> 2.2.2)
   - DoubleConversion (1.1.6)
   - EXAppleAuthentication (2.2.1):
     - UMCore
@@ -10,15 +18,15 @@ PODS:
     - UMCore
     - UMFileSystemInterface
     - UMPermissionsInterface
-  - EXConstants (9.1.1):
+  - EXConstants (9.3.5):
     - UMConstantsInterface
     - UMCore
-  - EXFileSystem (9.0.1):
+  - EXFileSystem (9.3.0):
     - UMCore
     - UMFileSystemInterface
   - EXHaptics (8.2.1):
     - UMCore
-  - EXImageLoader (1.1.1):
+  - EXImageLoader (1.3.0):
     - React-Core
     - UMCore
     - UMImageLoaderInterface
@@ -27,7 +35,7 @@ PODS:
   - EXLocalAuthentication (9.2.0):
     - UMConstantsInterface
     - UMCore
-  - EXPermissions (9.0.1):
+  - EXPermissions (10.0.0):
     - UMCore
     - UMPermissionsInterface
   - EXVideoThumbnails (5.1.0):
@@ -160,7 +168,13 @@ PODS:
   - GoogleUtilities/UserDefaults (6.7.1):
     - GoogleUtilities/Logger
   - hermes-engine (0.7.2)
+  - JCore (1.9.4):
+    - React
   - JitsiMeetSDK (3.6.0)
+  - JPush (2.8.7):
+    - React
+  - JWT (3.0.0-beta.14):
+    - Base64 (~> 1.1.2)
   - KeyCommands (2.0.3):
     - React
   - libevent (2.1.12)
@@ -182,6 +196,15 @@ PODS:
   - nanopb/decode (1.30905.0)
   - nanopb/encode (1.30905.0)
   - OpenSSL-Universal (1.1.180)
+  - Permission-Camera (3.0.5):
+    - RNPermissions
+  - Permission-Notifications (3.0.5):
+    - RNPermissions
+  - Permission-PhotoLibrary (3.0.5):
+    - RNPermissions
+  - Permission-PhotoLibraryAddOnly (3.0.5):
+    - RNPermissions
+  - pop (1.0.12)
   - PromisesObjC (1.2.9)
   - RCT-Folly (2020.01.13.00):
     - boost-for-react-native
@@ -203,6 +226,8 @@ PODS:
     - RCT-Folly (= 2020.01.13.00)
     - RCTRequired (= 0.64.2)
     - React-Core (= 0.64.2)
+  - RCTWeChat (1.1.26):
+    - React-Core
   - React (0.64.2):
     - React-Core (= 0.64.2)
     - React-Core/DevSupport (= 0.64.2)
@@ -401,6 +426,8 @@ PODS:
     - React-Core
   - react-native-cookies (6.0.8):
     - React-Core
+  - react-native-create-thumbnail (1.4.1):
+    - React
   - react-native-document-picker (5.2.0):
     - React-Core
   - react-native-jitsi-meet (3.6.0):
@@ -415,6 +442,8 @@ PODS:
     - React
   - react-native-orientation-locker (1.1.8):
     - React
+  - react-native-pager-view (5.4.1):
+    - React-Core
   - react-native-restart (0.0.22):
     - React-Core
   - react-native-safe-area-context (3.2.0):
@@ -424,6 +453,11 @@ PODS:
     - React
   - react-native-slider (3.0.3):
     - React
+  - react-native-video (5.1.1):
+    - React-Core
+    - react-native-video/Video (= 5.1.1)
+  - react-native-video/Video (5.1.1):
+    - React-Core
   - react-native-webview (10.3.2):
     - React
   - React-perflogger (0.64.2)
@@ -498,9 +532,13 @@ PODS:
     - React
   - rn-fetch-blob (0.12.0):
     - React-Core
+  - RNAlipay (4.0.0-beta.1):
+    - React
   - RNBootSplash (3.2.4):
     - React-Core
   - RNCAsyncStorage (1.12.1):
+    - React-Core
+  - RNCClipboard (1.5.1):
     - React-Core
   - RNCMaskedView (0.1.11):
     - React
@@ -528,6 +566,8 @@ PODS:
     - Firebase/Crashlytics (~> 6.27.0)
     - React
     - RNFBApp
+  - RNFS (2.18.0):
+    - React
   - RNGestureHandler (1.10.3):
     - React-Core
   - RNImageCropPicker (0.31.1):
@@ -541,12 +581,23 @@ PODS:
     - TOCropViewController
   - RNLocalize (2.1.1):
     - React-Core
+  - RNPermissions (3.0.5):
+    - React-Core
   - RNReanimated (1.9.0):
     - React
   - RNRootView (1.0.3):
     - React
-  - RNScreens (2.9.0):
+  - RNScreens (3.6.0):
+    - React-Core
+    - React-RCTImage
+  - RNShare (6.5.0):
+    - React-Core
+  - RNSVG (12.1.1):
     - React
+  - RNTooltips (1.0.3):
+    - pop (~> 1.0)
+    - React
+    - SexyTooltip
   - RNVectorIcons (8.1.0):
     - React-Core
   - SDWebImage (5.8.4):
@@ -555,35 +606,63 @@ PODS:
   - SDWebImageWebPCoder (0.4.1):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.5)
+  - SexyTooltip (1.2.7):
+    - pop (~> 1.0)
+  - SSZipArchive (2.2.3)
   - TOCropViewController (2.5.3)
-  - UMAppLoader (1.2.0)
-  - UMBarCodeScannerInterface (5.2.1)
-  - UMCameraInterface (5.2.1)
-  - UMConstantsInterface (5.2.1)
-  - UMCore (5.3.0)
-  - UMFaceDetectorInterface (5.2.1)
-  - UMFileSystemInterface (5.2.1)
-  - UMFontInterface (5.2.1)
-  - UMImageLoaderInterface (5.2.1)
-  - UMPermissionsInterface (5.2.1):
+  - UMAPM (1.4.2)
+  - UMAppLoader (1.4.0)
+  - UMBarCodeScannerInterface (5.4.0)
+  - UMCameraInterface (5.4.0)
+  - UMCCommon (7.3.5):
+    - UMAPM
+    - UMDevice
+  - UMConstantsInterface (5.4.0)
+  - UMCore (6.0.0)
+  - UMCShare/Core (6.10.2):
+    - UMCCommon
+  - UMCShare/Social/Email (6.10.2):
+    - UMCCommon
+    - UMCShare/Core
+  - UMCShare/Social/ReducedSina (6.10.2):
+    - UMCCommon
+    - UMCShare/Core
+  - UMCShare/Social/Sina (6.10.2):
+    - UMCCommon
+    - UMCShare/Core
+    - UMCShare/Social/ReducedSina
+  - UMCShare/Social/SMS (6.10.2):
+    - UMCCommon
+    - UMCShare/Core
+  - UMCShare/UI (6.10.2):
+    - UMCCommon
+    - UMCShare/Core
+  - UMDevice (2.0.4)
+  - UMFaceDetectorInterface (5.4.0)
+  - UMFileSystemInterface (5.4.0)
+  - UMFontInterface (5.4.0)
+  - UMImageLoaderInterface (5.4.0)
+  - UMPermissionsInterface (5.4.0):
     - UMCore
-  - UMReactNativeAdapter (5.4.0):
+  - UMReactNativeAdapter (5.7.0):
     - React-Core
     - UMCore
     - UMFontInterface
-  - UMSensorsInterface (5.2.1)
-  - UMTaskManagerInterface (5.2.1)
+  - UMSensorsInterface (5.4.0)
+  - UMTaskManagerInterface (5.4.0)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
 
 DEPENDENCIES:
   - "BugsnagReactNative (from `../node_modules/@bugsnag/react-native`)"
+  - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
+  - CodePush (from `../node_modules/react-native-code-push`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - EXAppleAuthentication (from `../node_modules/expo-apple-authentication/ios`)
   - EXAV (from `../node_modules/expo-av/ios`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
-  - EXFileSystem (from `../node_modules/expo-file-system/ios`)
+  - EXFileSystem (from `../node_modules/react-native-unimodules/node_modules/expo-file-system/ios`)
   - EXHaptics (from `../node_modules/expo-haptics/ios`)
   - EXImageLoader (from `../node_modules/expo-image-loader/ios`)
   - EXKeepAwake (from `../node_modules/expo-keep-awake/ios`)
@@ -614,12 +693,19 @@ DEPENDENCIES:
   - FlipperKit/SKIOSNetworkPlugin (~> 0.75.1)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (~> 0.7.2)
+  - JCore (from `../node_modules/jcore-react-native`)
   - JitsiMeetSDK (from `https://github.com/RocketChat/jitsi-meet-ios-sdk-releases.git`)
+  - JPush (from `../node_modules/jpush-react-native`)
   - KeyCommands (from `../node_modules/react-native-keycommands`)
   - libevent (~> 2.1.12)
+  - Permission-Camera (from `../node_modules/react-native-permissions/ios/Camera`)
+  - Permission-Notifications (from `../node_modules/react-native-permissions/ios/Notifications`)
+  - Permission-PhotoLibrary (from `../node_modules/react-native-permissions/ios/PhotoLibrary`)
+  - Permission-PhotoLibraryAddOnly (from `../node_modules/react-native-permissions/ios/PhotoLibraryAddOnly`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
+  - RCTWeChat (from `../node_modules/react-native-wechat-lib`)
   - React (from `../node_modules/react-native/`)
   - React-callinvoker (from `../node_modules/react-native/ReactCommon/callinvoker`)
   - React-Core (from `../node_modules/react-native/`)
@@ -636,16 +722,19 @@ DEPENDENCIES:
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - "react-native-cameraroll (from `../node_modules/@react-native-community/cameraroll`)"
   - "react-native-cookies (from `../node_modules/@react-native-cookies/cookies`)"
+  - react-native-create-thumbnail (from `../node_modules/react-native-create-thumbnail`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-jitsi-meet (from `../node_modules/react-native-jitsi-meet`)
   - react-native-mmkv-storage (from `../node_modules/react-native-mmkv-storage`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-notifications (from `../node_modules/react-native-notifications`)
   - react-native-orientation-locker (from `../node_modules/react-native-orientation-locker`)
+  - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-restart (from `../node_modules/react-native-restart`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-simple-crypto (from `../node_modules/react-native-simple-crypto`)
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
+  - react-native-video (from `../node_modules/react-native-video`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -663,8 +752,10 @@ DEPENDENCIES:
   - ReactNativeUiLib (from `../node_modules/react-native-ui-lib/lib`)
   - rn-extensions-share (from `../node_modules/rn-extensions-share`)
   - rn-fetch-blob (from `../node_modules/rn-fetch-blob`)
+  - "RNAlipay (from `../node_modules/@uiw/react-native-alipay/ios`)"
   - RNBootSplash (from `../node_modules/react-native-bootsplash`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
+  - "RNCClipboard (from `../node_modules/@react-native-community/clipboard`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - RNConfigReader (from `../node_modules/react-native-config-reader`)
   - "RNCPicker (from `../node_modules/@react-native-community/picker`)"
@@ -674,18 +765,28 @@ DEPENDENCIES:
   - "RNFBAnalytics (from `../node_modules/@react-native-firebase/analytics`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBCrashlytics (from `../node_modules/@react-native-firebase/crashlytics`)"
+  - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNLocalize (from `../node_modules/react-native-localize`)
+  - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNRootView (from `../node_modules/rn-root-view`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNShare (from `../node_modules/react-native-share`)
+  - RNSVG (from `../node_modules/react-native-svg`)
+  - RNTooltips (from `../node_modules/react-native-tooltips/ios`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - UMAppLoader (from `../node_modules/unimodules-app-loader/ios`)
   - UMBarCodeScannerInterface (from `../node_modules/unimodules-barcode-scanner-interface/ios`)
   - UMCameraInterface (from `../node_modules/unimodules-camera-interface/ios`)
+  - UMCCommon
   - UMConstantsInterface (from `../node_modules/unimodules-constants-interface/ios`)
   - "UMCore (from `../node_modules/@unimodules/core/ios`)"
+  - UMCShare/Social/Email
+  - UMCShare/Social/Sina
+  - UMCShare/Social/SMS
+  - UMCShare/UI
   - UMFaceDetectorInterface (from `../node_modules/unimodules-face-detector-interface/ios`)
   - UMFileSystemInterface (from `../node_modules/unimodules-file-system-interface/ios`)
   - UMFontInterface (from `../node_modules/unimodules-font-interface/ios`)
@@ -698,6 +799,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Base64
     - boost-for-react-native
     - CocoaAsyncSocket
     - Firebase
@@ -718,21 +820,33 @@ SPEC REPOS:
     - GoogleDataTransportCCTSupport
     - GoogleUtilities
     - hermes-engine
+    - JWT
     - libevent
     - libwebp
     - MMKV
     - MMKVCore
     - nanopb
     - OpenSSL-Universal
+    - pop
     - PromisesObjC
     - SDWebImage
     - SDWebImageWebPCoder
+    - SexyTooltip
+    - SSZipArchive
     - TOCropViewController
+    - UMAPM
+    - UMCCommon
+    - UMCShare
+    - UMDevice
     - YogaKit
 
 EXTERNAL SOURCES:
   BugsnagReactNative:
     :path: "../node_modules/@bugsnag/react-native"
+  BVLinearGradient:
+    :path: "../node_modules/react-native-linear-gradient"
+  CodePush:
+    :path: "../node_modules/react-native-code-push"
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   EXAppleAuthentication:
@@ -742,7 +856,7 @@ EXTERNAL SOURCES:
   EXConstants:
     :path: "../node_modules/expo-constants/ios"
   EXFileSystem:
-    :path: "../node_modules/expo-file-system/ios"
+    :path: "../node_modules/react-native-unimodules/node_modules/expo-file-system/ios"
   EXHaptics:
     :path: "../node_modules/expo-haptics/ios"
   EXImageLoader:
@@ -763,16 +877,30 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/React/FBReactNativeSpec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
+  JCore:
+    :path: "../node_modules/jcore-react-native"
   JitsiMeetSDK:
     :git: https://github.com/RocketChat/jitsi-meet-ios-sdk-releases.git
+  JPush:
+    :path: "../node_modules/jpush-react-native"
   KeyCommands:
     :path: "../node_modules/react-native-keycommands"
+  Permission-Camera:
+    :path: "../node_modules/react-native-permissions/ios/Camera"
+  Permission-Notifications:
+    :path: "../node_modules/react-native-permissions/ios/Notifications"
+  Permission-PhotoLibrary:
+    :path: "../node_modules/react-native-permissions/ios/PhotoLibrary"
+  Permission-PhotoLibraryAddOnly:
+    :path: "../node_modules/react-native-permissions/ios/PhotoLibraryAddOnly"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
     :path: "../node_modules/react-native/Libraries/RCTRequired"
   RCTTypeSafety:
     :path: "../node_modules/react-native/Libraries/TypeSafety"
+  RCTWeChat:
+    :path: "../node_modules/react-native-wechat-lib"
   React:
     :path: "../node_modules/react-native/"
   React-callinvoker:
@@ -799,6 +927,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/cameraroll"
   react-native-cookies:
     :path: "../node_modules/@react-native-cookies/cookies"
+  react-native-create-thumbnail:
+    :path: "../node_modules/react-native-create-thumbnail"
   react-native-document-picker:
     :path: "../node_modules/react-native-document-picker"
   react-native-jitsi-meet:
@@ -811,6 +941,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-notifications"
   react-native-orientation-locker:
     :path: "../node_modules/react-native-orientation-locker"
+  react-native-pager-view:
+    :path: "../node_modules/react-native-pager-view"
   react-native-restart:
     :path: "../node_modules/react-native-restart"
   react-native-safe-area-context:
@@ -819,6 +951,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-simple-crypto"
   react-native-slider:
     :path: "../node_modules/@react-native-community/slider"
+  react-native-video:
+    :path: "../node_modules/react-native-video"
   react-native-webview:
     :path: "../node_modules/react-native-webview"
   React-perflogger:
@@ -853,10 +987,14 @@ EXTERNAL SOURCES:
     :path: "../node_modules/rn-extensions-share"
   rn-fetch-blob:
     :path: "../node_modules/rn-fetch-blob"
+  RNAlipay:
+    :path: "../node_modules/@uiw/react-native-alipay/ios"
   RNBootSplash:
     :path: "../node_modules/react-native-bootsplash"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-community/async-storage"
+  RNCClipboard:
+    :path: "../node_modules/@react-native-community/clipboard"
   RNCMaskedView:
     :path: "../node_modules/@react-native-community/masked-view"
   RNConfigReader:
@@ -875,18 +1013,28 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/app"
   RNFBCrashlytics:
     :path: "../node_modules/@react-native-firebase/crashlytics"
+  RNFS:
+    :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNImageCropPicker:
     :path: "../node_modules/react-native-image-crop-picker"
   RNLocalize:
     :path: "../node_modules/react-native-localize"
+  RNPermissions:
+    :path: "../node_modules/react-native-permissions"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNRootView:
     :path: "../node_modules/rn-root-view"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNShare:
+    :path: "../node_modules/react-native-share"
+  RNSVG:
+    :path: "../node_modules/react-native-svg"
+  RNTooltips:
+    :path: "../node_modules/react-native-tooltips/ios"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   UMAppLoader:
@@ -924,19 +1072,22 @@ CHECKOUT OPTIONS:
     :git: https://github.com/RocketChat/jitsi-meet-ios-sdk-releases.git
 
 SPEC CHECKSUMS:
+  Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   BugsnagReactNative: a97b3132c1854fd7bf92350fabd505e3ebdd7829
+  BVLinearGradient: e3aad03778a456d77928f594a649e96995f1c872
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
+  CodePush: 352a7efabd0a7079a1138a5c6f677baedb0dedf9
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
   EXAppleAuthentication: 5b3da71bada29e2423d8ea27e5538ef0d75aba62
   EXAV: 86344030966e0da7e00556fbb97269d9ad16071d
-  EXConstants: f907b3b6ce16e20d1750f22af1e095e924574bcb
-  EXFileSystem: 76875135b61708b9afa7e6a89b72a60ba0fdfa20
+  EXConstants: 54d0bf04319d1692c6c7bc03ca151ef7a71705a4
+  EXFileSystem: 0e4974ab77bff04cda68d2886d070cbe64b93a6b
   EXHaptics: 5428b344a216ca5d9df6ca8f65720b2a1ad9f109
-  EXImageLoader: 02ca02c9cd5cc8a97b423207a73a791e0a86bea5
+  EXImageLoader: f96ec9992733a4224418bbd9382e5485c8948944
   EXKeepAwake: 8b0f68242f036b971f9f8976341823cbe6f50812
   EXLocalAuthentication: 985c65e08a6eb84f8f98b51f7435df138b18b9e8
-  EXPermissions: 80ac3acbdb145930079810fe5b08c022b3428aa8
+  EXPermissions: 17d4846ad1880f6891c74ae58ca1acb43e47ed47
   EXVideoThumbnails: cd257fc6e07884a704a5674d362a6410933acb68
   EXWebBrowser: d37a5ffdea1b65947352bc001dd9f732463725d4
   FBLazyVector: e686045572151edef46010a6f819ade377dfeb4b
@@ -960,7 +1111,10 @@ SPEC CHECKSUMS:
   GoogleDataTransportCCTSupport: 489c1265d2c85b68187a83a911913d190012158d
   GoogleUtilities: e121a3867449ce16b0e35ddf1797ea7a389ffdf2
   hermes-engine: 7d97ba46a1e29bacf3e3c61ecb2804a5ddd02d4f
+  JCore: b5c4eadf996070ce05748c52851db9bc70eba33b
   JitsiMeetSDK: 476329f72a866f714d2802bafe1729de6d644ccf
+  JPush: a010513626e67900f284aff6db8578b23145a5d9
+  JWT: ef71dfb03e1f842081e64dc42eef0e164f35d251
   KeyCommands: f66c535f698ed14b3d3a4e58859d79a827ea907e
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   libwebp: 946cb3063cea9236285f7e9a8505d806d30e07f3
@@ -968,10 +1122,16 @@ SPEC CHECKSUMS:
   MMKVCore: fe398984acac1fa33f92795d1b5fd0a334c944af
   nanopb: c43f40fadfe79e8b8db116583945847910cbabc9
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
+  Permission-Camera: ac603073e4128e51e6ca3c39129778f05b4082fa
+  Permission-Notifications: 16ccd862111103378a7bab9fb1c5c71addffc348
+  Permission-PhotoLibrary: 0748c1a490fad126dfe36dbea8234dedfe59cc27
+  Permission-PhotoLibraryAddOnly: 224d33cea3c2f1f8982a2a4e343c0726fba3acf9
+  pop: d582054913807fd11fd50bfe6a539d91c7e1a55a
   PromisesObjC: b48e0338dbbac2207e611750777895f7a5811b75
   RCT-Folly: ec7a233ccc97cc556cf7237f0db1ff65b986f27c
   RCTRequired: 6d3e854f0e7260a648badd0d44fc364bc9da9728
   RCTTypeSafety: c1f31d19349c6b53085766359caac425926fafaa
+  RCTWeChat: 289c92186c1f55716a6378af55388292d94b2d9e
   React: bda6b6d7ae912de97d7a61aa5c160db24aa2ad69
   React-callinvoker: 9840ea7e8e88ed73d438edb725574820b29b5baa
   React-Core: b5e385da7ce5f16a220fc60fd0749eae2c6120f0
@@ -985,16 +1145,19 @@ SPEC CHECKSUMS:
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-cameraroll: 88f4e62d9ecd0e1f253abe4f685474f2ea14bfa2
   react-native-cookies: 2cb6ef472da68610dfcf0eaee68464c244943abd
+  react-native-create-thumbnail: d31c84dd69fb4d60aec0ff2f49bc0de41ede7b2c
   react-native-document-picker: f1b5398801b332c77bc62ae0eae2116f49bdff26
   react-native-jitsi-meet: 3e3ac5d0445091154119f94342efd55c8b1124ce
   react-native-mmkv-storage: 48729fe90e850ef2fdc9d3714b7030c7c51d82b0
   react-native-netinfo: e849fc21ca2f4128a5726c801a82fc6f4a6db50d
   react-native-notifications: ee8fd739853e72694f3af8b374c8ccb106b7b227
   react-native-orientation-locker: f0ca1a8e5031dab6b74bfb4ab33a17ed2c2fcb0d
+  react-native-pager-view: 43f51f45f37ec9715f6c188e4af46ccdf79872e8
   react-native-restart: 733a51ad137f15b0f8dc34c4082e55af7da00979
   react-native-safe-area-context: f0906bf8bc9835ac9a9d3f97e8bde2a997d8da79
   react-native-simple-crypto: 9b358cdfd34169031d384a8d4ac2ffc40b323876
   react-native-slider: e99fc201cefe81270fc9d81714a7a0f5e566b168
+  react-native-video: 0bb76b6d6b77da3009611586c7dbf817b947f30e
   react-native-webview: 679b6f400176e2ea8a785acf7ae16cf282e7d1eb
   React-perflogger: 25373e382fed75ce768a443822f07098a15ab737
   React-RCTActionSheet: af7796ba49ffe4ca92e7277a5d992d37203f7da5
@@ -1012,8 +1175,10 @@ SPEC CHECKSUMS:
   ReactNativeUiLib: cde7263a7d308b60161cd286f95c9433e79f2f7d
   rn-extensions-share: 5fd84a80e6594706f0dfa1884f2d6d591b382cf5
   rn-fetch-blob: f065bb7ab7fb48dd002629f8bdcb0336602d3cba
+  RNAlipay: 03005e19f488737f71aa37bdce83a282166dc5c9
   RNBootSplash: 4844706cbb56a3270556c9b94e59dedadccd47e4
   RNCAsyncStorage: b03032fdbdb725bea0bd9e5ec5a7272865ae7398
+  RNCClipboard: 41d8d918092ae8e676f18adada19104fa3e68495
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
   RNConfigReader: 396da6a6444182a76e8ae0930b9436c7575045cb
   RNCPicker: 914b557e20b3b8317b084aca9ff4b4edb95f61e4
@@ -1023,32 +1188,43 @@ SPEC CHECKSUMS:
   RNFBAnalytics: dae6d7b280ba61c96e1bbdd34aca3154388f025e
   RNFBApp: 6fd8a7e757135d4168bf033a8812c241af7363a0
   RNFBCrashlytics: 88de72c2476b5868a892d9523b89b86c527c540e
+  RNFS: 3ab21fa6c56d65566d1fb26c2228e2b6132e5e32
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNImageCropPicker: 38865ab4af1b0b2146ad66061196bc0184946855
   RNLocalize: 82a569022724d35461e2dc5b5d015a13c3ca995b
+  RNPermissions: 7043bacbf928eae25808275cfe73799b8f618911
   RNReanimated: b5ccb50650ba06f6e749c7c329a1bc3ae0c88b43
   RNRootView: 895a4813dedeaca82db2fa868ca1c333d790e494
-  RNScreens: c526239bbe0e957b988dacc8d75ac94ec9cb19da
+  RNScreens: eb0dfb2d6b21d2d7f980ad46b14eb306d2f1062e
+  RNShare: 047d42214f875d731bde73a2b67418638af85ad9
+  RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
+  RNTooltips: 47a992eb7b12f624e5a8a40f0990fbef49dcb83e
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   SDWebImage: cf6922231e95550934da2ada0f20f2becf2ceba9
   SDWebImageWebPCoder: 36f8f47bd9879a8aea6044765c1351120fd8e3a8
+  SexyTooltip: e243da5a858c7160141cf35786a4033669d1efca
+  SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   TOCropViewController: 20a14b6a7a098308bf369e7c8d700dc983a974e6
-  UMAppLoader: 61049c8d55590b74e9ae1d5429bf68d96b4a2528
-  UMBarCodeScannerInterface: e5e4c87797d3d01214e25cd1618866caf5d4f17f
-  UMCameraInterface: 415ac060034edecacdbbaa739c223e3f276e0056
-  UMConstantsInterface: 1a52f2d884c95e8829439da13e36b7669a1a8fb4
-  UMCore: d98083b522b08c0a8ba3992bc263c624ae5d887c
-  UMFaceDetectorInterface: 67c6c82451338da01a4bc00ec46365a2a8ea9057
-  UMFileSystemInterface: 303d696ede28102a7e11d111808bd2ed2c5eb62f
-  UMFontInterface: 6edf1ee8bc55d2030766f8cf0a7b20a5d5a913b0
-  UMImageLoaderInterface: 9cdbf3bab6a513bddd88505cb2340fe02d6a11c0
-  UMPermissionsInterface: 019170ad655f464e3f8d23d2a8bcbda2e645cde4
-  UMReactNativeAdapter: 538efe92e781b5d7678cf95b34c46f2d0989a557
-  UMSensorsInterface: cb5bf31d52c4349f0ff9e3c049bbe4df0d80d383
-  UMTaskManagerInterface: 80653f25c55d9e6d79d6a0a65589fa213feaee11
+  UMAPM: 9766611aba84e0755afc785d4399f1e9fbb0a475
+  UMAppLoader: 92d044af52626af3d81a69796ad666fc7a9a7d78
+  UMBarCodeScannerInterface: 3f6c1b09ef4b867ce752b8c0b3893bcf9cd85f32
+  UMCameraInterface: d516032121192fee9a6c93bdfff0bb2cc7282796
+  UMCCommon: 3c535e9e3958f72df075cc6fe4776fb5e403c8bc
+  UMConstantsInterface: 6825ea3832d26ed392ca6eff2df84edd69968fd0
+  UMCore: 97ba5041c9c92317ce61739f6d126a692c8ef4a8
+  UMCShare: e14e1399673fa361cddbde3a05b3743e10f673f7
+  UMDevice: 590115ebb238250e574988c7a3e9511f5d5cd4d3
+  UMFaceDetectorInterface: 60b36b07faa539205efce30b20c192e058b31c23
+  UMFileSystemInterface: ab01294ce58a3c773aefb4a5b131ce589c199559
+  UMFontInterface: 85fe1b845fb7caab45e04d9ce47e1677a5ce90a5
+  UMImageLoaderInterface: 18f37df089b7e6d301e3acac025a8264d26b66d6
+  UMPermissionsInterface: 807e5733b4c6607f35757b1dd128f370718d2f94
+  UMReactNativeAdapter: 172def7895b2cb44a7dd021336e316d5fa8ea958
+  UMSensorsInterface: 4df9ec662134de5614ae61acc249d6912db87ca5
+  UMTaskManagerInterface: 4c60b43eaf3cb05a164bc9113258a171c18b7bf7
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 2cb6f38193d69310b4dfc466be3cf4ff7a5e98d3
+PODFILE CHECKSUM: 289115ed734e6c67ceef077c96a2ee75e7c4fa89
 
 COCOAPODS: 1.10.1
