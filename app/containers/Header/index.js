@@ -22,7 +22,7 @@ export const getHeaderHeight = (isLandscape) => {
 };
 
 export const getHeaderTitlePosition = ({ insets, numIconsRight }) => ({
-	left: insets.left + 60,
+	left: insets.left + 0,
 	right: insets.right + Math.max(45 * numIconsRight, 15)
 });
 

@@ -75,6 +75,8 @@ const App = React.memo(({ root, isMasterDetail }) => {
 						<Stack.Screen
 							name='OutsideStack'
 							component={OutsideStack}
+							options={{ headerShown:false}}
+
 						/>
 					) : null}
 					{root === ROOT_INSIDE && isMasterDetail ? (

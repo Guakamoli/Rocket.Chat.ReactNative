@@ -22,7 +22,6 @@ const LeftButtons = React.memo(({
 		const labelLength = label.length ? label.length : 1;
 		const marginLeft = -2 * labelLength;
 		const fontSize = labelLength > 1 ? 14 : 17;
-		return null
 		return (
 			<HeaderBackButton
 				label={label}

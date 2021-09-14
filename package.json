@@ -122,7 +122,7 @@
     "react-native-document-picker": "5.2.0",
     "react-native-easy-grid": "^0.2.2",
     "react-native-easy-toast": "^2.0.0",
-    "react-native-elements": "2.3.2",
+    "react-native-elements": "3.4.2",
     "react-native-fs": "^2.18.0",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-image-crop-picker": "RocketChat/react-native-image-crop-picker",
