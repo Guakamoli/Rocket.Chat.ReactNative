@@ -16,5 +16,6 @@
 
 @property (nonatomic, strong) UIWindow *window;
 @property (nonatomic, strong) UMModuleRegistryAdapter *moduleRegistryAdapter;
-
+@property (nonatomic, strong) NSURL *url;
+@property (nonatomic, strong) RCTBridge *bridge;
 @end

@@ -138,6 +138,15 @@
 		7AAB3E49257E6A6E00707CF6 /* ShareRocketChatRN.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1EC6ACB022CB9FC300A41C61 /* ShareRocketChatRN.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		7AAB3E4A257E6A6E00707CF6 /* NotificationService.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1EFEB5952493B6640072EDC0 /* NotificationService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		7ACD4897222860DE00442C55 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7ACD4853222860DE00442C55 /* JavaScriptCore.framework */; };
+		7C0E6EA126E9EB6B000A88BA /* PYRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C0E6E9F26E9EB6B000A88BA /* PYRootViewController.m */; };
+		7C0E6EA226E9EB6B000A88BA /* PYNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C0E6EA026E9EB6B000A88BA /* PYNavigationController.m */; };
+		7C0E6EA326E9EB7E000A88BA /* PYRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C0E6E9F26E9EB6B000A88BA /* PYRootViewController.m */; };
+		7C0E6EA426E9EB7E000A88BA /* PYNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C0E6EA026E9EB6B000A88BA /* PYNavigationController.m */; };
+		7C0E6EAD26E9ECA1000A88BA /* UMShareModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C0E6EA826E9ECA1000A88BA /* UMShareModule.m */; };
+		7C0E6EAE26E9ECA1000A88BA /* RNUMConfigure.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C0E6EA926E9ECA1000A88BA /* RNUMConfigure.m */; };
+		7C0E6EAF26E9ECA1000A88BA /* UMAnalyticsModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C0E6EAA26E9ECA1000A88BA /* UMAnalyticsModule.m */; };
+		7C0E6EB026E9ECBB000A88BA /* UMShareModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C0E6EA826E9ECA1000A88BA /* UMShareModule.m */; };
+		7C0E6EB126E9ECBB000A88BA /* RNUMConfigure.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C0E6EA926E9ECA1000A88BA /* RNUMConfigure.m */; };
 		DC5529EC3B4695AC7319279F /* libPods-defaults-ShareRocketChatRN.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 42EF13FCD0CA813CFABFE073 /* libPods-defaults-ShareRocketChatRN.a */; };
 		DD2BA30A89E64F189C2C24AC /* libWatermelonDB.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BA7E862283664608B3894E34 /* libWatermelonDB.a */; };
 		EDE8A8F63A3ADB93A6640F8E /* libPods-defaults-NotificationService.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B2C0164CCC5BED03F5A257E /* libPods-defaults-NotificationService.a */; };
@@ -286,6 +295,16 @@
 		7AAA749C23043B1D00F1ADE9 /* RocketChatRN-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RocketChatRN-Bridging-Header.h"; sourceTree = "<group>"; };
 		7AAB3E52257E6A6E00707CF6 /* Rocket.Chat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Rocket.Chat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7ACD4853222860DE00442C55 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		7C0E6E9D26E9EB6B000A88BA /* PYRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PYRootViewController.h; sourceTree = "<group>"; };
+		7C0E6E9E26E9EB6B000A88BA /* PYNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PYNavigationController.h; sourceTree = "<group>"; };
+		7C0E6E9F26E9EB6B000A88BA /* PYRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PYRootViewController.m; sourceTree = "<group>"; };
+		7C0E6EA026E9EB6B000A88BA /* PYNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PYNavigationController.m; sourceTree = "<group>"; };
+		7C0E6EA726E9ECA1000A88BA /* UMAnalyticsModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMAnalyticsModule.h; sourceTree = "<group>"; };
+		7C0E6EA826E9ECA1000A88BA /* UMShareModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UMShareModule.m; sourceTree = "<group>"; };
+		7C0E6EA926E9ECA1000A88BA /* RNUMConfigure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNUMConfigure.m; sourceTree = "<group>"; };
+		7C0E6EAA26E9ECA1000A88BA /* UMAnalyticsModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UMAnalyticsModule.m; sourceTree = "<group>"; };
+		7C0E6EAB26E9ECA1000A88BA /* UMShareModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMShareModule.h; sourceTree = "<group>"; };
+		7C0E6EAC26E9ECA1000A88BA /* RNUMConfigure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNUMConfigure.h; sourceTree = "<group>"; };
 		9730F55A254AC78BC5361659 /* Pods-NotificationService.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationService.release.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationService/Pods-NotificationService.release.xcconfig"; sourceTree = "<group>"; };
 		B37C79D9BD0742CE936B6982 /* libc++.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		BA7E862283664608B3894E34 /* libWatermelonDB.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libWatermelonDB.a; sourceTree = "<group>"; };
@@ -511,6 +530,30 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		7C0E6E9C26E9EB6B000A88BA /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				7C0E6E9D26E9EB6B000A88BA /* PYRootViewController.h */,
+				7C0E6E9E26E9EB6B000A88BA /* PYNavigationController.h */,
+				7C0E6E9F26E9EB6B000A88BA /* PYRootViewController.m */,
+				7C0E6EA026E9EB6B000A88BA /* PYNavigationController.m */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		7C0E6EA626E9ECA1000A88BA /* UMReactBridge */ = {
+			isa = PBXGroup;
+			children = (
+				7C0E6EA726E9ECA1000A88BA /* UMAnalyticsModule.h */,
+				7C0E6EA826E9ECA1000A88BA /* UMShareModule.m */,
+				7C0E6EA926E9ECA1000A88BA /* RNUMConfigure.m */,
+				7C0E6EAA26E9ECA1000A88BA /* UMAnalyticsModule.m */,
+				7C0E6EAB26E9ECA1000A88BA /* UMShareModule.h */,
+				7C0E6EAC26E9ECA1000A88BA /* RNUMConfigure.h */,
+			);
+			path = UMReactBridge;
+			sourceTree = "<group>";
+		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
@@ -522,6 +565,8 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				7C0E6EA626E9ECA1000A88BA /* UMReactBridge */,
+				7C0E6E9C26E9EB6B000A88BA /* Core */,
 				1E76CBC425152A7F0067298C /* Shared */,
 				1E068CFB24FD2DAF00A0FFC1 /* AppGroup */,
 				13B07FAE1A68108700A75B9A /* RocketChatRN */,
@@ -1348,6 +1393,7 @@
 				1E76CBCB25152C250067298C /* Sender.swift in Sources */,
 				1E76CBD825152C870067298C /* Request.swift in Sources */,
 				1ED00BB12513E04400A1331F /* ReplyNotification.swift in Sources */,
+				7C0E6EA126E9EB6B000A88BA /* PYRootViewController.m in Sources */,
 				1E76CBC2251529560067298C /* Storage.swift in Sources */,
 				1E76CBD925152C8C0067298C /* Push.swift in Sources */,
 				1E0426E6251A5467008F022C /* RoomType.swift in Sources */,
@@ -1358,6 +1404,8 @@
 				1E76CBC825152C070067298C /* RocketChat.swift in Sources */,
 				1E76CBD725152C840067298C /* HTTPMethod.swift in Sources */,
 				1E76CBC725152BFF0067298C /* Payload.swift in Sources */,
+				7C0E6EAF26E9ECA1000A88BA /* UMAnalyticsModule.m in Sources */,
+				7C0E6EAE26E9ECA1000A88BA /* RNUMConfigure.m in Sources */,
 				1E76CBD225152C730067298C /* Data+Extensions.swift in Sources */,
 				1E76CBD125152C710067298C /* Date+Extensions.swift in Sources */,
 				1E76CBD425152C790067298C /* Database.swift in Sources */,
@@ -1366,9 +1414,11 @@
 				1E76CBD525152C7F0067298C /* API.swift in Sources */,
 				1E76CBD625152C820067298C /* Response.swift in Sources */,
 				1E068D0124FD2E0500A0FFC1 /* AppGroup.m in Sources */,
+				7C0E6EA226E9EB6B000A88BA /* PYNavigationController.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				1E76CBD025152C6E0067298C /* URL+Extensions.swift in Sources */,
 				1E068CFE24FD2DC700A0FFC1 /* AppGroup.swift in Sources */,
+				7C0E6EAD26E9ECA1000A88BA /* UMShareModule.m in Sources */,
 				1E76CBCE25152C2F0067298C /* RoomKey.swift in Sources */,
 				1E76CBCC25152C290067298C /* Message.swift in Sources */,
 				1E76CBCF25152C310067298C /* NotificationType.swift in Sources */,
@@ -1390,6 +1440,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C0E6EB026E9ECBB000A88BA /* UMShareModule.m in Sources */,
+				7C0E6EB126E9ECBB000A88BA /* RNUMConfigure.m in Sources */,
+				7C0E6EA326E9EB7E000A88BA /* PYRootViewController.m in Sources */,
+				7C0E6EA426E9EB7E000A88BA /* PYNavigationController.m in Sources */,
 				1E51D965251263D600DC95DE /* NotificationType.swift in Sources */,
 				1EF5FBD1250C109E00614FEA /* Encryption.swift in Sources */,
 				1E598AE42515057D002BDFBD /* Date+Extensions.swift in Sources */,
@@ -1640,7 +1694,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/rn-extensions-share/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
-					"$PODS_CONFIGURATION_BUILD_DIR/Firebase",
+					$PODS_CONFIGURATION_BUILD_DIR/Firebase,
 				);
 				INFOPLIST_FILE = ShareRocketChatRN/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -1706,7 +1760,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/rn-extensions-share/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
-					"$PODS_CONFIGURATION_BUILD_DIR/Firebase",
+					$PODS_CONFIGURATION_BUILD_DIR/Firebase,
 				);
 				INFOPLIST_FILE = ShareRocketChatRN/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
