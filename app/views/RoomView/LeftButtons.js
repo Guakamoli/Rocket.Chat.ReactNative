@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet } from 'react-native';
-import { HeaderBackButton } from '@react-navigation/stack';
+import { HeaderBackButton } from '@react-navigation/elements';
 
 import { themes } from '../../constants/colors';
 import Avatar from '../../containers/Avatar';
@@ -22,6 +22,7 @@ const LeftButtons = React.memo(({
 		const labelLength = label.length ? label.length : 1;
 		const marginLeft = -2 * labelLength;
 		const fontSize = labelLength > 1 ? 14 : 17;
+		return null
 		return (
 			<HeaderBackButton
 				label={label}

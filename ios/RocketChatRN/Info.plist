@@ -115,7 +115,7 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<true/>
+	<false/>
 	<key>bugsnag</key>
 	<dict>
 		<key>apiKey</key>
