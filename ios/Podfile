@@ -9,9 +9,10 @@ def all_pods
   use_react_native!(
     :path => config[:reactNativePath],
     :hermes_enabled => true
+    # 这里做过修改hermes_enabled => true
   )
   permissions_path = '../node_modules/react-native-permissions/ios'
-
+  pod 'CodePush', :path => '../node_modules/react-native-code-push'
   pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
   pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
   pod 'Permission-PhotoLibraryAddOnly', :path => "#{permissions_path}/PhotoLibraryAddOnly"

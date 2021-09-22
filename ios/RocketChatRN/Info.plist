@@ -37,6 +37,18 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>CodePushDeploymentKey</key>
+	<string>$(CODEPUSH_KEY)</string>
+	<key>CodePushPublicKey</key>
+	<string>-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA9U8c2IQ41yUUqqs0VNln
+lIOB2MlZAWlFFAYze/buzf5GJMuHTuMrb7P/i0PffYPn2jcQyj5N8ADiTbdPfcTx
+S9RazgFM6Le7P9X5cHU7nxA9SYsEAbz9wHaF1c48vZBJ2lWkgU7FAs4xHOqjIcZ4
+mQCi3tIP/HwPMYJS4jLzBtAkoVdTAR4Qr9RBuAsCQShKvH32owKc8p16XhSDlzIT
+m+Ft6Y/dAT6o89ZK/9kwm8UAG4sCiqaX91qGpzRqq+XtstJEMZZqq6Vir3yKULQB
+KCgHEUMsjzWoXdy/Y7BZHIZlFwhqQGuoTYIntpftL9HPHosUW7Vhhn3OHgiviOoX
+6QIDAQAB
+-----END PUBLIC KEY-----</string>
 	<key>IS_OFFICIAL</key>
 	<false/>
 	<key>ITSAppUsesNonExemptEncryption</key>
@@ -102,6 +114,8 @@
 		<string>voip</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
