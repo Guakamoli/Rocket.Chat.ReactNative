@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Q } from '@nozbe/watermelondb';
 import { sanitizedRaw } from '@nozbe/watermelondb/RawRecord';
 import { withSafeAreaInsets } from 'react-native-safe-area-context';
-import { HeaderBackButton } from '@react-navigation/stack';
+import { HeaderBackButton } from '@react-navigation/elements';
 
 import styles from './styles';
 import Item from './Item';

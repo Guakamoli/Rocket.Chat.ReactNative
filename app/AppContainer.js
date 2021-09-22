@@ -39,7 +39,6 @@ const App = React.memo(({ root, isMasterDetail }) => {
 	if (!root) {
 		return null;
 	}
-
 	const { theme } = React.useContext(ThemeContext);
 	const navTheme = navigationTheme(theme);
 

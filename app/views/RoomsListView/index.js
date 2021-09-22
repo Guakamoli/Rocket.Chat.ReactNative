@@ -434,11 +434,9 @@ class RoomsListView extends React.Component {
 				)
 				.observe();
 		}
-
 		this.querySubscription = observable.subscribe((data) => {
 			let tempChats = [];
 			let chats = data;
-
 			let chatsUpdate = [];
 			if (showUnread) {
 				/**
@@ -502,6 +500,7 @@ class RoomsListView extends React.Component {
 				this.state.chatsUpdate = chatsUpdate;
 				this.state.loading = false;
 			}
+
 		});
 	}
 
@@ -903,7 +902,6 @@ class RoomsListView extends React.Component {
 			width
 		} = this.props;
 		const id = this.getUidDirectMessage(item);
-
 		return (
 			<RoomItem
 				item={item}

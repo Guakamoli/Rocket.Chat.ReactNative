@@ -261,6 +261,7 @@ class RoomInfoView extends React.Component {
 				Navigation.navigate('DrawerNavigator');
 				goRoom({ item: params, isMasterDetail });
 			} else {
+
 				let navigate = navigation.push;
 				// if this is a room focused
 				if (rooms.includes(room.rid)) {
