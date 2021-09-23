@@ -187,7 +187,7 @@ class ListContainer extends React.Component {
 						messages = [...messages, this.thread];
 					}
 					messages = messages.filter(m => !m.t || !hideSystemMessages?.includes(m.t));
-
+					
 					if (this.mounted) {
 						this.setState({ messages }, () => this.update());
 					} else {

@@ -74,6 +74,7 @@ import QueueListView from '../ee/omnichannel/views/QueueListView';
 import AddChannelTeamView from '../views/AddChannelTeamView';
 import AddExistingChannelView from '../views/AddExistingChannelView';
 import SelectListView from '../views/SelectListView';
+import FeedsListView from "../imports/Feeds/View/FeedsListView";
 
 // ChatsStackNavigator
 const ChatsStack = createStackNavigator();
@@ -81,10 +82,16 @@ const ChatsStackNavigator = () => {
 	const { theme } = React.useContext(ThemeContext);
 	return (
 		<ChatsStack.Navigator screenOptions={{ ...defaultHeader, ...themedHeader(theme), ...StackAnimation }}>
-			<ChatsStack.Screen
+			{/* <ChatsStack.Screen
 				name='RoomsListView'
 				component={RoomsListView}
+			/> */}
+			<ChatsStack.Screen
+				name='FeedsListView'
+				component={FeedsListView}
 			/>
+
+
 			<ChatsStack.Screen
 				name='RoomView'
 				component={RoomView}
@@ -317,9 +324,9 @@ const DrawerNavigator = () => {
 		<Drawer.Navigator
 			drawerContent={({ navigation, state }) => <Sidebar navigation={navigation} state={state} />}
 			drawerPosition={I18nManager.isRTL ? 'right' : 'left'}
-			screenOptions={{ swipeEnabled: false ,headerShown:false}}
+			screenOptions={{ swipeEnabled: false, headerShown: false }}
 			drawerType='back'
-			overlayColor={`rgba(0,0,0,${ themes[theme].backdropOpacity })`}
+			overlayColor={`rgba(0,0,0,${themes[theme].backdropOpacity})`}
 		>
 			<Drawer.Screen name='ChatsStackNavigator' component={ChatsStackNavigator} />
 			<Drawer.Screen name='ProfileStackNavigator' component={ProfileStackNavigator} />
