@@ -22,9 +22,11 @@ const FeedsItem = (props) => {
         <View style={styles.root}>
             <Header {...props} />
             <Content />
-            <Tools />
-            <ContentText />
-            <Comment />
+            <View style={{ paddingHorizontal: 15 }}>
+                <Tools />
+                <ContentText {...props} />
+                <Comment />
+            </View>
         </View>)
 }
 const styles = StyleSheet.create({

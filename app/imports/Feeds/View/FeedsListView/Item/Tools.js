@@ -8,9 +8,9 @@ import {
   Keyboard,
   RefreshControl,
   StyleSheet,
-  Image
 } from 'react-native';
-import { Avatar } from "react-native-elements"
+import { Image, Avatar } from "react-native-elements"
+
 import ImageMap from "../../../images"
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 
@@ -21,7 +21,7 @@ const LikeBtn = (props) => {
   const onPress = () => {
 
   }
-  return <Image srouce={LikeBtn} style={styles.tool} onPress={onPress} resizeMode={'contain'}></Image>
+  return <Image source={like ? likePng : unlikePng} style={[styles.tool, { width: 24 }]} onPress={onPress} resizeMode={'contain'}></Image>
 }
 const OtherButton = React.memo(() => {
   const toComments = () => {
@@ -31,13 +31,13 @@ const OtherButton = React.memo(() => {
 
   }
   const buttons = [
-    { icon: replycommentPng, func: toComments },
-    { icon: sharePng, func: toShare }
+    { icon: replycommentPng, func: toComments, id: 1 },
+    { icon: sharePng, func: toShare, id: 2 }
   ]
 
   return (<>
     {buttons.map((i) => {
-      return <Image srouce={i.icon} style={styles.tool} onPress={i.func} ></Image>
+      return <Image source={i.icon} style={styles.tool} key={i.id} onPress={i.func} resizeMode={'contain'}></Image>
     })}
   </>)
 })
@@ -80,12 +80,12 @@ const styles = StyleSheet.create({
   root: {
     flexDirection: "row",
     justifyContent: "flex-start",
-    paddingHorizontal: 15,
     paddingVertical: 13,
   },
   tool: {
     width: 22,
-    height: 22, resizeMode: 'contain',
+    height: 22,
+    marginRight: 20,
   },
   title: {
     color: '#000000FF',

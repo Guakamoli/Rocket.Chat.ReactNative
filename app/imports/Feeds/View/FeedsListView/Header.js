@@ -12,13 +12,13 @@ import {
 } from 'react-native';
 import { Image, Avatar } from "react-native-elements"
 import ImageMap from "../../images"
-const { searchPng, companyTitlePng } = ImageMap
+const { searchPng, companyTitlePng, replycommentPng } = ImageMap
 const Header = () => {
 
   return (
     <View style={styles.root}>
-      <Image source={companyTitlePng} style={styles.companyTitlePng}/>
-      <Image source={searchPng} style={styles.searchPng}/>
+      <Image source={companyTitlePng} style={styles.companyTitlePng} resizeMode={'contain'} />
+      <Image source={searchPng} style={styles.searchPng} resizeMode={'contain'} />
     </View>
   )
 }
@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 15
   },
-  companyTitlePng:{
-    width: 48, 
+  companyTitlePng: {
+    width: 48,
     height: 27,
   },
   searchPng: {
