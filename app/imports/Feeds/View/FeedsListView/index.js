@@ -59,8 +59,13 @@ import { E2E_BANNER_TYPE } from '../../../../lib/encryption/constants';
 
 import { getInquiryQueueSelector } from '../../../../ee/omnichannel/selectors/inquiry';
 import { changeLivechatStatus, isOmnichannelStatusAvailable } from '../../../../ee/omnichannel/lib';
-import TitleHeader from "./Header"
 import FeedsItem from "./Item"
+import { Image, Avatar } from "react-native-elements"
+import ImageMap from "../../images"
+import { lessThan } from 'react-native-reanimated';
+import { formatAttachmentUrl } from '../../../../lib/utils.js';
+
+const { searchPng, companyTitlePng } = ImageMap
 const INITIAL_NUM_TO_RENDER = isTablet ? 20 : 12;
 const CHATS_HEADER = 'Chats';
 const UNREAD_HEADER = 'Unread';
@@ -101,7 +106,7 @@ const getItemLayout = (data, index) => ({
 	offset: ROW_HEIGHT * index,
 	index
 });
-const keyExtractor = item => item.rid;
+const keyExtractor = item => item.id;
 
 class RoomsListView extends React.Component {
 	static propTypes = {
@@ -150,18 +155,41 @@ class RoomsListView extends React.Component {
 		this.animated = false;
 		this.mounted = false;
 		this.count = 0;
+		this.urlMap = {}
 		this.state = {
 			searching: false,
 			search: [],
 			loading: true,
 			chatsUpdate: [],
 			chats: [],
+			messages: [],
 			item: {}
 		};
+		this.viewabilityConfigCallbackPairs = [{
+			viewabilityConfig: {
+				minimumViewTime: 500,
+				itemVisiblePercentThreshold: 100
+			},
+			onViewableItemsChanged: this.handleItemsInViewPort
+		},
+		{
+			viewabilityConfig: {
+				minimumViewTime: 150,
+				itemVisiblePercentThreshold: 10
+			},
+			onViewableItemsChanged: this.handleItemsPartiallyVisible
+		}
+		];
 		this.setHeader();
 		this.getSubscriptions();
 	}
+	handleItemsInViewPort(a, b) {
+		console.log(a, b, '222')
+	}
+	handleItemsPartiallyVisible(a, b) {
+		console.log(a, b, '3333')
 
+	}
 	componentDidMount() {
 		const {
 			navigation, closeServerDropdown
@@ -321,49 +349,28 @@ class RoomsListView extends React.Component {
 		const { navigation, isMasterDetail, insets } = this.props;
 		const headerTitlePosition = getHeaderTitlePosition({ insets, numIconsRight: searching ? 0 : 3 });
 		return {
-			headerTitleAlign: 'left',
-			headerLeft: () => (searching ? (
-				<HeaderButton.Container left>
-					<HeaderButton.Item
-						iconName='close'
-						onPress={this.cancelSearch}
-					/>
-				</HeaderButton.Container>
-			) : (
-					<HeaderButton.Drawer
-						navigation={navigation}
-						testID='rooms-list-view-sidebar'
-						onPress={isMasterDetail
-							? () => navigation.navigate('ModalStackNavigator', { screen: 'SettingsView' })
-							: () => navigation.toggleDrawer()}
-					/>
-				)),
-			headerTitleContainerStyle: {
-				left: headerTitlePosition.left,
-				right: headerTitlePosition.right
+			headerLeft: () => (
+				<Image source={companyTitlePng}
+					style={styles.companyTitlePng} resizeMode={'contain'}
+					placeholderStyle={{ backgroundColor: "transparent" }} />
+			),
+			headerStyle: {
+				backgroundColor: "white"
 			},
-			headerRight: () => (searching ? null : (
-				<HeaderButton.Container>
-					<HeaderButton.Item
-						iconName='create'
-						onPress={this.goToNewMessage}
-						testID='rooms-list-view-create-channel'
-					/>
-					<HeaderButton.Item
-						iconName='search'
-						onPress={this.initSearching}
-						testID='rooms-list-view-search'
-					/>
-					<HeaderButton.Item
-						iconName='directory'
-						onPress={this.goDirectory}
-						testID='rooms-list-view-directory'
-					/>
-				</HeaderButton.Container>
-			))
+			headerLeftContainerStyle: { paddingLeft: 15 },
+			headerRightContainerStyle: { paddingRight: 15 },
+			headerTitle: () => null,
+			headerCenter: () => null,
+			headerRight: () => (
+				<Image source={searchPng} style={styles.searchPng} resizeMode={'contain'}
+					placeholderStyle={{ backgroundColor: "transparent" }}
+					onPress={this.toSearchView} />)
 		};
 	}
-
+	toSearchView = () => {
+		const { navigation } = this.props;
+		navigation.navigate("FeedsSearchView")
+	}
 	setHeader = () => {
 		const { navigation } = this.props;
 		const options = this.getHeader();
@@ -454,8 +461,7 @@ class RoomsListView extends React.Component {
 			.get('messages')
 			.query(...whereClause)
 			.fetch()
-		console.info(messages, 'messagesmessagesmessages')
-
+		this.setState({ messages })
 		this.querySubscription = observable.subscribe((data) => {
 			let tempChats = [];
 			// console.info(data, "daaratatat")
@@ -901,41 +907,34 @@ class RoomsListView extends React.Component {
 		);
 	}
 
-	renderItem = ({ item }) => {
+	renderItem = ({ item, index }) => {
 		if (item.separator) {
 			return this.renderSectionHeader(item.rid);
 		}
 
 		const { item: currentItem } = this.state;
 		const {
-			user: { username },
+			baseUrl,
+			user,
 			StoreLastMessage,
 			useRealName,
 			theme,
 			isMasterDetail,
 			width
+
 		} = this.props;
+		const username = user.username
 		const id = this.getUidDirectMessage(item);
 		return (
 			<FeedsItem item={item}
 				theme={theme}
 				id={id}
+				baseUrl={baseUrl}
+				user={user}
 				type={item.t}
-				username={username}
-				showLastMessage={StoreLastMessage}
+				index={index}
 				onPress={this.onPressItem}
-				width={isMasterDetail ? MAX_SIDEBAR_WIDTH : width}
-				toggleFav={this.toggleFav}
-				toggleRead={this.toggleRead}
-				hideChannel={this.hideChannel}
-				useRealName={useRealName}
-				getUserPresence={this.getUserPresence}
-				getRoomTitle={this.getRoomTitle}
-				getRoomAvatar={this.getRoomAvatar}
-				getIsGroupChat={this.isGroupChat}
-				getIsRead={this.isRead}
-				visitor={item.visitor}
-				isFocused={currentItem?.rid === item.rid} />
+			/>
 		)
 		return (
 			<RoomItem
@@ -961,7 +960,36 @@ class RoomsListView extends React.Component {
 			/>
 		);
 	};
+	_onViewableItemsChanged = (info, changed) => {
+		const {
+			baseUrl,
+			user,
+		} = this.props;
+		const attachment = info.viewableItems[0]?.item?.attachments[0]
+		if (attachment && attachment.video_url) {
+			let url = this.urlMap[attachment.video_url]
+			if (!url) {
+				url = formatAttachmentUrl(attachment.video_url, user.id, user.token, baseUrl)
+				this.urlMap[attachment.video_url] = url
+			}
+			return EventEmitter.emit('home_video_play', { item: info.viewableItems[0].item, index: info.viewableItems[0].index, url, play: true })
+		} else {
+			if (info.changed[0]?.isViewable) return
+			const changedItem = info.changed[0]?.item
 
+			const attachment = changedItem?.attachments[0]
+			if (attachment && attachment.video_url) {
+				let url = this.urlMap[attachment.video_url]
+				if (!url) {
+					url = formatAttachmentUrl(attachment.video_url, user.id, user.token, baseUrl)
+					this.urlMap[attachment.video_url] = url
+				}
+				return EventEmitter.emit('home_video_play', { item: changedItem, index: info.changed[0].index, url, play: false })
+			}
+
+		}
+
+	}
 	renderSectionHeader = (header) => {
 		const { theme } = this.props;
 		return (
@@ -970,10 +998,16 @@ class RoomsListView extends React.Component {
 			</View>
 		);
 	}
+	_viewabilityConfig = {
+		waitForInteraction: true,
+		// At least one of the viewAreaCoveragePercentThreshold or itemVisiblePercentThreshold is required.
+		itemVisiblePercentThreshold: 50,
 
+
+	};
 	renderScroll = () => {
 		const {
-			loading, chats, search, searching
+			loading, chats, search, searching, messages
 		} = this.state;
 		const { theme, refreshing } = this.props;
 
@@ -984,16 +1018,20 @@ class RoomsListView extends React.Component {
 		return (
 			<FlatList
 				ref={this.getScrollRef}
-				data={searching ? search : chats}
-				extraData={searching ? search : chats}
+				data={messages}
+				extraData={messages}
 				keyExtractor={keyExtractor}
 				style={[styles.list, { backgroundColor: themes[theme].backgroundColor }]}
 				renderItem={this.renderItem}
 				ListHeaderComponent={this.renderListHeader}
-				getItemLayout={getItemLayout}
 				removeClippedSubviews={isIOS}
 				keyboardShouldPersistTaps='always'
+				onViewableItemsChanged={this._onViewableItemsChanged}
+				showsVerticalScrollIndicator={false}
+				scrollEventThrottle={16}
+				viewabilityConfig={this._viewabilityConfig}
 				initialNumToRender={INITIAL_NUM_TO_RENDER}
+				// viewabilityConfigCallbackPairs={this.viewabilityConfigCallbackPairs}
 				refreshControl={(
 					<RefreshControl
 						refreshing={refreshing}
@@ -1024,7 +1062,6 @@ class RoomsListView extends React.Component {
 		return (
 			<SafeAreaView testID='rooms-list-view' style={{ backgroundColor: themes[theme].backgroundColor }}>
 				<StatusBar />
-				<TitleHeader />
 				{this.renderHeader()}
 				{this.renderScroll()}
 
@@ -1050,6 +1087,7 @@ const mapStateToProps = state => ({
 	useRealName: state.settings.UI_Use_Real_Name,
 	StoreLastMessage: state.settings.Store_Last_Message,
 	rooms: state.room.rooms,
+	baseUrl: state.server.server,
 	queueSize: getInquiryQueueSelector(state).length,
 	inquiryEnabled: state.inquiry.enabled,
 	encryptionBanner: state.encryption.banner

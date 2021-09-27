@@ -87,7 +87,7 @@ class SearchMessagesView extends React.Component {
 	}
 
 	// Handle encrypted rooms search messages
-	searchMessages = async(searchText) => {
+	searchMessages = async (searchText) => {
 		// If it's a encrypted, room we'll search only on the local stored messages
 		if (this.encrypted) {
 			const db = database.active;
@@ -98,7 +98,7 @@ class SearchMessagesView extends React.Component {
 					// Messages of this room
 					Q.where('rid', this.rid),
 					// Message content is like the search text
-					Q.where('msg', Q.like(`%${ likeString }%`))
+					Q.where('msg', Q.like(`%${likeString}%`))
 				)
 				.fetch();
 		}
@@ -109,7 +109,7 @@ class SearchMessagesView extends React.Component {
 		}
 	}
 
-	search = debounce(async(searchText) => {
+	search = debounce(async (searchText) => {
 		this.setState({ searchText, loading: true, messages: [] });
 
 		try {
@@ -146,7 +146,7 @@ class SearchMessagesView extends React.Component {
 		navigation.navigate('RoomInfoView', navParam);
 	}
 
-	jumpToMessage = async({ item }) => {
+	jumpToMessage = async ({ item }) => {
 		const { navigation } = this.props;
 		let params = {
 			rid: this.rid,

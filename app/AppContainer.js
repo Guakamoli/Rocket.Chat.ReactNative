@@ -74,7 +74,7 @@ const App = React.memo(({ root, isMasterDetail }) => {
 						<Stack.Screen
 							name='OutsideStack'
 							component={OutsideStack}
-							options={{ headerShown:false}}
+							options={{ headerShown: false }}
 
 						/>
 					) : null}
@@ -88,6 +88,8 @@ const App = React.memo(({ root, isMasterDetail }) => {
 						<Stack.Screen
 							name='InsideStack'
 							component={InsideStack}
+							options={{ headerShown: false }}
+
 						/>
 					) : null}
 					{root === ROOT_SET_USERNAME ? (

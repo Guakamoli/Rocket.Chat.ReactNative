@@ -15,7 +15,7 @@ import ImageMap from "../../../images"
 import MoreLessTruncated from "./MoreLessTruncated"
 const { searchPng, companyTitlePng } = ImageMap
 const { width } = Dimensions.get("window")
-const ContentText = (props) => {
+const ContentText = React.memo((props) => {
     const { item } = props
 
     return (
@@ -31,7 +31,7 @@ const ContentText = (props) => {
             />
         </View>
     )
-}
+})
 const styles = StyleSheet.create({
     root: {
         width: "100%",

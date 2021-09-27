@@ -677,5 +677,14 @@
   "No_threads": "当前没有讨论串",
   "No_threads_following": "当前没有正在追踪的讨论",
   "No_threads_unread": "当前没有未读的讨论",
-  "Messagebox_Send_to_channel": "发送至频道"
+  "Messagebox_Send_to_channel": "发送至频道",
+
+  // kameoapp
+  "putAway": "收起",
+  "unfold": "展开",
+  "search": "搜索",
+  "cancel": "取消",
+  "searchNotFound": "未搜索到相关结果",
+  "startSearchDesc": "动动手，搜搜你喜欢的人吧！",
+
 }

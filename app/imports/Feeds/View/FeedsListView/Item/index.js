@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
     View,
@@ -18,14 +18,15 @@ import ContentText from "./ContentText"
 import Tools from "./Tools"
 import Comment from "./Comment"
 const FeedsItem = (props) => {
+    const [rootImageIndex, setRootImageIndex] = useState(0)
     return (
         <View style={styles.root}>
             <Header {...props} />
-            <Content />
+            <Content {...props} setRootImageIndex={setRootImageIndex} />
             <View style={{ paddingHorizontal: 15 }}>
-                <Tools />
+                <Tools {...props} index={rootImageIndex} />
                 <ContentText {...props} />
-                <Comment />
+                <Comment {...props} />
             </View>
         </View>)
 }
@@ -33,6 +34,7 @@ const styles = StyleSheet.create({
     root: {
         justifyContent: "center",
         paddingVertical: 10,
+        marginBottom: 10,
     },
 
 })

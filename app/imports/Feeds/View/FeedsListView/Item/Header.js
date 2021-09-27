@@ -14,32 +14,39 @@ import ImageMap from "../../../images"
 import Avatar from '../../../../../containers/Avatar';
 
 const { searchPng, companyTitlePng } = ImageMap
-const Header = (props) => {
-    const { username, getRoomAvatar, item } = props
-    const avatar = getRoomAvatar(item);
+const Header = React.memo((props) => {
+    const { username, item } = props
     return (
         <View style={styles.root}>
             <Avatar
-                text={avatar}
+                text={item.avatar}
                 size={32}
                 type={item.t}
+                text={item.avatar ? '' : item?.u?.username}
                 style={styles.avatar}
                 rid={item.rid}
+                avatar={item?.avatar}
+                borderRadius={32}
+
             />
-            <Text style={styles.title}>{username}</Text>
+            <Text style={styles.title}>{item?.u?.username}</Text>
         </View>
     )
-}
+})
 const styles = StyleSheet.create({
     root: {
         flexDirection: "row",
-        justifyContent: "space-between",
-        paddingHorizontal: 15
+        paddingHorizontal: 15,
+        alignItems: "center",
+        paddingVertical: 10,
+
     },
     avatar: {
         width: 32,
         height: 32,
-        borderRadius: 32
+        borderRadius: 32,
+        marginRight: 10,
+
     },
     title: {
         color: '#000000FF',

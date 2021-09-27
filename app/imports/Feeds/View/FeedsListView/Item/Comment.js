@@ -14,14 +14,14 @@ import { Image, Avatar } from "react-native-elements"
 import ImageMap from "../../../images"
 const { searchPng, companyTitlePng } = ImageMap
 const { width } = Dimensions.get("window")
-const Comment = () => {
+const Comment = React.memo(() => {
 
     return (
         <View style={styles.root}>
 
         </View>
     )
-}
+})
 const styles = StyleSheet.create({
     root: {
         width: "100%",

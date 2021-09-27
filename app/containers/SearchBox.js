@@ -79,7 +79,7 @@ const SearchBox = ({
 				{...props}
 			/>
 		</View>
-		{ hasCancel ? CancelButton(onCancelPress, theme) : null }
+		{ hasCancel ? CancelButton(onCancelPress, theme) : null}
 	</View>
 );
 

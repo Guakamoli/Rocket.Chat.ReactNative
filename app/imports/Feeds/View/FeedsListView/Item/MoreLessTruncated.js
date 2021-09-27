@@ -14,8 +14,8 @@ import {
   Image,
   TouchableWithoutFeedback,
 } from 'react-native';
+import I18n from '../../../../../i18n';
 
-const t = (a) => { return a }
 const { width: innerWidth } = Dimensions.get('window');
 const MoreLessComponent = ({ t, truncatedText, fullText, style, dataSet, showMoreBtn }) => {
   const [more, setMore] = React.useState(false);
@@ -45,7 +45,7 @@ const MoreLessTruncated = React.memo(props => {
   const [clippedText, setClippedText] = React.useState(false);
   const [showMoreBtn, setShowMoreBtn] = React.useState(false);
   const clculateLineNum = linesToTruncate + 1;
-  // const { t } = useTranslation();
+  const { t } = I18n;
   return clippedText ? (
     <MoreLessComponent
       truncatedText={clippedText}

@@ -146,8 +146,8 @@ class RoomsListView extends React.Component {
 
 	constructor(props) {
 		super(props);
-		console.time(`${ this.constructor.name } init`);
-		console.time(`${ this.constructor.name } mount`);
+		console.time(`${this.constructor.name} init`);
+		console.time(`${this.constructor.name} mount`);
 
 		this.animated = false;
 		this.mounted = false;
@@ -191,7 +191,7 @@ class RoomsListView extends React.Component {
 				this.backHandler.remove();
 			}
 		});
-		console.timeEnd(`${ this.constructor.name } mount`);
+		console.timeEnd(`${this.constructor.name} mount`);
 	}
 
 	UNSAFE_componentWillReceiveProps(nextProps) {
@@ -315,7 +315,7 @@ class RoomsListView extends React.Component {
 		if (isTablet) {
 			EventEmitter.removeListener(KEY_COMMAND, this.handleCommands);
 		}
-		console.countReset(`${ this.constructor.name }.render calls`);
+		console.countReset(`${this.constructor.name}.render calls`);
 	}
 
 	getHeader = () => {
@@ -332,14 +332,14 @@ class RoomsListView extends React.Component {
 					/>
 				</HeaderButton.Container>
 			) : (
-				<HeaderButton.Drawer
-					navigation={navigation}
-					testID='rooms-list-view-sidebar'
-					onPress={isMasterDetail
-						? () => navigation.navigate('ModalStackNavigator', { screen: 'SettingsView' })
-						: () => navigation.toggleDrawer()}
-				/>
-			)),
+					<HeaderButton.Drawer
+						navigation={navigation}
+						testID='rooms-list-view-sidebar'
+						onPress={isMasterDetail
+							? () => navigation.navigate('ModalStackNavigator', { screen: 'SettingsView' })
+							: () => navigation.toggleDrawer()}
+					/>
+				)),
 			headerTitle: () => <RoomsListHeaderView />,
 			headerTitleContainerStyle: {
 				left: headerTitlePosition.left,
@@ -390,9 +390,9 @@ class RoomsListView extends React.Component {
 		return allData;
 	}
 
-	getSubscriptions = async() => {
+	getSubscriptions = async () => {
 		this.unsubscribeQuery();
-
+		console.info("chufafafaf")
 		const {
 			sortBy,
 			showUnread,
@@ -410,7 +410,7 @@ class RoomsListView extends React.Component {
 		];
 
 		if (sortBy === 'alphabetical') {
-			defaultWhereClause.push(Q.experimentalSortBy(`${ this.useRealName ? 'fname' : 'name' }`, Q.asc));
+			defaultWhereClause.push(Q.experimentalSortBy(`${this.useRealName ? 'fname' : 'name'}`, Q.asc));
 		} else {
 			defaultWhereClause.push(Q.experimentalSortBy('room_updated_at', Q.desc));
 		}
@@ -422,7 +422,7 @@ class RoomsListView extends React.Component {
 				.query(...defaultWhereClause)
 				.observeWithColumns(['alert']);
 
-		// When we're NOT grouping
+			// When we're NOT grouping
 		} else {
 			this.count += QUERY_SIZE;
 			observable = await db.collections
@@ -549,9 +549,9 @@ class RoomsListView extends React.Component {
 	};
 
 	// eslint-disable-next-line react/sort-comp
-	search = debounce(async(text) => {
+	search = debounce(async (text) => {
 		const result = await RocketChat.search({ text });
-
+		console.info("searchTextsearchText", result)
 		// if the search was cancelled before the promise is resolved
 		const { searching } = this.state;
 		if (!searching) {
@@ -607,14 +607,14 @@ class RoomsListView extends React.Component {
 		}, 100);
 	};
 
-	toggleFav = async(rid, favorite) => {
+	toggleFav = async (rid, favorite) => {
 		logEvent(favorite ? events.RL_UNFAVORITE_CHANNEL : events.RL_FAVORITE_CHANNEL);
 		try {
 			const db = database.active;
 			const result = await RocketChat.toggleFavorite(rid, !favorite);
 			if (result.success) {
 				const subCollection = db.get('subscriptions');
-				await db.action(async() => {
+				await db.action(async () => {
 					try {
 						const subRecord = await subCollection.find(rid);
 						await subRecord.update((sub) => {
@@ -631,7 +631,7 @@ class RoomsListView extends React.Component {
 		}
 	};
 
-	toggleRead = async(rid, isRead) => {
+	toggleRead = async (rid, isRead) => {
 		logEvent(isRead ? events.RL_UNREAD_CHANNEL : events.RL_READ_CHANNEL);
 		try {
 			const db = database.active;
@@ -639,7 +639,7 @@ class RoomsListView extends React.Component {
 
 			if (result.success) {
 				const subCollection = db.get('subscriptions');
-				await db.action(async() => {
+				await db.action(async () => {
 					try {
 						const subRecord = await subCollection.find(rid);
 						await subRecord.update((sub) => {
@@ -657,14 +657,14 @@ class RoomsListView extends React.Component {
 		}
 	};
 
-	hideChannel = async(rid, type) => {
+	hideChannel = async (rid, type) => {
 		logEvent(events.RL_HIDE_CHANNEL);
 		try {
 			const db = database.active;
 			const result = await RocketChat.hideRoom(rid, type);
 			if (result.success) {
 				const subCollection = db.get('subscriptions');
-				await db.action(async() => {
+				await db.action(async () => {
 					try {
 						const subRecord = await subCollection.find(rid);
 						await subRecord.destroyPermanently();
@@ -700,7 +700,7 @@ class RoomsListView extends React.Component {
 			showConfirmationAlert({
 				message: I18n.t('Omnichannel_enable_alert'),
 				confirmationText: I18n.t('Yes'),
-				onPress: async() => {
+				onPress: async () => {
 					try {
 						await changeLivechatStatus();
 					} catch {
@@ -974,7 +974,7 @@ class RoomsListView extends React.Component {
 	};
 
 	render = () => {
-		console.count(`${ this.constructor.name }.render calls`);
+		console.count(`${this.constructor.name}.render calls`);
 		const {
 			sortBy,
 			groupByType,

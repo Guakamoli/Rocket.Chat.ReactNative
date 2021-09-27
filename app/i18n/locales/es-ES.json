@@ -450,5 +450,9 @@
   "Server_selection": "Seleccionar servidor",
   "Server_selection_numbers": "Seleccionar servidor 1...9",
   "Add_server": "Añadir servidor",
-  "New_line": "Nueva línea"
+  "New_line": "Nueva línea",
+
+  // kameoapp
+  "putAway": "Collapse",
+  "unfold": "More"
 }

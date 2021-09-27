@@ -75,6 +75,8 @@ import AddChannelTeamView from '../views/AddChannelTeamView';
 import AddExistingChannelView from '../views/AddExistingChannelView';
 import SelectListView from '../views/SelectListView';
 import FeedsListView from "../imports/Feeds/View/FeedsListView";
+import FeedsSearchView from "../imports/Feeds/View/FeedsSearchView";
+import FeedsStoriesView from "../imports/Feeds/View/FeedsStoriesView";
 
 // ChatsStackNavigator
 const ChatsStack = createStackNavigator();
@@ -82,13 +84,24 @@ const ChatsStackNavigator = () => {
 	const { theme } = React.useContext(ThemeContext);
 	return (
 		<ChatsStack.Navigator screenOptions={{ ...defaultHeader, ...themedHeader(theme), ...StackAnimation }}>
-			{/* <ChatsStack.Screen
+			<ChatsStack.Screen
 				name='RoomsListView'
 				component={RoomsListView}
+			/>
+			<ChatsStack.Screen
+				name='FeedsSearchView'
+				{...FeedsSearchView}
+
+
+			/>
+			{/* <ChatsStack.Screen
+				name='FeedsStoriesView'
+				component={FeedsStoriesView}
 			/> */}
 			<ChatsStack.Screen
 				name='FeedsListView'
 				component={FeedsListView}
+
 			/>
 
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   View,
@@ -8,14 +8,14 @@ import {
   Keyboard,
   RefreshControl,
   StyleSheet,
+  Dimensions
 } from 'react-native';
 import { Image, Avatar } from "react-native-elements"
 
 import ImageMap from "../../../images"
 import Carousel, { Pagination } from 'react-native-snap-carousel';
-
+const { width } = Dimensions.get("window")
 const { replycommentPng, sharePng, unlikePng, likePng } = ImageMap
-console.info(sharePng, unlikePng, likePng, 'sharePng, unlikePng, likePng ')
 const LikeBtn = (props) => {
   const { like } = props
   const onPress = () => {
@@ -41,38 +41,94 @@ const OtherButton = React.memo(() => {
     })}
   </>)
 })
+const renderDotItem = () => {
+  return (
+    <View style={styles.dotContainerStyle}>
+      <View style={{
+        width: 6,
+        height: 6,
+        borderRadius: 6,
+        backgroundColor: '#836BFFFF',
+      }}></View>
+    </View>
+  )
+}
+const renderInactiveDotItem = () => {
+  return (
+    <View style={styles.dotContainerStyle}>
+      <View style={{
+        width: 6,
+        height: 6,
+        borderRadius: 6,
+        backgroundColor: '#DADBDAFF',
+      }}></View>
+    </View>
+  )
+}
 const IndexIndictator = React.memo((props) => {
   // 这个如果不是图片的话就直接不做展示了
   // pagination 
+  const { item } = props
   const currentIndex = props.index
-  const attachments = props?.attachments || []
+  let attachments = item?.attachments || []
+  const cref = useRef()
+
+  useEffect(() => {
+    cref.current?.snapToItem?.(currentIndex, true)
+  }, [currentIndex])
+  const renderDotItem = ({ item, index }) => {
+    return (
+      <View style={{ justifyContent: "center", alignItems: "center", height: 20 }}>
+        <View style={{
+          width: 6,
+          height: 6,
+
+          borderRadius: 6,
+          backgroundColor: currentIndex !== index ? '#DADBDAFF' : '#836BFFFF',
+        }}></View>
+      </View>
+    )
+  }
+  if (!attachments[0]?.image_url) return null
+  return (
+    <View style={styles.indexIndictator}>
+      <View>
+        <Carousel
+          data={[1, 2, 3, 4, 5, 6, 7, 8, 9]}
+          ref={cref}
+          renderItem={renderDotItem}
+          sliderWidth={50}
+          itemWidth={10}
+          activeSlideAlignment={'center'}
+          contentContainerStyle={{ justifyContent: "center" }}
+          inactiveSlideScale={0.9}
+          inactiveSlideOpacity={1.0}
+        // onSnapToItem={onSnapToItem}
+        />
+      </View>
+    </View>
+  )
   return (
     <Pagination
-      dotsLength={attachments.length}
+      dotsLength={attachments.length + 10}
       activeDotIndex={currentIndex}
-      containerStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.75)' }}
-      dotStyle={{
-        width: 10,
-        height: 10,
-        borderRadius: 5,
-        marginHorizontal: 8,
-        backgroundColor: '#DADBDAFF'
-      }}
-      inactiveDotStyle={{
-        backgroundColor: "#836BFFFF",
-      }}
-      inactiveDotOpacity={0.4}
-      inactiveDotScale={0.6}
+      style={{ padding: 0, margin: 0 }}
+      containerStyle={{ paddingVertical: 0, paddingHorizontal: 0, marginLeft: 20, width: 50, backgroundColor: "red", overflow: "scroll" }}
+      dotElement={renderDotItem()}
+      inactiveDotElement={renderInactiveDotItem()}
+
+      inactiveDotOpacity={1.0}
+      inactiveDotScale={0.8}
     />
   )
 })
-const Tools = () => {
+const Tools = (props) => {
 
   return (
     <View style={styles.root}>
       <LikeBtn />
       <OtherButton />
-      <IndexIndictator />
+      <IndexIndictator {...props} />
     </View>
   )
 }
@@ -81,11 +137,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     paddingVertical: 13,
+    alignItems: "center",
   },
   tool: {
     width: 22,
     height: 22,
     marginRight: 20,
+    zIndex: 1,
+
   },
   title: {
     color: '#000000FF',
@@ -94,8 +153,16 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   indexIndictator: {
-
+    position: "absolute",
+    zIndex: 0,
+    left: (width - 15 - 50) / 2,
+    // width: "100%",
+    // justifyContent: "center",
+    alignItems: "center"
   },
   activeIndexIndictator: {},
+  dotContainerStyle: {
+    marginRight: 3,
+  },
 })
 export default Tools
