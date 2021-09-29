@@ -32,7 +32,10 @@ export default StyleSheet.create({
 	},
 	text: {
 		fontSize: 16,
-		...sharedStyles.textRegular
+		lineHeight: 17,
+		fontWeight: "500",
+		color: "#818181FF"
+		// ...sharedStyles.textRegular
 	},
 	textInfo: {
 		fontStyle: 'italic',
@@ -53,8 +56,19 @@ export default StyleSheet.create({
 	},
 	temp: { opacity: 0.3 },
 	mention: {
-		fontSize: 16,
-		...sharedStyles.textSemibold
+
+		...sharedStyles.textSemibold,
+		fontSize: 14,
+		lineHeight: 17,
+		fontWeight: "600",
+
+		color: "#000000FF"
+	},
+	mentionText: {
+		fontSize: 14,
+		lineHeight: 17,
+		fontWeight: "600",
+		color: "#818181FF"
 	},
 	paragraph: {
 		marginTop: 0,

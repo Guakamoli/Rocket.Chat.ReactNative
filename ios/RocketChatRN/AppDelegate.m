@@ -18,14 +18,14 @@
 #import "RNBootSplash.h"
 #import "Orientation.h"
 #import <Firebase.h>
-#import <Bugsnag/Bugsnag.h>
+// #import <Bugsnag/Bugsnag.h>
 #import <UMCore/UMModuleRegistry.h>
 #import <UMReactNativeAdapter/UMNativeModulesProxy.h>
 #import <UMReactNativeAdapter/UMModuleRegistryAdapter.h>
 #import <MMKV/MMKV.h>
 
 // code push
-#import <CodePush/CodePush.h>
+// #import <CodePush/CodePush.h>
 // umeng share
 #import <UMCommon/UMCommon.h>
 #import <UShareUI/UShareUI.h>
@@ -77,7 +77,7 @@ static void InitializeFlipper(UIApplication *application) {
     if(![FIRApp defaultApp]){
       [FIRApp configure];
     }
-    [Bugsnag start];
+    // [Bugsnag start];
     RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                 moduleName:@"RocketChatRN"
                                                 initialProperties:nil];
@@ -180,8 +180,8 @@ static void InitializeFlipper(UIApplication *application) {
 #if DEBUG
   return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
 #else
-  return [CodePush bundleURL];
-  // return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+  // return [CodePush bundleURL];
+  return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
 }
 

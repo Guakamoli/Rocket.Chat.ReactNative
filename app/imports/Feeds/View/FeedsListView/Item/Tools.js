@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   View,
@@ -14,18 +14,42 @@ import { Image, Avatar } from "react-native-elements"
 
 import ImageMap from "../../../images"
 import Carousel, { Pagination } from 'react-native-snap-carousel';
+import I18n from '../../../../../i18n';
+import log, { logEvent } from '../../../../../utils/log';
+import EventEmitter from '../../../../../utils/events';
+import RocketChat from '../../../../../lib/rocketchat';
+import events from '../../../../../utils/log/events';
+import { LISTENER } from '../../../../../containers/Toast';
+
 const { width } = Dimensions.get("window")
 const { replycommentPng, sharePng, unlikePng, likePng } = ImageMap
 const LikeBtn = (props) => {
-  const { like } = props
-  const onPress = () => {
+  const { item } = props
+  const [starred, setStarred] = useState(item.starred)
+  const handleStar = async () => {
+    logEvent(starred ? events.ROOM_MSG_ACTION_UNSTAR : events.ROOM_MSG_ACTION_STAR);
+    try {
+      const a = await RocketChat.toggleStarMessage(item.id, starred || false);
+      console.info(item, a)
 
-  }
-  return <Image source={like ? likePng : unlikePng} style={[styles.tool, { width: 24 }]} onPress={onPress} resizeMode={'contain'}></Image>
+      EventEmitter.emit(LISTENER, { message: starred ? I18n.t('Message_unstarred') : I18n.t('Message_starred') });
+      setStarred(!starred)
+    } catch (e) {
+      console.info("asdasd", e)
+      logEvent(events.ROOM_MSG_ACTION_STAR_F);
+      log(e);
+    }
+  };
+
+  return <Image source={starred ? likePng : unlikePng} style={[styles.tool, { width: 24 }]} onPress={handleStar} resizeMode={'contain'}></Image>
 }
-const OtherButton = React.memo(() => {
-  const toComments = () => {
+const OtherButton = React.memo((props) => {
+  const { item, navigation } = props
 
+  const toComments = (props) => {
+    return navigation.push('FeedsRoomView', {
+      rid: item.rid, tmid: item.id, name: '评论', t: 'thread', roomUserId: ''
+    });
   }
   const toShare = () => {
 
@@ -126,8 +150,8 @@ const Tools = (props) => {
 
   return (
     <View style={styles.root}>
-      <LikeBtn />
-      <OtherButton />
+      <LikeBtn {...props} />
+      <OtherButton {...props} />
       <IndexIndictator {...props} />
     </View>
   )

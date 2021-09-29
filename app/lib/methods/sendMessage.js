@@ -6,8 +6,9 @@ import log from '../../utils/log';
 import random from '../../utils/random';
 import { Encryption } from '../encryption';
 import { E2E_MESSAGE_TYPE, E2E_STATUS } from '../encryption/constants';
+import { configResponsive } from 'ahooks';
 
-const changeMessageStatus = async(id, tmid, status, message) => {
+const changeMessageStatus = async (id, tmid, status, message) => {
 	const db = database.active;
 	const msgCollection = db.get('messages');
 	const threadMessagesCollection = db.get('thread_messages');
@@ -37,7 +38,7 @@ const changeMessageStatus = async(id, tmid, status, message) => {
 	}
 
 	try {
-		await db.action(async() => {
+		await db.action(async () => {
 			await db.batch(...successBatch);
 		});
 	} catch (error) {
@@ -50,11 +51,14 @@ export async function sendMessageCall(message) {
 	try {
 		const sdk = this.shareSDK || this.sdk;
 		// RC 0.60.0
+		console.info(message, 'emessage')
+
 		const result = await sdk.post('chat.sendMessage', { message });
 		if (result.success) {
 			return changeMessageStatus(_id, tmid, messagesStatus.SENT, result.message);
 		}
-	} catch {
+	} catch (e) {
+		console.info(e, 'e')
 		// do nothing
 	}
 	return changeMessageStatus(_id, tmid, messagesStatus.ERROR);
@@ -63,7 +67,7 @@ export async function sendMessageCall(message) {
 export async function resendMessage(message, tmid) {
 	const db = database.active;
 	try {
-		await db.action(async() => {
+		await db.action(async () => {
 			await message.update((m) => {
 				m.status = messagesStatus.TEMP;
 			});
@@ -86,7 +90,7 @@ export async function resendMessage(message, tmid) {
 	}
 }
 
-export default async function(rid, msg, tmid, user, tshow) {
+export default async function (rid, msg, tmid, user, tshow) {
 	try {
 		const db = database.active;
 		const subsCollection = db.get('subscriptions');
@@ -206,7 +210,7 @@ export default async function(rid, msg, tmid, user, tshow) {
 		}
 
 		try {
-			await db.action(async() => {
+			await db.action(async () => {
 				await db.batch(...batch);
 			});
 		} catch (e) {

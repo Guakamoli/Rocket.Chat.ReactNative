@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import {
     View,
@@ -8,6 +8,7 @@ import {
     Keyboard,
     RefreshControl,
     StyleSheet,
+    Pressable,
 } from 'react-native';
 import { Image } from "react-native-elements"
 import ImageMap from "../../../images"
@@ -15,22 +16,26 @@ import Avatar from '../../../../../containers/Avatar';
 
 const { searchPng, companyTitlePng } = ImageMap
 const Header = React.memo((props) => {
-    const { username, item } = props
-    return (
-        <View style={styles.root}>
-            <Avatar
-                text={item.avatar}
-                size={32}
-                type={item.t}
-                text={item.avatar ? '' : item?.u?.username}
-                style={styles.avatar}
-                rid={item.rid}
-                avatar={item?.avatar}
-                borderRadius={32}
+    const { username, item, navigation } = props
+    const onPress = useCallback(() => navigation.navigate("FeedsUserView", { userInfo: item.u }));
 
-            />
-            <Text style={styles.title}>{item?.u?.username}</Text>
-        </View>
+    return (
+        <Pressable onPress={onPress}>
+            <View style={styles.root}>
+                <Avatar
+
+                    size={32}
+                    type={item.t}
+                    text={item?.u?.username}
+                    style={styles.avatar}
+                    // rid={item.rid} // 先用房间的头像
+                    // avatar={item?.avatar}
+                    borderRadius={32}
+
+                />
+                <Text style={styles.title}>{item?.u?.username}</Text>
+            </View>
+        </Pressable>
     )
 })
 const styles = StyleSheet.create({

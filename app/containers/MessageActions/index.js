@@ -43,7 +43,7 @@ const MessageActions = React.memo(forwardRef(({
 	let permissions = {};
 	const { showActionSheet, hideActionSheet } = useActionSheet();
 
-	const getPermissions = async() => {
+	const getPermissions = async () => {
 		try {
 			const permission = [editMessagePermission, deleteMessagePermission, forceDeleteMessagePermission, pinMessagePermission];
 			const result = await RocketChat.hasPermission(permission, room.rid);
@@ -137,7 +137,7 @@ const MessageActions = React.memo(forwardRef(({
 		}
 	};
 
-	const handleUnread = async(message) => {
+	const handleUnread = async (message) => {
 		logEvent(events.ROOM_MSG_ACTION_UNREAD);
 		const { id: messageId, ts } = message;
 		const { rid } = room;
@@ -147,7 +147,7 @@ const MessageActions = React.memo(forwardRef(({
 			if (result.success) {
 				const subCollection = db.get('subscriptions');
 				const subRecord = await subCollection.find(rid);
-				await db.action(async() => {
+				await db.action(async () => {
 					try {
 						await subRecord.update(sub => sub.lastOpen = ts);
 					} catch {
@@ -162,7 +162,7 @@ const MessageActions = React.memo(forwardRef(({
 		}
 	};
 
-	const handlePermalink = async(message) => {
+	const handlePermalink = async (message) => {
 		logEvent(events.ROOM_MSG_ACTION_PERMALINK);
 		try {
 			const permalink = await getPermalink(message);
@@ -173,13 +173,13 @@ const MessageActions = React.memo(forwardRef(({
 		}
 	};
 
-	const handleCopy = async(message) => {
+	const handleCopy = async (message) => {
 		logEvent(events.ROOM_MSG_ACTION_COPY);
 		await Clipboard.setString(message?.attachments?.[0]?.description || message.msg);
 		EventEmitter.emit(LISTENER, { message: I18n.t('Copied_to_clipboard') });
 	};
 
-	const handleShare = async(message) => {
+	const handleShare = async (message) => {
 		logEvent(events.ROOM_MSG_ACTION_SHARE);
 		try {
 			const permalink = await getPermalink(message);
@@ -194,7 +194,7 @@ const MessageActions = React.memo(forwardRef(({
 		replyInit(message, false);
 	};
 
-	const handleStar = async(message) => {
+	const handleStar = async (message) => {
 		logEvent(message.starred ? events.ROOM_MSG_ACTION_UNSTAR : events.ROOM_MSG_ACTION_STAR);
 		try {
 			await RocketChat.toggleStarMessage(message.id, message.starred);
@@ -205,7 +205,7 @@ const MessageActions = React.memo(forwardRef(({
 		}
 	};
 
-	const handlePin = async(message) => {
+	const handlePin = async (message) => {
 		logEvent(events.ROOM_MSG_ACTION_PIN);
 		try {
 			await RocketChat.togglePinMessage(message.id, message.pinned);
@@ -234,10 +234,10 @@ const MessageActions = React.memo(forwardRef(({
 		}
 	};
 
-	const handleToggleTranslation = async(message) => {
+	const handleToggleTranslation = async (message) => {
 		try {
 			const db = database.active;
-			await db.action(async() => {
+			await db.action(async () => {
 				await message.update((m) => {
 					m.autoTranslate = !m.autoTranslate;
 					m._updatedAt = new Date();
@@ -258,7 +258,7 @@ const MessageActions = React.memo(forwardRef(({
 		}
 	};
 
-	const handleReport = async(message) => {
+	const handleReport = async (message) => {
 		logEvent(events.ROOM_MSG_ACTION_REPORT);
 		try {
 			await RocketChat.reportMessage(message.id);
@@ -273,7 +273,7 @@ const MessageActions = React.memo(forwardRef(({
 		showConfirmationAlert({
 			message: I18n.t('You_will_not_be_able_to_recover_this_message'),
 			confirmationText: I18n.t('Delete'),
-			onPress: async() => {
+			onPress: async () => {
 				try {
 					logEvent(events.ROOM_MSG_ACTION_DELETE);
 					await RocketChat.deleteMessage(message.id, message.subscription.id);
@@ -409,7 +409,7 @@ const MessageActions = React.memo(forwardRef(({
 		return options;
 	};
 
-	const showMessageActions = async(message) => {
+	const showMessageActions = async (message) => {
 		logEvent(events.ROOM_SHOW_MSG_ACTIONS);
 		await getPermissions();
 		showActionSheet({

@@ -13,5 +13,12 @@ const ImageMap = {
   closeWhitePng: require('../public/images/closeWhite.png'),
   inputClearPng: require('../public/images/inputClear.png'),
 
+  verifiedPng: require('../public/images/verified.png'),
+  lockWhitePng: require('../public/images/lockWhite.png'),
+  plusSmallPng: require('../public/images/plusSmall.png'),
+  shareUserPng: require('../public/images/shareUser.png'),
+  selectedPng: require('../public/images/selected.png'),
+  videoTypeIconPng: require('../public/images/videoTypeIcon.png'),
+  imageTypeIconPng: require('../public/images/imageTypeIcon.png'),
 }
 export default ImageMap

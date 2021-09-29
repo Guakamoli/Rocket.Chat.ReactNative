@@ -47,7 +47,7 @@ import loadNextMessages from './methods/loadNextMessages';
 import loadMissedMessages from './methods/loadMissedMessages';
 import loadThreadMessages from './methods/loadThreadMessages';
 
-import sendMessage, { resendMessage } from './methods/sendMessage';
+import sendMessage, { resendMessage, sendMessageCall } from './methods/sendMessage';
 import { sendFileMessage, cancelUpload, isUploadActive } from './methods/sendFileMessage';
 
 import callJitsi from './methods/callJitsi';
@@ -136,7 +136,7 @@ const RocketChat = {
 	},
 	async getServerInfo(server) {
 		try {
-			const response = await RNFetchBlob.fetch('GET', `${ server }/api/info`, { ...RocketChatSettings.customHeaders });
+			const response = await RNFetchBlob.fetch('GET', `${server}/api/info`, { ...RocketChatSettings.customHeaders });
 			try {
 				// Try to resolve as json
 				const jsonRes = response.json();
@@ -284,7 +284,7 @@ const RocketChat = {
 
 			this.usersListener = this.sdk.onStreamData('users', protectedFunction(ddpMessage => RocketChat._setUser(ddpMessage)));
 
-			this.notifyAllListener = this.sdk.onStreamData('stream-notify-all', protectedFunction(async(ddpMessage) => {
+			this.notifyAllListener = this.sdk.onStreamData('stream-notify-all', protectedFunction(async (ddpMessage) => {
 				const { eventName } = ddpMessage.fields;
 				if (/public-settings-changed/.test(eventName)) {
 					const { _id, value } = ddpMessage.fields.args[1];
@@ -294,7 +294,7 @@ const RocketChat = {
 						const settingsRecord = await settingsCollection.find(_id);
 						const { type } = defaultSettings[_id];
 						if (type) {
-							await db.action(async() => {
+							await db.action(async () => {
 								await settingsRecord.update((u) => {
 									u[type] = value;
 								});
@@ -309,7 +309,7 @@ const RocketChat = {
 
 			this.rolesListener = this.sdk.onStreamData('stream-roles', protectedFunction(ddpMessage => onRolesChanged(ddpMessage)));
 
-			this.notifyLoggedListener = this.sdk.onStreamData('stream-notify-logged', protectedFunction(async(ddpMessage) => {
+			this.notifyLoggedListener = this.sdk.onStreamData('stream-notify-logged', protectedFunction(async (ddpMessage) => {
 				const { eventName } = ddpMessage.fields;
 				if (/user-status/.test(eventName)) {
 					this.activeUsers = this.activeUsers || {};
@@ -324,7 +324,7 @@ const RocketChat = {
 						}, 10000);
 					}
 					const userStatus = ddpMessage.fields.args[0];
-					const [id,, status, statusText] = userStatus;
+					const [id, , status, statusText] = userStatus;
 					this.activeUsers[id] = { status: STATUSES[status], statusText };
 
 					const { user: loggedUser } = reduxStore.getState().login;
@@ -337,7 +337,7 @@ const RocketChat = {
 					const userCollection = db.get('users');
 					try {
 						const [userRecord] = await userCollection.query(Q.where('username', Q.eq(username))).fetch();
-						await db.action(async() => {
+						await db.action(async () => {
 							await userRecord.update((u) => {
 								u.avatarETag = etag;
 							});
@@ -351,7 +351,7 @@ const RocketChat = {
 					const permissionsCollection = db.get('permissions');
 					try {
 						const permissionsRecord = await permissionsCollection.find(_id);
-						await db.action(async() => {
+						await db.action(async () => {
 							await permissionsRecord.update((u) => {
 								u.roles = roles;
 							});
@@ -366,14 +366,14 @@ const RocketChat = {
 					const userCollection = db.get('users');
 					try {
 						const userRecord = await userCollection.find(userNameChanged._id);
-						await db.action(async() => {
+						await db.action(async () => {
 							await userRecord.update((u) => {
 								Object.assign(u, userNameChanged);
 							});
 						});
 					} catch {
 						// User not found
-						await db.action(async() => {
+						await db.action(async () => {
 							await userCollection.create((u) => {
 								u._raw = sanitizedRaw({ id: userNameChanged._id }, userCollection.schema);
 								Object.assign(u, userNameChanged);
@@ -391,7 +391,7 @@ const RocketChat = {
 		database.setShareDB(server);
 
 		try {
-			const certificate = await UserPreferences.getStringAsync(`${ RocketChat.CERTIFICATE_KEY }-${ server }`);
+			const certificate = await UserPreferences.getStringAsync(`${RocketChat.CERTIFICATE_KEY}-${server}`);
 			await SSLPinning.setCertificate(certificate, server);
 		} catch {
 			// Do nothing
@@ -435,7 +435,7 @@ const RocketChat = {
 			reduxStore.dispatch(shareSetSettings(this.parseSettings(parsed)));
 
 			// set User info
-			const userId = await UserPreferences.getStringAsync(`${ RocketChat.TOKEN_KEY }-${ server }`);
+			const userId = await UserPreferences.getStringAsync(`${RocketChat.TOKEN_KEY}-${server}`);
 			const userCollections = serversDB.get('users');
 			let user = null;
 			if (userId) {
@@ -502,7 +502,7 @@ const RocketChat = {
 	},
 	e2eRequestRoomKey(rid, e2eKeyId) {
 		// RC 0.70.0
-		return this.methodCallWrapper('stream-notify-room-users', `${ rid }/e2ekeyRequest`, rid, e2eKeyId);
+		return this.methodCallWrapper('stream-notify-room-users', `${rid}/e2ekeyRequest`, rid, e2eKeyId);
 	},
 	e2eResetOwnKey() {
 		this.unsubscribeRooms();
@@ -527,7 +527,7 @@ const RocketChat = {
 	},
 
 	loginTOTP(params, loginEmailPassword, isFromWebView = false) {
-		return new Promise(async(resolve, reject) => {
+		return new Promise(async (resolve, reject) => {
 			try {
 				const result = await this.login(params, isFromWebView);
 				return resolve(result);
@@ -629,7 +629,7 @@ const RocketChat = {
 	async clearCache({ server }) {
 		try {
 			const serversDB = database.servers;
-			await serversDB.action(async() => {
+			await serversDB.action(async () => {
 				const serverCollection = serversDB.get('servers');
 				const serverRecord = await serverCollection.find(server);
 				await serverRecord.update((s) => {
@@ -648,7 +648,7 @@ const RocketChat = {
 		}
 	},
 	registerPushToken() {
-		return new Promise(async(resolve) => {
+		return new Promise(async (resolve) => {
 			const token = getDeviceToken();
 			if (token) {
 				const type = isIOS ? 'apn' : 'gcm';
@@ -681,6 +681,7 @@ const RocketChat = {
 	loadNextMessages,
 	loadThreadMessages,
 	sendMessage,
+	sendMessageCall,
 	getRooms,
 	readMessages,
 	resendMessage,
@@ -691,8 +692,8 @@ const RocketChat = {
 		const likeString = sanitizeLikeString(searchText);
 		let data = await db.get('subscriptions').query(
 			Q.or(
-				Q.where('name', Q.like(`%${ likeString }%`)),
-				Q.where('fname', Q.like(`%${ likeString }%`))
+				Q.where('name', Q.like(`%${likeString}%`)),
+				Q.where('fname', Q.like(`%${likeString}%`))
 			),
 			Q.experimentalSortBy('room_updated_at', Q.desc)
 		).fetch();
@@ -970,7 +971,7 @@ const RocketChat = {
 			c: 'channel',
 			d: 'direct'
 		}[room.t];
-		return `${ server }/${ roomType }/${ this.isGroupChat(room) ? room.rid : room.name }?msg=${ message.id }`;
+		return `${server}/${roomType}/${this.isGroupChat(room) ? room.rid : room.name}?msg=${message.id}`;
 	},
 	getPermalinkChannel(channel) {
 		const { server } = reduxStore.getState().server;
@@ -979,7 +980,7 @@ const RocketChat = {
 			c: 'channel',
 			d: 'direct'
 		}[channel.t];
-		return `${ server }/${ roomType }/${ channel.name }`;
+		return `${server}/${roomType}/${channel.name}`;
 	},
 	subscribe(...args) {
 		return this.sdk.subscribe(...args);
@@ -998,7 +999,7 @@ const RocketChat = {
 		const { UI_Use_Real_Name } = settings;
 		const { user } = login;
 		const name = UI_Use_Real_Name ? user.name : user.username;
-		return this.methodCall('stream-notify-room', `${ room }/typing`, name, typing);
+		return this.methodCall('stream-notify-room', `${room}/typing`, name, typing);
 	},
 	setUserPresenceAway() {
 		return this.methodCall('UserPresence:away');
@@ -1036,7 +1037,7 @@ const RocketChat = {
 	methodCallWrapper(method, ...params) {
 		const { API_Use_REST_For_DDP_Calls } = reduxStore.getState().settings;
 		if (API_Use_REST_For_DDP_Calls) {
-			return this.post(`method.call/${ method }`, { message: EJSON.stringify({ method, params }) });
+			return this.post(`method.call/${method}`, { message: EJSON.stringify({ method, params }) });
 		}
 		const parsedParams = params.map((param) => {
 			if (param instanceof Date) {
@@ -1053,7 +1054,7 @@ const RocketChat = {
 	},
 	getRoomCounters(roomId, t) {
 		// RC 0.65.0
-		return this.sdk.get(`${ this.roomTypeToApiType(t) }.counters`, { roomId });
+		return this.sdk.get(`${this.roomTypeToApiType(t)}.counters`, { roomId });
 	},
 	getChannelInfo(roomId) {
 		// RC 0.48.0
@@ -1107,11 +1108,11 @@ const RocketChat = {
 	},
 	getPagesLivechat(rid, offset) {
 		// RC 2.3.0
-		return this.sdk.get(`livechat/visitors.pagesVisited/${ rid }?count=50&offset=${ offset }`);
+		return this.sdk.get(`livechat/visitors.pagesVisited/${rid}?count=50&offset=${offset}`);
 	},
 	getDepartmentInfo(departmentId) {
 		// RC 2.2.0
-		return this.sdk.get(`livechat/department/${ departmentId }?includeAgents=false`);
+		return this.sdk.get(`livechat/department/${departmentId}?includeAgents=false`);
 	},
 	getDepartments() {
 		// RC 2.2.0
@@ -1131,7 +1132,7 @@ const RocketChat = {
 	},
 	getAgentDepartments(uid) {
 		// RC 2.4.0
-		return this.sdk.get(`livechat/agents/${ uid }/departments?enabledDepartmentsOnly=true`);
+		return this.sdk.get(`livechat/agents/${uid}/departments?enabledDepartmentsOnly=true`);
 	},
 	getCustomFields() {
 		// RC 2.2.0
@@ -1180,11 +1181,11 @@ const RocketChat = {
 	},
 	leaveRoom(roomId, t) {
 		// RC 0.48.0
-		return this.post(`${ this.roomTypeToApiType(t) }.leave`, { roomId });
+		return this.post(`${this.roomTypeToApiType(t)}.leave`, { roomId });
 	},
 	deleteRoom(roomId, t) {
 		// RC 0.49.0
-		return this.post(`${ this.roomTypeToApiType(t) }.delete`, { roomId });
+		return this.post(`${this.roomTypeToApiType(t)}.delete`, { roomId });
 	},
 	toggleMuteUserInRoom(rid, username, mute) {
 		if (mute) {
@@ -1199,36 +1200,36 @@ const RocketChat = {
 	}) {
 		if (isOwner) {
 			// RC 0.49.4
-			return this.post(`${ this.roomTypeToApiType(t) }.addOwner`, { roomId, userId });
+			return this.post(`${this.roomTypeToApiType(t)}.addOwner`, { roomId, userId });
 		}
 		// RC 0.49.4
-		return this.post(`${ this.roomTypeToApiType(t) }.removeOwner`, { roomId, userId });
+		return this.post(`${this.roomTypeToApiType(t)}.removeOwner`, { roomId, userId });
 	},
 	toggleRoomLeader({
 		roomId, t, userId, isLeader
 	}) {
 		if (isLeader) {
 			// RC 0.58.0
-			return this.post(`${ this.roomTypeToApiType(t) }.addLeader`, { roomId, userId });
+			return this.post(`${this.roomTypeToApiType(t)}.addLeader`, { roomId, userId });
 		}
 		// RC 0.58.0
-		return this.post(`${ this.roomTypeToApiType(t) }.removeLeader`, { roomId, userId });
+		return this.post(`${this.roomTypeToApiType(t)}.removeLeader`, { roomId, userId });
 	},
 	toggleRoomModerator({
 		roomId, t, userId, isModerator
 	}) {
 		if (isModerator) {
 			// RC 0.49.4
-			return this.post(`${ this.roomTypeToApiType(t) }.addModerator`, { roomId, userId });
+			return this.post(`${this.roomTypeToApiType(t)}.addModerator`, { roomId, userId });
 		}
 		// RC 0.49.4
-		return this.post(`${ this.roomTypeToApiType(t) }.removeModerator`, { roomId, userId });
+		return this.post(`${this.roomTypeToApiType(t)}.removeModerator`, { roomId, userId });
 	},
 	removeUserFromRoom({
 		roomId, t, userId
 	}) {
 		// RC 0.48.0
-		return this.post(`${ this.roomTypeToApiType(t) }.kick`, { roomId, userId });
+		return this.post(`${this.roomTypeToApiType(t)}.kick`, { roomId, userId });
 	},
 	ignoreUser({ rid, userId, ignore }) {
 		return this.sdk.get('chat.ignoreUser', { rid, userId, ignore });
@@ -1236,20 +1237,20 @@ const RocketChat = {
 	toggleArchiveRoom(roomId, t, archive) {
 		if (archive) {
 			// RC 0.48.0
-			return this.post(`${ this.roomTypeToApiType(t) }.archive`, { roomId });
+			return this.post(`${this.roomTypeToApiType(t)}.archive`, { roomId });
 		}
 		// RC 0.48.0
-		return this.post(`${ this.roomTypeToApiType(t) }.unarchive`, { roomId });
+		return this.post(`${this.roomTypeToApiType(t)}.unarchive`, { roomId });
 	},
 	hideRoom(roomId, t) {
-		return this.post(`${ this.roomTypeToApiType(t) }.close`, { roomId });
+		return this.post(`${this.roomTypeToApiType(t)}.close`, { roomId });
 	},
 	saveRoomSettings(rid, params) {
 		// RC 0.55.0
 		return this.methodCallWrapper('saveRoomSettings', rid, params);
 	},
 	post(...args) {
-		return new Promise(async(resolve, reject) => {
+		return new Promise(async (resolve, reject) => {
 			const isMethodCall = args[0]?.startsWith('method.call/');
 			try {
 				const result = await this.sdk.post(...args);
@@ -1286,7 +1287,7 @@ const RocketChat = {
 		});
 	},
 	methodCall(...args) {
-		return new Promise(async(resolve, reject) => {
+		return new Promise(async (resolve, reject) => {
 			try {
 				const result = await this.sdk?.methodCall(...args, this.code || '');
 				return resolve(result);
@@ -1343,7 +1344,7 @@ const RocketChat = {
 	},
 	getRoomRoles(roomId, type) {
 		// RC 0.65.0
-		return this.sdk.get(`${ this.roomTypeToApiType(type) }.roles`, { roomId });
+		return this.sdk.get(`${this.roomTypeToApiType(type)}.roles`, { roomId });
 	},
 	/**
 	 * Permissions: array of permissions' roles from redux. Example: [['owner', 'admin'], ['leader']]
@@ -1412,7 +1413,7 @@ const RocketChat = {
 	async getLoginServices(server) {
 		try {
 			let loginServices = [];
-			const loginServicesResult = await fetch(`${ server }/api/v1/settings.oauth`).then(response => response.json());
+			const loginServicesResult = await fetch(`${server}/api/v1/settings.oauth`).then(response => response.json());
 
 			if (loginServicesResult.success && loginServicesResult.services) {
 				const { services } = loginServicesResult;
@@ -1476,7 +1477,7 @@ const RocketChat = {
 	},
 	getFiles(roomId, type, offset) {
 		// RC 0.59.0
-		return this.sdk.get(`${ this.roomTypeToApiType(type) }.files`, {
+		return this.sdk.get(`${this.roomTypeToApiType(type)}.files`, {
 			roomId,
 			offset,
 			sort: { uploadedAt: -1 },
@@ -1487,7 +1488,7 @@ const RocketChat = {
 	},
 	getMessages(roomId, type, query, offset) {
 		// RC 0.59.0
-		return this.sdk.get(`${ this.roomTypeToApiType(type) }.messages`, {
+		return this.sdk.get(`${this.roomTypeToApiType(type)}.messages`, {
 			roomId,
 			query,
 			offset,

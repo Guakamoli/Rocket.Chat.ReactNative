@@ -392,7 +392,6 @@ class RoomsListView extends React.Component {
 
 	getSubscriptions = async () => {
 		this.unsubscribeQuery();
-		console.info("chufafafaf")
 		const {
 			sortBy,
 			showUnread,
@@ -438,6 +437,8 @@ class RoomsListView extends React.Component {
 			let tempChats = [];
 			let chats = data;
 			let chatsUpdate = [];
+			console.info('datatat', data)
+
 			if (showUnread) {
 				/**
 				 * If unread on top, we trigger re-render based on order changes and sub.alert
@@ -551,12 +552,12 @@ class RoomsListView extends React.Component {
 	// eslint-disable-next-line react/sort-comp
 	search = debounce(async (text) => {
 		const result = await RocketChat.search({ text });
-		console.info("searchTextsearchText", result)
 		// if the search was cancelled before the promise is resolved
 		const { searching } = this.state;
 		if (!searching) {
 			return;
 		}
+		console.info('search', result)
 		this.internalSetState({
 			search: result,
 			searching: true

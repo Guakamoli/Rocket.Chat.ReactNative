@@ -110,7 +110,7 @@ export default class Root extends React.Component {
 		}
 	}
 
-	init = async() => {
+	init = async () => {
 		UserPreferences.getMapAsync(THEME_PREFERENCES_KEY).then(this.setTheme);
 		store.dispatch(appInitLocalSettings());
 
@@ -142,7 +142,7 @@ export default class Root extends React.Component {
 
 	setMasterDetail = (width) => {
 		const isMasterDetail = this.getMasterDetail(width);
-		store.dispatch(setMasterDetailAction(isMasterDetail));
+		store.dispatch(setMasterDetailAction(false));
 	};
 
 	// Dimensions update fires twice

@@ -77,6 +77,9 @@ import SelectListView from '../views/SelectListView';
 import FeedsListView from "../imports/Feeds/View/FeedsListView";
 import FeedsSearchView from "../imports/Feeds/View/FeedsSearchView";
 import FeedsStoriesView from "../imports/Feeds/View/FeedsStoriesView";
+import FeedsRoomView from "../imports/Feeds/View/FeedsRoomView";
+import FeedsUserView from "../imports/Feeds/View/FeedsUserView";
+import FeedsPublishView from "../imports/Feeds/View/FeedsPublishView";
 
 // ChatsStackNavigator
 const ChatsStack = createStackNavigator();
@@ -84,6 +87,33 @@ const ChatsStackNavigator = () => {
 	const { theme } = React.useContext(ThemeContext);
 	return (
 		<ChatsStack.Navigator screenOptions={{ ...defaultHeader, ...themedHeader(theme), ...StackAnimation }}>
+			{/* <ChatsStack.Screen
+				name='FeedsStoriesView'
+				component={FeedsStoriesView}
+			/> */}
+			<ChatsStack.Screen
+				name='FeedsListView'
+
+				component={FeedsListView}
+
+			/>
+			<ChatsStack.Screen
+				name='FeedsUserView'
+
+				{...FeedsUserView}
+
+			/>
+			<ChatsStack.Screen
+				name='FeedsPublishView'
+				{...FeedsPublishView}
+
+			/>
+
+
+			<ChatsStack.Screen
+				name='FeedsRoomView'
+				component={FeedsRoomView}
+			/>
 			<ChatsStack.Screen
 				name='RoomsListView'
 				component={RoomsListView}
@@ -91,20 +121,7 @@ const ChatsStackNavigator = () => {
 			<ChatsStack.Screen
 				name='FeedsSearchView'
 				{...FeedsSearchView}
-
-
 			/>
-			{/* <ChatsStack.Screen
-				name='FeedsStoriesView'
-				component={FeedsStoriesView}
-			/> */}
-			<ChatsStack.Screen
-				name='FeedsListView'
-				component={FeedsListView}
-
-			/>
-
-
 			<ChatsStack.Screen
 				name='RoomView'
 				component={RoomView}

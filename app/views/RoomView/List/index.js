@@ -47,8 +47,8 @@ class ListContainer extends React.Component {
 
 	constructor(props) {
 		super(props);
-		console.time(`${ this.constructor.name } init`);
-		console.time(`${ this.constructor.name } mount`);
+		console.time(`${this.constructor.name} init`);
+		console.time(`${this.constructor.name} mount`);
 		this.count = 0;
 		this.mounted = false;
 		this.animated = false;
@@ -67,12 +67,12 @@ class ListContainer extends React.Component {
 		this.viewabilityConfig = {
 			itemVisiblePercentThreshold: 10
 		};
-		console.timeEnd(`${ this.constructor.name } init`);
+		console.timeEnd(`${this.constructor.name} init`);
 	}
 
 	componentDidMount() {
 		this.mounted = true;
-		console.timeEnd(`${ this.constructor.name } mount`);
+		console.timeEnd(`${this.constructor.name} mount`);
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -120,7 +120,7 @@ class ListContainer extends React.Component {
 			this.unsubscribeFocus();
 		}
 		this.clearHighlightedMessageTimeout();
-		console.countReset(`${ this.constructor.name }.render calls`);
+		console.countReset(`${this.constructor.name}.render calls`);
 	}
 
 	clearHighlightedMessageTimeout = () => {
@@ -130,7 +130,7 @@ class ListContainer extends React.Component {
 		}
 	}
 
-	query = async() => {
+	query = async () => {
 		this.count += QUERY_SIZE;
 		const { rid, tmid, showMessageInMainThread } = this.props;
 		const db = database.active;
@@ -187,8 +187,9 @@ class ListContainer extends React.Component {
 						messages = [...messages, this.thread];
 					}
 					messages = messages.filter(m => !m.t || !hideSystemMessages?.includes(m.t));
-					
+					console.info(messages, "messagesmessages")
 					if (this.mounted) {
+
 						this.setState({ messages }, () => this.update());
 					} else {
 						this.state.messages = messages;
@@ -204,7 +205,7 @@ class ListContainer extends React.Component {
 		this.query();
 	}
 
-	readThreads = debounce(async() => {
+	readThreads = debounce(async () => {
 		const { tmid } = this.props;
 
 		if (tmid) {
@@ -218,7 +219,7 @@ class ListContainer extends React.Component {
 
 	onEndReached = () => this.query()
 
-	onRefresh = () => this.setState({ refreshing: true }, async() => {
+	onRefresh = () => this.setState({ refreshing: true }, async () => {
 		const { messages } = this.state;
 		const { rid, tmid } = this.props;
 
@@ -263,7 +264,7 @@ class ListContainer extends React.Component {
 		listRef.current.getNode().scrollToIndex({ index: params.highestMeasuredFrameIndex, animated: false });
 	}
 
-	jumpToMessage = messageId => new Promise(async(resolve) => {
+	jumpToMessage = messageId => new Promise(async (resolve) => {
 		this.jumping = true;
 		const { messages } = this.state;
 		const { listRef } = this.props;
@@ -322,7 +323,7 @@ class ListContainer extends React.Component {
 	}
 
 	render() {
-		console.count(`${ this.constructor.name }.render calls`);
+		console.count(`${this.constructor.name}.render calls`);
 		const { rid, tmid, listRef } = this.props;
 		const { messages, refreshing } = this.state;
 		const { theme } = this.props;

@@ -32,13 +32,16 @@ const watchUserTyping = function* watchUserTyping({ rid, status }) {
 	}
 };
 
-const handleRemovedRoom = function* handleRemovedRoom(roomType, actionType) {
+const handleRemovedRoom = function* handleRemovedRoom(roomType, actionType, needdNavigation = true) {
 	const isMasterDetail = yield select(state => state.app.isMasterDetail);
-	if (isMasterDetail) {
-		yield Navigation.navigate('DrawerNavigator');
-	} else {
-		yield Navigation.navigate('RoomsListView');
+	if (needdNavigation) {
+		if (isMasterDetail) {
+			yield Navigation.navigate('DrawerNavigator');
+		} else {
+			yield Navigation.navigate('RoomsListView');
+		}
 	}
+
 
 	if (actionType === 'leave') {
 		EventEmitter.emit(LISTENER, { message: roomType === 'team' ? I18n.t('Left_The_Team_Successfully') : I18n.t('Left_The_Room_Successfully') });
@@ -58,8 +61,10 @@ const handleRemovedRoom = function* handleRemovedRoom(roomType, actionType) {
 	}
 };
 
-const handleLeaveRoom = function* handleLeaveRoom({ room, roomType, selected }) {
+const handleLeaveRoom = function* handleLeaveRoom({ room, roomType, selected, needdNavigation = true }) {
 	logEvent(events.RA_LEAVE);
+	console.info('夹生的加首付hiad', roomType, room)
+
 	try {
 		let result = {};
 
@@ -68,9 +73,9 @@ const handleLeaveRoom = function* handleLeaveRoom({ room, roomType, selected }) 
 		} else if (roomType === 'team') {
 			result = yield RocketChat.leaveTeam({ teamName: room.name, ...(selected && { rooms: selected }) });
 		}
-
+		console.info(result, '夹生的加首付hiad')
 		if (result?.success) {
-			yield handleRemovedRoom(roomType, 'leave');
+			yield handleRemovedRoom(roomType, 'leave', needdNavigation);
 		}
 	} catch (e) {
 		logEvent(events.RA_LEAVE_F);
@@ -108,7 +113,7 @@ const handleCloseRoom = function* handleCloseRoom({ rid }) {
 	const isMasterDetail = yield select(state => state.app.isMasterDetail);
 	const requestComment = yield select(state => state.settings.Livechat_request_comment_when_closing_conversation);
 
-	const closeRoom = async(comment = '') => {
+	const closeRoom = async (comment = '') => {
 		try {
 			await RocketChat.closeLivechat(rid, comment);
 			if (isMasterDetail) {

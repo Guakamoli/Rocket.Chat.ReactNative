@@ -50,17 +50,18 @@ const AtMention = React.memo(({
 	if (user) {
 		return (
 			<Text
-				style={[styles.mention, mentionStyle, ...style]}
+				style={[styles.mention, ...style]}
 				onPress={handlePress}
 			>
-				{useRealName && user.name ? user.name : user.username}
+				<Text style={styles.mentionText}>{`回复   `}</Text>
+				{`${useRealName && user.name ? user.name : user.username}   `}
 			</Text>
 		);
 	}
 
 	return (
 		<Text style={[styles.text, { color: themes[theme].bodyText }, ...style]}>
-			{`@${ mention }`}
+			{`@${mention}`}
 		</Text>
 	);
 });

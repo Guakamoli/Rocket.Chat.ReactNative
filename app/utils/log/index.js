@@ -13,21 +13,21 @@ export const getReportAnalyticsEventsValue = () => reportAnalyticsEvents;
 
 
 if (!isFDroidBuild) {
-	bugsnag = require('@bugsnag/react-native').default;
-	bugsnag.start({
-		onBreadcrumb() {
-			return reportAnalyticsEvents;
-		},
-		onError(error) {
-			if (!reportAnalyticsEvents) { error.breadcrumbs = []; }
-			return reportCrashErrors;
-		}
-	});
+	// bugsnag = require('@bugsnag/react-native').default;
+	// bugsnag.start({
+	// 	onBreadcrumb() {
+	// 		return reportAnalyticsEvents;
+	// 	},
+	// 	onError(error) {
+	// 		if (!reportAnalyticsEvents) { error.breadcrumbs = []; }
+	// 		return reportCrashErrors;
+	// 	}
+	// });
 	crashlytics = require('@react-native-firebase/crashlytics').default;
 }
 
 export { analytics };
-export const loggerConfig = bugsnag.config;
+export const loggerConfig = {};
 export { events };
 
 let metadata = {};
@@ -42,7 +42,7 @@ export const logEvent = (eventName, payload) => {
 	try {
 		if (!isFDroidBuild) {
 			analytics().logEvent(eventName, payload);
-			bugsnag.leaveBreadcrumb(eventName, payload);
+			// bugsnag.leaveBreadcrumb(eventName, payload);
 		}
 	} catch {
 		// Do nothing
@@ -52,7 +52,7 @@ export const logEvent = (eventName, payload) => {
 export const setCurrentScreen = (currentScreen) => {
 	if (!isFDroidBuild) {
 		analytics().setCurrentScreen(currentScreen);
-		bugsnag.leaveBreadcrumb(currentScreen, { type: 'navigation' });
+		// bugsnag.leaveBreadcrumb(currentScreen, { type: 'navigation' });
 	}
 };
 
@@ -68,9 +68,9 @@ export const toggleAnalyticsEventsReport = (value) => {
 
 export default (e) => {
 	if (e instanceof Error && bugsnag && e.message !== 'Aborted' && !__DEV__) {
-		bugsnag.notify(e, (event) => {
-			event.addMetadata('details', { ...metadata });
-		});
+		// bugsnag.notify(e, (event) => {
+		// 	event.addMetadata('details', { ...metadata });
+		// });
 		if (!isFDroidBuild) {
 			crashlytics().recordError(e);
 		}

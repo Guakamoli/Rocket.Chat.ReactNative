@@ -85,7 +85,6 @@ const ProgressBar = (props) => {
         AnimaRef.current.start(({ finished }) => {
           if (finished && !finishedFlag) {
             finishedFlag = true
-            console.info("指向性222")
             props.next();
           }
         })

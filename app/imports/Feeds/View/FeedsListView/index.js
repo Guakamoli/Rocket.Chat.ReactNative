@@ -13,7 +13,7 @@ import { dequal } from 'dequal';
 import Orientation from 'react-native-orientation-locker';
 import { Q } from '@nozbe/watermelondb';
 import { withSafeAreaInsets } from 'react-native-safe-area-context';
-
+import RoomServices from "../../../../views/RoomView/services/index"
 import database from '../../../../lib/database';
 import RocketChat from '../../../../lib/rocketchat';
 import RoomItem, { ROW_HEIGHT } from '../../../../presentation/RoomItem';
@@ -156,6 +156,8 @@ class RoomsListView extends React.Component {
 		this.mounted = false;
 		this.count = 0;
 		this.urlMap = {}
+		this.retryFindCount = 0
+		this.hadGetNewMessage = false;
 		this.state = {
 			searching: false,
 			search: [],
@@ -335,6 +337,7 @@ class RoomsListView extends React.Component {
 		if (this.unsubscribeBlur) {
 			this.unsubscribeBlur();
 		}
+		this.unsubscribeMessages()
 		if (this.backHandler && this.backHandler.remove) {
 			this.backHandler.remove();
 		}
@@ -369,7 +372,7 @@ class RoomsListView extends React.Component {
 	}
 	toSearchView = () => {
 		const { navigation } = this.props;
-		navigation.navigate("FeedsSearchView")
+		navigation.navigate("RoomsListView")
 	}
 	setHeader = () => {
 		const { navigation } = this.props;
@@ -393,7 +396,35 @@ class RoomsListView extends React.Component {
 		}
 		return allData;
 	}
+	unsubscribeMessages = () => {
+		if (this.messagesSubscription && this.messagesSubscription.unsubscribe) {
+			this.messagesSubscription.unsubscribe();
+		}
+	}
+	init = async (channelsDataIds) => {
+		const initInner = async (channelsDataIds, resolve) => {
+			try {
+				if (this.hadGetNewMessage) return
+				const channelsDataIdsPro = channelsDataIds.map((i) => {
+					return RoomServices.getMessages({ rid: i, lastOpen: true })
+				})
+				await Promise.all(channelsDataIdsPro)
+				this.hadGetNewMessage = true
+				resolve()
+			} catch (e) {
+				this.retryFindCount = this.retryFindCount + 1 || 1;
+				if (this.retryFindCount <= 5) {
+					this.retryFindTimeout = setTimeout(() => {
+						initInner(channelsDataIds, resolve);
+					}, 900 * this.retryFindCount);
+				}
+			}
 
+		}
+		return new Promise((resolve) => {
+			initInner(channelsDataIds, resolve)
+		})
+	}
 	getSubscriptions = async () => {
 		this.unsubscribeQuery();
 
@@ -451,17 +482,43 @@ class RoomsListView extends React.Component {
 		const channelsDataIds = channelsData.map((i) => i.rid)
 		const whereClause = [
 			Q.where('rid', Q.oneOf(channelsDataIds)),
-			Q.where('attachments', Q.notEq('[]')),
+			Q.where('tmid', null),
+			Q.and(
+				Q.or(
+					Q.where('attachments', Q.like(`%image_type%`)),
+					Q.where('attachments', Q.like(`%video_type%`))
+				)
+			),
 			Q.experimentalSortBy('ts', Q.desc),
-			Q.experimentalSkip(0),
-			Q.experimentalTake(this.count)
+			Q.experimentalTake(50)
 		];
+		await this.init(channelsDataIds)
+		console.info("开始计算")
 
-		const messages = await db.collections
+		// const messages = await db.collections
+		// 	.get('messages')
+		// 	.query(...whereClause)
+		// 	.fetch()
+		// this.setState({ messages })
+
+		this.messagesObservable = db.collections
 			.get('messages')
 			.query(...whereClause)
-			.fetch()
-		this.setState({ messages })
+			.observe();
+		this.unsubscribeMessages();
+		this.messagesSubscription = this.messagesObservable
+			.subscribe((messages) => {
+
+				// messages = messages.filter(m => !m.t || !hideSystemMessages?.includes(m.t));
+				console.info("消息", messages,)
+				if (this.mounted) {
+					this.setState({ messages }, () => this.update());
+				} else {
+					this.state.messages = messages;
+				}
+				// TODO: move it away from here
+				// this.readThreads();
+			});
 		this.querySubscription = observable.subscribe((data) => {
 			let tempChats = [];
 			// console.info(data, "daaratatat")
@@ -532,7 +589,12 @@ class RoomsListView extends React.Component {
 
 		});
 	}
-
+	update = () => {
+		if (this.animated) {
+			animateNextTransition();
+		}
+		this.forceUpdate();
+	};
 	unsubscribeQuery = () => {
 		if (this.querySubscription && this.querySubscription.unsubscribe) {
 			this.querySubscription.unsubscribe();
@@ -926,9 +988,12 @@ class RoomsListView extends React.Component {
 		const username = user.username
 		const id = this.getUidDirectMessage(item);
 		return (
-			<FeedsItem item={item}
+			<FeedsItem
+				{...this.props}
+				item={item}
 				theme={theme}
 				id={id}
+
 				baseUrl={baseUrl}
 				user={user}
 				type={item.t}
@@ -936,29 +1001,7 @@ class RoomsListView extends React.Component {
 				onPress={this.onPressItem}
 			/>
 		)
-		return (
-			<RoomItem
-				item={item}
-				theme={theme}
-				id={id}
-				type={item.t}
-				username={username}
-				showLastMessage={StoreLastMessage}
-				onPress={this.onPressItem}
-				width={isMasterDetail ? MAX_SIDEBAR_WIDTH : width}
-				toggleFav={this.toggleFav}
-				toggleRead={this.toggleRead}
-				hideChannel={this.hideChannel}
-				useRealName={useRealName}
-				getUserPresence={this.getUserPresence}
-				getRoomTitle={this.getRoomTitle}
-				getRoomAvatar={this.getRoomAvatar}
-				getIsGroupChat={this.isGroupChat}
-				getIsRead={this.isRead}
-				visitor={item.visitor}
-				isFocused={currentItem?.rid === item.rid}
-			/>
-		);
+
 	};
 	_onViewableItemsChanged = (info, changed) => {
 		const {

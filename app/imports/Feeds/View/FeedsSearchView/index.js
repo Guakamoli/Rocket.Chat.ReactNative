@@ -16,6 +16,8 @@ import useDebounce from 'ahooks/es/useDebounce';
 import I18n from '../../../../i18n';
 import SafeAreaView from '../../../../containers/SafeAreaView';
 import RocketChat from '../../../../lib/rocketchat';
+import database from '../../../../lib/database';
+import Avatar from '../../../../containers/Avatar';
 
 const { searchInputPng, inputClearPng } = ImageMap
 const screenOptions = {
@@ -123,7 +125,7 @@ const SearchInput = React.memo((props) => {
                 }}
             />
             <Pressable style={styles.cancelBtn} onPress={setSearchStateWrapFalse}>
-                <Text style={styles.cancelText}>{('cancel')}</Text>
+                <Text style={styles.cancelText}>{I18n.t('cancel')}</Text>
             </Pressable>
         </View>
     )
@@ -141,39 +143,37 @@ const SeachView = (props) => {
 }
 const SearchResult = React.memo((props) => {
     const { text, navigation } = props
-    const [data, setData] = useState([
-        { image: "https://video-message-001.paiyaapp.com/default/4a93713c04cef678b05cc161ad750fce/beb97e81-8daf-4e1e-af21-da64cb137197.jpg", name: "asdasdasdsad阿斯达所多", desc: "奥术大师大所大所多", _id: Math.random() },
-        { image: "https://video-message-001.paiyaapp.com/default/4a93713c04cef678b05cc161ad750fce/beb97e81-8daf-4e1e-af21-da64cb137197.jpg", name: "asdasdasdsad阿斯达所多", desc: "奥术大师大所大所多", _id: Math.random() },
-        { image: "https://video-message-001.paiyaapp.com/default/4a93713c04cef678b05cc161ad750fce/beb97e81-8daf-4e1e-af21-da64cb137197.jpg", name: "asdasdasdsad阿斯达所多", desc: "奥术大师大所大所多", _id: Math.random() },
-        { image: "https://video-message-001.paiyaapp.com/default/4a93713c04cef678b05cc161ad750fce/beb97e81-8daf-4e1e-af21-da64cb137197.jpg", name: "asdasdasdsad阿斯达所多", desc: "奥术大师大所大所多", _id: Math.random() },
-        { image: "https://video-message-001.paiyaapp.com/default/4a93713c04cef678b05cc161ad750fce/beb97e81-8daf-4e1e-af21-da64cb137197.jpg", name: "asdasdasdsad阿斯达所多", desc: "奥术大师大所大所多", _id: Math.random() },
-
-        { image: "https://video-message-001.paiyaapp.com/default/4a93713c04cef678b05cc161ad750fce/beb97e81-8daf-4e1e-af21-da64cb137197.jpg", name: "asdasdasdsad阿斯达所多", desc: "奥术大师大所大所多", _id: Math.random() }
-    ])
+    const [data, setData] = useState([])
     const querySearchData = async (text) => {
         // 从本地查库拿到数据
         const result = await RocketChat.search({ text, filterUsers: false });
-        console.info(result, 'hahahah')
+        setData(result)
     }
 
     useEffect(() => {
         querySearchData(text.trim())
-        // console.info('渲染撒')
     }, [text])
+    const getRoomAvatar = item => RocketChat.getRoomAvatar(item)
+
     const renderItem = props => {
         const { item, index } = props;
         const toProduct = () => {
             navigation.navigate('User', { slug: item.id });
         };
+        const avatar = getRoomAvatar(item);
         return (
             <Pressable onPress={toProduct} style={styles.itemBox}>
                 <View style={styles.itemBoxInner}>
-                    <Image
+                    <Avatar
+                        text={avatar}
+                        size={55}
+                        type={item.t}
                         style={styles.itemAvatar}
-                        source={{ uri: item.image }}
-                        resizeMode={'cover'}
-                        placeholderStyle={{ backgroundColor: "transparent" }}
+                        rid={item.rid}
+                        borderRadius={55}
+
                     />
+
                     <View
                         style={{
                             maxWidth: 200,

@@ -27,7 +27,7 @@ import { isValidURL } from '../../utils/url';
 // Support <http://link|Text>
 const formatText = text => text.replace(
 	new RegExp('(?:<|<)((?:https|http):\\/\\/[^\\|]+)\\|(.+?)(?=>|>)(?:>|>)', 'gm'),
-	(match, url, title) => `[${ title }](${ url })`
+	(match, url, title) => `[${title}](${url})`
 );
 
 const emojiRanges = [
@@ -152,13 +152,14 @@ class Markdown extends PureComponent {
 			this.isMessageContainsOnlyEmoji ? styles.textBig : {},
 			...context.map(type => styles[type])
 		];
+		// return null
 		return (
 			<Text
 				accessibilityLabel={literal}
-				style={[styles.text, defaultStyle, ...style]}
+				style={[styles.text]}
 				numberOfLines={numberOfLines}
 			>
-				{literal}
+				{literal.trim()}
 			</Text>
 		);
 	}
@@ -300,7 +301,7 @@ class Markdown extends PureComponent {
 
 	renderHeading = ({ children, level }) => {
 		const { numberOfLines, theme } = this.props;
-		const textStyle = styles[`heading${ level }Text`];
+		const textStyle = styles[`heading${level}Text`];
 		return (
 			<Text numberOfLines={numberOfLines} style={[textStyle, { color: themes[theme].bodyText }]}>
 				{children}
