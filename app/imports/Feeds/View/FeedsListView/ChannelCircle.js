@@ -15,6 +15,8 @@ import { Image } from "react-native-elements"
 import LinearGradient from "react-native-linear-gradient"
 import ImageMap from "../../images"
 import Avatar from '../../../../containers/Avatar';
+import ImagePicker from 'react-native-image-crop-picker';
+import I18n from '../../../../i18n';
 
 const { shootPng } = ImageMap
 const colors = ['#E383DDFF', '#E383DDFF', '#7A83F5FF']
@@ -25,52 +27,51 @@ const ChannelCircle = (props) => {
     const [data, setData] = useState([])
 
     const generateData = () => {
-        const data = []
-
-        for (const item of dataList) {
-            data.push({
-                rid: item.rid,
-                name: item.name,
-                t: item.t
-                // rid: item.rid + Math.random()
-            })
-        }
-        const index = data.findIndex(i => i.name === user.username)
-
-        if (index !== -1) {
-
-            const item = data.splice(index, 1)[0]
-            const hitItem = storyMessages.find(i => i.rid === item.rid)
-            item.hasItem = !!hitItem
-            item.isSelf = true
-            data.unshift(item)
-        }
-        setData(data)
+        setData(dataList)
     }
     useEffect(() => {
         generateData()
-    }, [dataList, user, storyMessages])
+    }, [dataList])
     const renderItem = ({ item, index }) => {
-        const toShoot = () => {
-            navigation.navigate("")
+        const takeVideo = async () => {
+            let videoPickerConfig = {
+                mediaType: 'video'
+            };
+            const libPickerLabels = {
+                cropperChooseText: I18n.t('Choose'),
+                cropperCancelText: I18n.t('Cancel'),
+                loadingLabelText: I18n.t('Processing')
+            };
+            videoPickerConfig = {
+                ...videoPickerConfig,
+                ...libPickerLabels
+            };
+            try {
+                const video = await ImagePicker.openCamera(videoPickerConfig);
+                navigation.navigate('FeedsPublishView', { room: item, attachments: [video], type: "video" });
+
+            } catch (e) {
+            }
         }
         const onPress = () => {
 
             if (item.isSelf) {
                 // 根据情况而定
-                if (item.hasItem) {
-                    return onStorySelect(index)
+                if (item.stories.length > 0) {
+                    return onStorySelect(index, item)
                 } else {
                     // 跳转界面'
-                    toShoot()
+                    takeVideo()
+                    return
+
                 }
             }
-            onStorySelect(index)
+            onStorySelect(index - 1, item)
         }
         return (
             <Pressable onPress={onPress}>
                 <View style={styles.itemWrapper}>
-                    <LinearGradient style={styles.backContainer} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} colors={colors} angle={90} useAngle={true}></LinearGradient>
+                    {item.hasUnread ? <LinearGradient style={styles.backContainer} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} colors={colors} angle={90} useAngle={true}></LinearGradient> : null}
 
                     <Avatar
 
@@ -85,7 +86,7 @@ const ChannelCircle = (props) => {
                     />
                     {
                         item.isSelf ? (<Image source={shootPng} placeholderStyle={{ backgroundColor: "transparent" }}
-                            onPress={toShoot}
+                            onPress={takeVideo}
                             containerStyle={{
                                 width: 27,
                                 height: 27,

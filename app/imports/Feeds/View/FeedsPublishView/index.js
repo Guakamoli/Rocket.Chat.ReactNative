@@ -13,6 +13,7 @@ import {
     TextInput
 } from 'react-native';
 import { connect } from 'react-redux';
+import Video from 'react-native-video';
 
 import ImageMap from "../../images"
 import { Image, SearchBar, Button } from 'react-native-elements';
@@ -51,10 +52,12 @@ const screenOptions = {
         backgroundColor: 'white',
     },
 }
+
 const PublishView = (props) => {
     const { navigation, user, server, FileUpload_MediaTypeWhiteList: mediaAllowList, FileUpload_MaxFileSize: maxFileSize } = props
     const { type, attachments, room = {} } = props.route?.params || {}
     const { rid } = room
+    console.info(props.route?.params, 'props.route?.params', type)
     const onPress = useCallback(() => navigation.goBack());
     const hasPublish = useRef(false)
     const [text, setText] = useState('')
@@ -111,7 +114,7 @@ const PublishView = (props) => {
             }));
             EventEmitter.emit(LISTENER, { message: '发布成功' });
 
-            return navigation.replace("FeedsListView")
+            return navigation.goBack()
 
         } catch (e) {
             hasPublish.current = false
@@ -141,15 +144,45 @@ const PublishView = (props) => {
             ),
         })
     }, [publish])
-
+    const videoPorps = {
+        objectFit: 'cover',
+        source: { uri: attachments[0].path },
+        resizeMode: 'cover',
+        controls: false,
+        loop: false,
+        autoplay: false,
+        repeat: true,
+        paused: true,
+        muted: true,
+        bufferConfig: {
+            minBufferMs: 1000,
+            maxBufferMs: 2000,
+            bufferForPlaybackMs: 500,
+            bufferForPlaybackAfterRebufferMs: 500,
+        },
+    };
+    console.info(type, 'asdsadasd', videoPorps)
     return (
         <View style={styles.root}>
             <View style={[styles.itemBox, styles.headeItemBox]}>
                 <View style={styles.prevImageWrapper}>
-                    <Image source={{ uri: attachments[0].path }} style={styles.prevImage} />
-                    <Image source={type === 'viode' ? videoTypeIconPng : imageTypeIconPng}
-                        containerStyle={type === 'viode' ? styles.videoDecoImage : styles.imageDecoImage}
-                        style={{ width: "100%", height: "100%" }} resizeMode={'contain'} />
+                    {type === 'video' ? (
+                        <>
+                            <Video {...videoPorps} style={styles.prevImage} />
+                            <Image source={videoTypeIconPng}
+                                containerStyle={styles.videoDecoImage}
+                                style={{ width: "100%", height: "100%" }} resizeMode={'contain'} />
+                        </>
+                    ) : (
+                            <>
+                                <Image source={{ uri: attachments[0].path }} style={styles.prevImage} />
+
+                                <Image source={type === 'video' ? videoTypeIconPng : imageTypeIconPng}
+                                    containerStyle={type === 'video' ? styles.videoDecoImage : styles.imageDecoImage}
+                                    style={{ width: "100%", height: "100%" }} resizeMode={'contain'} />
+                            </>
+                        )}
+
                 </View>
                 <View style={styles.inputWrapperStyle}>
                     <TextInput placeholder={'添加说明...'} placeholderTextColor={'#929292FF'} style={styles.inputStyle} onChangeText={(t) => { setText(t) }}></TextInput>
@@ -230,12 +263,13 @@ const styles = StyleSheet.create({
     prevImage: {
         width: 61,
         height: 61,
+        zIndex: 1,
     },
     videoDecoImage: {
         width: 18,
         height: 21,
         position: "absolute",
-
+        zIndex: 11
     },
     imageDecoImage: {
         width: 28,

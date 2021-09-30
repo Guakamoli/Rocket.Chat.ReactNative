@@ -52,7 +52,7 @@ const Content = React.memo((props) => {
             url = formatAttachmentUrl(url, user.id, user.token, baseUrl);
             const VideoProps = {
                 uri: url,
-                autoplay: false,
+                autoplay: index === 0,
                 muted: true,
                 loop: true,
             }

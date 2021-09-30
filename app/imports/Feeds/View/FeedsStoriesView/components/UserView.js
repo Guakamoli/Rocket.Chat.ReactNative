@@ -3,21 +3,29 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Image } from "react-native-elements"
 import ImageMap from '../../../images';
+import Avatar from '../../../../../containers/Avatar';
 
 const { closeWhitePng } = ImageMap
 // import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const UserView = React.memo((props) => {
-
+  const { user, currentIndex } = props
   return (
     <View style={styles.userView}>
-      <Image
-        source={{ uri: props.profile }}
-        containerStyle={styles.image}
+      <Avatar
+
+        size={34}
+        type={user.t}
+        text={user.name}
+        style={styles.image}
+        rid={user.rid} // 先用房间的头像
+        borderRadius={34}
+
       />
+
       <View style={styles.titleBox}>
-        <Text style={styles.name} ellipsizeMode={'tail'} numberOfLines={1}>{props.name}asdlsfsdhg </Text>
-        <Text style={styles.time}>Posted 2h ago</Text>
+        <Text style={styles.name} ellipsizeMode={'tail'} numberOfLines={1}>{props.name} </Text>
+        <Text style={styles.time}>{user.stories?.[currentIndex]?.date}</Text>
       </View>
       <Image source={closeWhitePng}
         onPress={props.onClosePress}

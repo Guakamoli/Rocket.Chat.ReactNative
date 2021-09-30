@@ -611,7 +611,6 @@ class RoomView extends React.Component {
 	sendMessage = async (message, tmid, tshow) => {
 		logEvent(events.ROOM_SEND_MESSAGE);
 		const { user } = this.props;
-		console.info(this.state.selectedMessage, 'this.state.selectedMessage')
 
 		RocketChat.sendMessage(this.rid, message, this.tmid || tmid, user, tshow).then(() => {
 			if (this.list && this.list.current) {

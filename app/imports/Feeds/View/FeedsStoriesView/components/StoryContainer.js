@@ -12,6 +12,7 @@ import GestureRecognizer from 'react-native-swipe-gestures';
 import Story from './Story';
 import UserView from './UserView';
 import ProgressArray from './ProgressArray';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -72,6 +73,21 @@ const StoryContainer = (props) => {
 
     }
   }, [currentUserIndex])
+  const readMessage = async () => {
+    if (story) {
+      let storyReadMap = await AsyncStorage.getItem("storyReadMap")
+      if (storyReadMap) {
+        storyReadMap = JSON.parse(storyReadMap)
+        if (!storyReadMap[story.id]) {
+          storyReadMap[story.id] = "1"
+        }
+        await AsyncStorage.setItem("storyReadMap", JSON.stringify(storyReadMap))
+      }
+    }
+  }
+  useEffect(async () => {
+    readMessage()
+  }, [story])
   const changeStory = (evt) => {
     if (evt.locationX > SCREEN_WIDTH / 2) {
       nextStory();
@@ -80,8 +96,9 @@ const StoryContainer = (props) => {
     }
   };
 
-  const nextStory = () => {
+  const nextStory = async () => {
     if (stories.length - 1 > currentIndex) {
+
       setCurrentIndex(currentIndex + 1);
       // setLoaded(false);
       setDuration(3);
@@ -92,7 +109,7 @@ const StoryContainer = (props) => {
   };
 
   const prevStory = () => {
-    if (currentIndex > 0 && stories.length) {
+    if (currentIndex > 1 && stories.length) {
       setCurrentIndex(currentIndex - 1);
       // setLoaded(false);
       setDuration(3);
@@ -171,7 +188,7 @@ const StoryContainer = (props) => {
               length={stories.map((_, i) => i)}
               progress={{ id: currentIndex }}
             />
-            <UserView name={user.username} profile={user.profile} onClosePress={props.onClose} />
+            <UserView name={user.name} user={user} onClosePress={props.onClose} currentIndex={currentIndex} />
 
 
           </OpacityContainer>
