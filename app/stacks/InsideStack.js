@@ -1,5 +1,5 @@
 import React from 'react';
-import { I18nManager } from 'react-native';
+import { I18nManager, TouchableOpacity } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
@@ -8,6 +8,7 @@ import {
 	defaultHeader, themedHeader, ModalAnimation, StackAnimation
 } from '../utils/navigation';
 import Sidebar from '../views/SidebarView';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 // Chats Stack
 import RoomView from '../views/RoomView';
@@ -80,8 +81,167 @@ import FeedsStoriesView from "../imports/Feeds/View/FeedsStoriesView";
 import FeedsRoomView from "../imports/Feeds/View/FeedsRoomView";
 import FeedsUserView from "../imports/Feeds/View/FeedsUserView";
 import FeedsPublishView from "../imports/Feeds/View/FeedsPublishView";
+import ImageMap from "../imports/Feeds/images"
+
+const Tab = createBottomTabNavigator();
 
 // ChatsStackNavigator
+const { homeTab, homeTabActive, messageTab, messageTabActive, userCenterTab, userCenterTabActive } = ImageMap;
+
+const TAB_ICON_MAP = {
+	Home: {
+		false: homeTab,
+		true: homeTabActive,
+
+	},
+	Chat: {
+		false: messageTab,
+		true: messageTabActive,
+
+	},
+	My: {
+		false: userCenterTab,
+		true: userCenterTabActive,
+
+	},
+};
+function MyTabBar({ state, descriptors, navigation }) {
+	// const focusedOptions = descriptors[state.routes[state.index].key].options;
+	const [viewer] = useViewer();
+	const inset = useSafeAreaInsets();
+
+	return (
+		<View
+			style={{
+				backgroundColor: 'white',
+
+				height: 83,
+
+				shadowColor: 'rgb(153, 153, 153)',
+				shadowOffset: {
+					width: 0,
+					height: 0,
+				},
+				shadowOpacity: 0.15,
+				shadowRadius: 3.84,
+				elevation: 5,
+			}}>
+			<View
+				style={{
+					height: 55,
+					flexDirection: 'row',
+					backgroundColor: 'white',
+
+					justifyContent: 'center',
+					alignItems: 'center',
+					marginBottom: inset.bottom / 2,
+				}}>
+				{state.routes.map((route, index) => {
+					const { options } = descriptors[route.key];
+					const label =
+						options.tabBarLabel !== undefined
+							? options.tabBarLabel
+							: options.title !== undefined
+								? options.title
+								: route.name;
+
+					const isFocused = state.index === index;
+					const onPress = () => {
+						const event = navigation.emit({
+							type: 'tabPress',
+							target: route.key,
+							canPreventDefault: true,
+						});
+
+						if (!isFocused && !event.defaultPrevented) {
+							navigation.navigate(route.name);
+						}
+						if (['My', 'Chat'].indexOf(route.name) > -1) {
+							if (!viewer || !viewer._id) {
+								const opts = {};
+								if (route.name == 'My') {
+									opts.from = 'profile';
+								}
+								navigation.navigate('LoginPage', opts);
+							}
+						}
+					};
+
+					const onLongPress = () => {
+						navigation.emit({
+							type: 'tabLongPress',
+							target: route.key,
+						});
+					};
+					const hitItem = TAB_ICON_MAP[route.name];
+					let iconName = hitItem[isFocused];
+
+					return (
+						<TouchableOpacity
+							accessibilityRole="button"
+							accessibilityState={isFocused ? { selected: true } : {}}
+							accessibilityLabel={options.tabBarAccessibilityLabel}
+							testID={options.tabBarTestID}
+							onPress={onPress}
+							// onLongPress={onLongPress}
+							key={index}
+							style={{
+								flex: 1,
+								alignItems: 'center',
+								height: '100%',
+
+								justifyContent: 'center',
+							}}>
+							<View
+								style={{
+									position: 'relative',
+								}}>
+								<Image
+									resizeMode={'contain'}
+									style={{
+										width: 20,
+										height: 20,
+									}}
+									placeholderStyle={{
+										backgroundColor: 'transparent',
+									}}
+									source={iconName}
+								/>
+							</View>
+						</TouchableOpacity>
+					);
+				})}
+			</View>
+		</View>
+	);
+}
+const IndexPage1 = React.memo(props => {
+	return (
+		<Tab.Navigator tabBar={props => <MyTabBar {...props} />} backBehavior="none">
+			<Tab.Screen
+				name="Home"
+				component={HomeStackComponent}
+				options={() => ({
+					title: '',
+				})}
+			/>
+			<Tab.Screen
+				name="Chat"
+				component={ChatStackComponent}
+				options={({ route }) => ({
+					title: '',
+				})}
+			/>
+			<Tab.Screen
+				name="My"
+				component={UserCenterComponent}
+				options={() => ({
+					title: '',
+				})}
+			/>
+		</Tab.Navigator>
+	);
+});
 const ChatsStack = createStackNavigator();
 const ChatsStackNavigator = () => {
 	const { theme } = React.useContext(ThemeContext);
@@ -91,6 +251,7 @@ const ChatsStackNavigator = () => {
 				name='FeedsStoriesView'
 				component={FeedsStoriesView}
 			/> */}
+
 			<ChatsStack.Screen
 				name='FeedsListView'
 
@@ -108,16 +269,16 @@ const ChatsStackNavigator = () => {
 				{...FeedsPublishView}
 
 			/>
-
+			<ChatsStack.Screen
+				name='RoomsListView'
+				component={RoomsListView}
+			/>
 
 			<ChatsStack.Screen
 				name='FeedsRoomView'
 				component={FeedsRoomView}
 			/>
-			<ChatsStack.Screen
-				name='RoomsListView'
-				component={RoomsListView}
-			/>
+
 			<ChatsStack.Screen
 				name='FeedsSearchView'
 				{...FeedsSearchView}

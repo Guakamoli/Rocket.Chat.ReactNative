@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
 	View,
@@ -6,7 +6,9 @@ import {
 	BackHandler,
 	Text,
 	Keyboard,
-	RefreshControl
+	Modal,
+	RefreshControl,
+	Dimensions,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { dequal } from 'dequal';
@@ -64,7 +66,9 @@ import { Image, Avatar } from "react-native-elements"
 import ImageMap from "../../images"
 import { lessThan } from 'react-native-reanimated';
 import { formatAttachmentUrl } from '../../../../lib/utils.js';
-
+import CubeNavigationHorizontal from '../FeedsStoriesView/cubicTransForm';
+import AllStories from '../FeedsStoriesView/constants/AllStories';
+import StoryContainer from '../FeedsStoriesView/components/StoryContainer';
 const { searchPng, companyTitlePng } = ImageMap
 const INITIAL_NUM_TO_RENDER = isTablet ? 20 : 12;
 const CHATS_HEADER = 'Chats';
@@ -82,6 +86,7 @@ const filterIsFavorite = s => s.f;
 const filterIsOmnichannel = s => s.t === 'l';
 const filterIsTeam = s => s.teamMain;
 const filterIsDiscussion = s => s.prid;
+const { width, height } = Dimensions.get('window');
 
 const shouldUpdateProps = [
 	'searchText',
@@ -373,6 +378,8 @@ class RoomsListView extends React.Component {
 	toSearchView = () => {
 		const { navigation } = this.props;
 		navigation.navigate("RoomsListView")
+		return
+		navigation.navigate("FeedsSearchView" || "RoomsListView")
 	}
 	setHeader = () => {
 		const { navigation } = this.props;
@@ -413,10 +420,10 @@ class RoomsListView extends React.Component {
 				resolve()
 			} catch (e) {
 				this.retryFindCount = this.retryFindCount + 1 || 1;
-				if (this.retryFindCount <= 5) {
+				if (this.retryFindCount <= 10) {
 					this.retryFindTimeout = setTimeout(() => {
 						initInner(channelsDataIds, resolve);
-					}, 900 * this.retryFindCount);
+					}, 300 * this.retryFindCount);
 				}
 			}
 
@@ -484,6 +491,7 @@ class RoomsListView extends React.Component {
 			Q.where('rid', Q.oneOf(channelsDataIds)),
 			Q.where('tmid', null),
 			Q.and(
+				Q.where('attachments', Q.like(`%"attachments":[]%`)),
 				Q.or(
 					Q.where('attachments', Q.like(`%image_type%`)),
 					Q.where('attachments', Q.like(`%video_type%`))
@@ -509,7 +517,7 @@ class RoomsListView extends React.Component {
 		this.messagesSubscription = this.messagesObservable
 			.subscribe((messages) => {
 
-				// messages = messages.filter(m => !m.t || !hideSystemMessages?.includes(m.t));
+				messages = messages.filter(m => m.attachments[0].attachments[0] === undefined);
 				console.info("消息", messages,)
 				if (this.mounted) {
 					this.setState({ messages }, () => this.update());
@@ -948,9 +956,95 @@ class RoomsListView extends React.Component {
 		const {
 			sortBy, queueSize, inquiryEnabled, encryptionBanner, user
 		} = this.props;
-		return (
-			<ChannelCircle />
+		const [isModelOpen, setModel] = useState(false);
+		const [currentUserIndex, setCurrentUserIndex] = useState(0);
+		const currentScrollValue = useRef(0);
+		const modalScroll = useRef(null);
 
+		const onStorySelect = (index) => {
+			setCurrentUserIndex(index);
+			currentScrollValue.current = - (width * index)
+			setTimeout(() => {
+				setModel(true);
+
+			}, 0);
+		};
+
+		const onStoryClose = () => {
+			setModel(false);
+			currentScrollValue.current = 0
+		};
+
+		const onStoryNext = (isScroll) => {
+			const newIndex = currentUserIndex + 1;
+			currentScrollValue.current -= width
+			console.info(AllStories.length, currentScrollValue.current, 'hshsh')
+			if (AllStories.length - 1 > currentUserIndex) {
+				setCurrentUserIndex(newIndex);
+				if (!isScroll) {
+					modalScroll.current.scrollTo(newIndex, true);
+				}
+			} else {
+				setModel(false);
+			}
+		};
+
+		const onStoryPrevious = (isScroll) => {
+			const newIndex = currentUserIndex - 1;
+			currentScrollValue.current += width
+			// currentScrollValue.current = scrollValue
+
+			if (currentUserIndex > 0) {
+				setCurrentUserIndex(newIndex);
+				if (!isScroll) {
+					modalScroll.current.scrollTo(newIndex, true);
+				}
+			}
+		};
+		const onScrollChange = (scrollValue) => {
+			console.info(currentScrollValue.current, scrollValue)
+			if (currentScrollValue.current > scrollValue) {
+				onStoryNext(true);
+				console.info('next');
+				// currentScrollValue.current = scrollValue
+			}
+			if (currentScrollValue.current < scrollValue) {
+				onStoryPrevious();
+				console.info('previous');
+				// currentScrollValue.current = scrollValue
+			}
+
+		};
+		return (
+			<>
+				<ChannelCircle onStorySelect={onStorySelect} />
+				<Modal
+					animationType="slide"
+					transparent={false}
+					visible={isModelOpen}
+					style={styles.modal}
+					onShow={() => {
+
+					}}
+
+					onRequestClose={onStoryClose}
+				>
+					{/* eslint-disable-next-line max-len */}
+					<CubeNavigationHorizontal callBackAfterSwipe={g => onScrollChange(g)} ref={modalScroll} style={styles.container} initialPage={currentUserIndex}>
+						{AllStories.map((item, index) => (
+							<StoryContainer
+								onClose={onStoryClose}
+								onStoryNext={onStoryNext}
+								onStoryPrevious={onStoryPrevious}
+								user={item}
+								index={index}
+								currentUserIndex={currentUserIndex}
+								isNewStory={index !== currentUserIndex}
+							/>
+						))}
+					</CubeNavigationHorizontal>
+				</Modal>
+			</>
 		);
 	};
 
@@ -1103,12 +1197,15 @@ class RoomsListView extends React.Component {
 		} = this.props;
 
 		return (
-			<SafeAreaView testID='rooms-list-view' style={{ backgroundColor: themes[theme].backgroundColor }}>
-				<StatusBar />
-				{this.renderHeader()}
-				{this.renderScroll()}
+			<>
+				<SafeAreaView testID='rooms-list-view' style={{ backgroundColor: themes[theme].backgroundColor }}>
+					<StatusBar />
+					{this.renderHeader()}
+					{this.renderScroll()}
 
-			</SafeAreaView>
+				</SafeAreaView>
+
+			</>
 		);
 	};
 }

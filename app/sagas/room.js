@@ -63,8 +63,6 @@ const handleRemovedRoom = function* handleRemovedRoom(roomType, actionType, need
 
 const handleLeaveRoom = function* handleLeaveRoom({ room, roomType, selected, needdNavigation = true }) {
 	logEvent(events.RA_LEAVE);
-	console.info('夹生的加首付hiad', roomType, room)
-
 	try {
 		let result = {};
 
@@ -73,7 +71,6 @@ const handleLeaveRoom = function* handleLeaveRoom({ room, roomType, selected, ne
 		} else if (roomType === 'team') {
 			result = yield RocketChat.leaveTeam({ teamName: room.name, ...(selected && { rooms: selected }) });
 		}
-		console.info(result, '夹生的加首付hiad')
 		if (result?.success) {
 			yield handleRemovedRoom(roomType, 'leave', needdNavigation);
 		}

@@ -18,7 +18,6 @@ const { searchPng, companyTitlePng } = ImageMap
 const Header = React.memo((props) => {
     const { username, item, navigation } = props
     const onPress = useCallback(() => navigation.navigate("FeedsUserView", { userInfo: item.u }));
-
     return (
         <Pressable onPress={onPress}>
             <View style={styles.root}>
@@ -28,7 +27,7 @@ const Header = React.memo((props) => {
                     type={item.t}
                     text={item?.u?.username}
                     style={styles.avatar}
-                    // rid={item.rid} // 先用房间的头像
+                    rid={item.rid} // 先用房间的头像
                     // avatar={item?.avatar}
                     borderRadius={32}
 

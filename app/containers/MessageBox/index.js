@@ -116,7 +116,7 @@ class MessageBox extends Component {
 		sharing: false,
 		iOSScrollBehavior: NativeModules.KeyboardTrackingViewTempManager?.KeyboardTrackingScrollBehaviorFixedOffset,
 		isActionsEnabled: true,
-		getCustomEmoji: () => {}
+		getCustomEmoji: () => { }
 	}
 
 	constructor(props) {
@@ -314,7 +314,7 @@ class MessageBox extends Component {
 	}
 
 	componentWillUnmount() {
-		console.countReset(`${ this.constructor.name }.render calls`);
+		console.countReset(`${this.constructor.name}.render calls`);
 		if (this.onChangeText && this.onChangeText.stop) {
 			this.onChangeText.stop();
 		}
@@ -353,7 +353,7 @@ class MessageBox extends Component {
 	}
 
 	// eslint-disable-next-line react/sort-comp
-	debouncedOnChangeText = debounce(async(text) => {
+	debouncedOnChangeText = debounce(async (text) => {
 		const { sharing } = this.props;
 		const isTextEmpty = text.length === 0;
 		if (isTextEmpty) {
@@ -415,9 +415,9 @@ class MessageBox extends Component {
 		const regexp = /([a-z0-9._-]+)$/im;
 		const result = msg.substr(0, cursor).replace(regexp, '');
 		const mentionName = trackingType === MENTIONS_TRACKING_TYPE_EMOJIS
-			? `${ item.name || item }:`
+			? `${item.name || item}:`
 			: (item.username || item.name || item.command);
-		const text = `${ result }${ mentionName } ${ msg.slice(cursor) }`;
+		const text = `${result}${mentionName} ${msg.slice(cursor)}`;
 		if ((trackingType === MENTIONS_TRACKING_TYPE_COMMANDS) && item.providesPreview) {
 			this.setState({ showCommandPreview: true });
 		}
@@ -457,13 +457,13 @@ class MessageBox extends Component {
 		// if messagebox has an active cursor
 		const { start, end } = this.selection;
 		const cursor = Math.max(start, end);
-		newText = `${ text.substr(0, cursor) }${ emoji }${ text.substr(cursor) }`;
+		newText = `${text.substr(0, cursor)}${emoji}${text.substr(cursor)}`;
 		const newCursor = cursor + emoji.length;
 		this.setInput(newText, { start: newCursor, end: newCursor });
 		this.setShowSend(true);
 	}
 
-	getPermalink = async(message) => {
+	getPermalink = async (message) => {
 		try {
 			return await RocketChat.getPermalinkMessage(message);
 		} catch (error) {
@@ -482,24 +482,24 @@ class MessageBox extends Component {
 		return result;
 	}
 
-	getUsers = debounce(async(keyword) => {
+	getUsers = debounce(async (keyword) => {
 		let res = await RocketChat.search({ text: keyword, filterRooms: false, filterUsers: true });
 		res = [...this.getFixedMentions(keyword), ...res];
 		this.setState({ mentions: res });
 	}, 300)
 
-	getRooms = debounce(async(keyword = '') => {
+	getRooms = debounce(async (keyword = '') => {
 		const res = await RocketChat.search({ text: keyword, filterRooms: true, filterUsers: false });
 		this.setState({ mentions: res });
 	}, 300)
 
-	getEmojis = debounce(async(keyword) => {
+	getEmojis = debounce(async (keyword) => {
 		const db = database.active;
 		const customEmojisCollection = db.get('custom_emojis');
 		const likeString = sanitizeLikeString(keyword);
 		const whereClause = [];
 		if (likeString) {
-			whereClause.push(Q.where('name', Q.like(`${ likeString }%`)));
+			whereClause.push(Q.where('name', Q.like(`${likeString}%`)));
 		}
 		let customEmojis = await customEmojisCollection.query(...whereClause).fetch();
 		customEmojis = customEmojis.slice(0, MENTIONS_COUNT_TO_DISPLAY);
@@ -508,12 +508,12 @@ class MessageBox extends Component {
 		this.setState({ mentions: mergedEmojis || [] });
 	}, 300)
 
-	getSlashCommands = debounce(async(keyword) => {
+	getSlashCommands = debounce(async (keyword) => {
 		const db = database.active;
 		const commandsCollection = db.get('slash_commands');
 		const likeString = sanitizeLikeString(keyword);
 		const commands = await commandsCollection.query(
-			Q.where('id', Q.like(`${ likeString }%`))
+			Q.where('id', Q.like(`${likeString}%`))
 		).fetch();
 		this.setState({ mentions: commands || [] });
 	}, 300)
@@ -548,9 +548,9 @@ class MessageBox extends Component {
 		}, 1000);
 	}
 
-	setCommandPreview = async(command, name, params) => {
+	setCommandPreview = async (command, name, params) => {
 		const { rid } = this.props;
-		try	{
+		try {
 			const { success, preview } = await RocketChat.getCommandPreview(name, rid, params);
 			if (success) {
 				return this.setState({ commandPreview: preview?.items, showCommandPreview: true, command });
@@ -593,7 +593,7 @@ class MessageBox extends Component {
 		return false;
 	}
 
-	takePhoto = async() => {
+	takePhoto = async () => {
 		logEvent(events.ROOM_BOX_ACTION_PHOTO);
 		try {
 			const image = await ImagePicker.openCamera(this.imagePickerConfig);
@@ -605,7 +605,7 @@ class MessageBox extends Component {
 		}
 	}
 
-	takeVideo = async() => {
+	takeVideo = async () => {
 		logEvent(events.ROOM_BOX_ACTION_VIDEO);
 		try {
 			const video = await ImagePicker.openCamera(this.videoPickerConfig);
@@ -617,7 +617,7 @@ class MessageBox extends Component {
 		}
 	}
 
-	chooseFromLibrary = async() => {
+	chooseFromLibrary = async () => {
 		logEvent(events.ROOM_BOX_ACTION_LIBRARY);
 		try {
 			const attachments = await ImagePicker.openPicker(this.libraryPickerConfig);
@@ -627,7 +627,7 @@ class MessageBox extends Component {
 		}
 	}
 
-	chooseFile = async() => {
+	chooseFile = async () => {
 		logEvent(events.ROOM_BOX_ACTION_FILE);
 		try {
 			const res = await DocumentPicker.pick({
@@ -658,6 +658,8 @@ class MessageBox extends Component {
 			thread = message;
 			replyCancel();
 		}
+		Navigation.navigate('FeedsPublishView', { room: this.room, thread, attachments });
+		return
 		Navigation.navigate('ShareView', { room: this.room, thread, attachments });
 	}
 
@@ -693,7 +695,7 @@ class MessageBox extends Component {
 		this.setState({ recording });
 	}
 
-	finishAudioMessage = async(fileInfo) => {
+	finishAudioMessage = async (fileInfo) => {
 		const {
 			rid, tmid, baseUrl: server, user
 		} = this.props;
@@ -713,7 +715,7 @@ class MessageBox extends Component {
 		this.setState({ showEmojiKeyboard: false });
 	}
 
-	submit = async() => {
+	submit = async () => {
 		const { tshow } = this.state;
 		const {
 			onSubmit, rid: roomId, tmid, showSend, sharing
@@ -746,7 +748,7 @@ class MessageBox extends Component {
 			const command = message.replace(/ .*/, '').slice(1);
 			const likeString = sanitizeLikeString(command);
 			const slashCommand = await commandsCollection.query(
-				Q.where('id', Q.like(`${ likeString }%`))
+				Q.where('id', Q.like(`${likeString}%`))
 			).fetch();
 			if (slashCommand.length > 0) {
 				logEvent(events.COMMAND_RUN);
@@ -770,7 +772,7 @@ class MessageBox extends Component {
 			const { id, subscription: { id: rid } } = editingMessage;
 			editRequest({ id, msg: message, rid });
 
-		// Reply
+			// Reply
 		} else if (replying) {
 			const {
 				message: replyingMessage, threadsEnabled, replyWithMention
@@ -780,23 +782,23 @@ class MessageBox extends Component {
 			if (threadsEnabled && replyWithMention) {
 				onSubmit(message, replyingMessage.id, tshow);
 
-			// Legacy reply or quote (quote is a reply without mention)
+				// Legacy reply or quote (quote is a reply without mention)
 			} else {
 				const { user, roomType } = this.props;
 				const permalink = await this.getPermalink(replyingMessage);
-				let msg = `[ ](${ permalink }) `;
+				let msg = `[ ](${permalink}) `;
 
 				// if original message wasn't sent by current user and neither from a direct room
 				if (user.username !== replyingMessage.u.username && roomType !== 'd' && replyWithMention) {
-					msg += `@${ replyingMessage.u.username } `;
+					msg += `@${replyingMessage.u.username} `;
 				}
 
-				msg = `${ msg } ${ message }`;
+				msg = `${msg} ${message}`;
 				onSubmit(msg);
 			}
 			replyCancel();
 
-		// Normal message
+			// Normal message
 		} else {
 			onSubmit(message, undefined, tshow);
 		}
@@ -936,7 +938,7 @@ class MessageBox extends Component {
 					underlineColorAndroid='transparent'
 					defaultValue=''
 					multiline
-					testID={`messagebox-input${ tmid ? '-thread' : '' }`}
+					testID={`messagebox-input${tmid ? '-thread' : ''}`}
 					theme={theme}
 					{...isAndroidTablet}
 				/>
@@ -974,7 +976,7 @@ class MessageBox extends Component {
 	}
 
 	render() {
-		console.count(`${ this.constructor.name }.render calls`);
+		console.count(`${this.constructor.name}.render calls`);
 		const { showEmojiKeyboard } = this.state;
 		const {
 			user, baseUrl, theme, iOSScrollBehavior

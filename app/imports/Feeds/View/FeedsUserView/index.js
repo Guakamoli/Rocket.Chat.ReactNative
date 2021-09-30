@@ -181,9 +181,10 @@ const BottomComponents = (props) => {
 }
 const UserView = (props) => {
     const { leaveRoom, selfUser, navigation } = props
-    const { userInfo = { username: 'root' } } = props.route.params || {}
+    const { userInfo = { username: 'root', rid: "" } } = props.route.params || {}
     const [user, setUser] = useState({
-        username: userInfo.username
+        username: userInfo.username,
+        rid: userInfo.rid,
     })
     const channelRef = useRef(null)
     const roomRef = useRef(null)
@@ -192,10 +193,15 @@ const UserView = (props) => {
     const [hasSubscribe, setHasSubscribe] = useState(null)
     const getUserData = async (userInfo) => {
         const db = database.active;
-        const userCollection = db.get('users');
-        const [userRecord] = await userCollection.query(Q.where('username', Q.eq(userInfo.username))).fetch();
+        const userCollection = db.get('rooms');
+        console.info('userRecorduserRecorduserRecorduserRecord')
+
+        const [userRecord] = await userCollection.query(Q.where('id', Q.eq(userInfo.rid))).fetch();
+        console.info(userRecord, 'userRecorduserRecorduserRecorduserRecord')
+        return
         setUser({
-            username: userRecord.username
+            username: userRecord.username,
+            rid: userRecord.rid,
         })
     }
     const getHasSubscribe = async (userInfo) => {
@@ -203,14 +209,26 @@ const UserView = (props) => {
         const db = database.active;
         const result = await RocketChat.spotlight(userInfo.username, [], { users: false, rooms: true })
         channelRef.current = result?.rooms?.[0]
+        console.info("channelRef.current", channelRef.current, userInfo.username, result)
+        if (channelRef.current) {
+            setUser({
+                username: channelRef.current.name,
+                rid: channelRef.current._id,
+            })
+        }
 
         let data = await db.get('subscriptions').query(
             Q.where("name", Q.eq(`${userInfo.username}`)),
             Q.where("t", Q.eq(`c`)),
         ).fetch();
+        console.info("data.0000", data[0])
+
         if (data && data[0]) {
             roomRef.current = data[0]
-
+            setUser({
+                username: roomRef.current.name,
+                rid: roomRef.current.rid,
+            })
             setHasSubscribe(true)
         }
 
@@ -247,7 +265,6 @@ const UserView = (props) => {
 
                 const result = await RocketChat.spotlight(userInfo.username, [], { users: false, rooms: true })
                 channelRef.current = result?.rooms?.[0]
-
                 let data = await db.get('subscriptions').query(
                     Q.where("name", Q.eq(`${userInfo.username}`)),
                     Q.where("t", Q.eq(`c`)),
@@ -255,6 +272,12 @@ const UserView = (props) => {
                 if (data && data[0]) {
                     roomRef.current = data[0]
 
+                }
+                if (!roomRef.current) {
+                    roomRef.current = {
+                        rid: channelRef.current._id,
+                        t: "c"
+                    }
                 }
             }
             if (hasSubscribe && roomRef.current) {
@@ -298,9 +321,9 @@ const UserView = (props) => {
                         <Avatar
                             text={user.username}
                             size={88}
-                            type={user.t}
+                            type={"c"}
                             style={styles.userAvatar}
-                            // rid={user.rid}// 先用房间的头像
+                            rid={user.rid}// 先用房间的头像
                             borderRadius={88}
 
                         />
@@ -465,8 +488,7 @@ const styles = StyleSheet.create({
     userAvatar: {
         width: 88,
         height: 88,
-        borderRadius: 100,
-
+        borderRadius: 88,
     },
     userDesc: {
         fontSize: 12,

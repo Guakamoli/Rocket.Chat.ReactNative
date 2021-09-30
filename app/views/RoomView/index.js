@@ -603,7 +603,9 @@ class RoomView extends React.Component {
 	}
 
 	onReactionPress = async (shortname, messageId) => {
+
 		try {
+			console.info("shortname, messageId)", shortname, messageId)
 			await RocketChat.setReaction(shortname, messageId);
 			this.onReactionClose();
 			Review.pushPositiveEvent();

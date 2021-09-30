@@ -16,7 +16,7 @@ import { connect } from 'react-redux';
 
 import ImageMap from "../../images"
 import { Image, SearchBar, Button } from 'react-native-elements';
-import useDebounce from 'ahooks/es/useDebounce';
+import useThrottleFn from 'ahooks/es/useThrottleFn';
 import I18n from '../../../../i18n';
 import SafeAreaView from '../../../../containers/SafeAreaView';
 import RocketChat from '../../../../lib/rocketchat';
@@ -51,8 +51,10 @@ const screenOptions = {
     },
 }
 const PublishView = (props) => {
-    const { navigation, user, FileUpload_MediaTypeWhiteList: mediaAllowList, FileUpload_MaxFileSize: maxFileSize } = props
-    const { url, type, rid, attachments } = props.route?.params || {}
+    const { navigation, user, server, FileUpload_MediaTypeWhiteList: mediaAllowList, FileUpload_MaxFileSize: maxFileSize } = props
+    const { type, attachments, room = {} } = props.route?.params || {}
+    const { rid } = room
+    console.info(room, props.route?.params, 'props.route?.params')
     const onPress = useCallback(() => navigation.goBack());
     const [text, setText] = useState('')
     const [options] = useState([{
@@ -63,41 +65,51 @@ const PublishView = (props) => {
         type: "free"
     }])
     const publish = useCallback(async () => {
-        for (const item of attachments) {
-            const { success: canUpload, error } = canUploadFile(item, mediaAllowList, maxFileSize);
-            item.canUpload = canUpload;
-            item.error = error;
-            if (!item.filename) {
-                item.filename = new Date().toISOString();
-            }
-        }
+        console.info("kaiasas")
+        try {
 
-        await Promise.all(attachments.map(({
-            filename: name,
-            mime: type,
-            description,
-            size,
-            path,
-            canUpload
-        }) => {
-            if (canUpload) {
-                return RocketChat.sendFileMessage(
-                    room.rid,
-                    {
-                        name,
-                        text,
-                        size,
-                        type,
-                        path,
-                        store: 'Uploads'
-                    },
-                    thread?.id,
-                    server,
-                    { id: user.id, token: user.token }
-                );
+
+            for (const item of attachments) {
+                const { success: canUpload, error } = canUploadFile(item, mediaAllowList, maxFileSize);
+                item.canUpload = canUpload;
+                item.error = error;
+                if (!item.filename) {
+                    item.filename = new Date().toISOString();
+                }
             }
-            return Promise.resolve();
-        }));
+            console.info("kai22asas", attachments)
+
+            await Promise.all(attachments.map(({
+                filename: name,
+                mime: type,
+                description,
+                size,
+                path,
+                canUpload
+            }) => {
+                if (canUpload) {
+                    console.info("hahah")
+                    return RocketChat.sendFileMessage(
+                        room.rid,
+                        {
+                            name,
+                            description: text,
+                            size,
+                            type,
+                            path,
+                            store: 'Uploads',
+                            postType: "story"
+                        },
+                        null,
+                        server,
+                        { id: user.id, token: user.token }
+                    );
+                }
+                return Promise.resolve();
+            }));
+        } catch (e) {
+            console.info(e, 'sadasdfsdf')
+        }
     }, [text, user, rid, attachments]);
 
     const [index, setIndex] = useState(0)
@@ -121,13 +133,13 @@ const PublishView = (props) => {
                 <Text onPress={publish} style={styles.titleRight}>发布</Text>
             ),
         })
-    }, [])
+    }, [publish])
 
     return (
         <View style={styles.root}>
             <View style={[styles.itemBox, styles.headeItemBox]}>
                 <View style={styles.prevImageWrapper}>
-                    <Image source={url} style={styles.prevImage} />
+                    <Image source={{ uri: attachments[0].path }} style={styles.prevImage} />
                     <Image source={type === 'viode' ? videoTypeIconPng : imageTypeIconPng}
                         containerStyle={type === 'viode' ? styles.videoDecoImage : styles.imageDecoImage}
                         style={{ width: "100%", height: "100%" }} resizeMode={'contain'} />

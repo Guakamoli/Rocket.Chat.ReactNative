@@ -8,6 +8,7 @@ import {
     Keyboard,
     RefreshControl,
     StyleSheet,
+    Pressable,
 
 } from 'react-native';
 import { Image, Avatar } from "react-native-elements"
@@ -18,7 +19,8 @@ const { shootPng } = ImageMap
 const colors = ['#E383DDFF', '#E383DDFF', '#7A83F5FF']
 const silentColors = ['#C7C7C7FF', '#C7C7C7FF']
 
-const ChannelCircle = () => {
+const ChannelCircle = (props) => {
+    const { onStorySelect } = props
     const data = [
         { icon: "" },
         { icon: "" },
@@ -30,29 +32,35 @@ const ChannelCircle = () => {
         { icon: "" },
     ]
     const renderItem = ({ item, index }) => {
+        const onPress = () => {
+            onStorySelect(index)
+        }
+        return (
+            <Pressable onPress={onPress}>
+                <View style={styles.itemWrapper}>
+                    <LinearGradient style={styles.backContainer} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} colors={colors} angle={90} useAngle={true}></LinearGradient>
+                    <Avatar avatarStyle={styles.avatar}
+                        source={{ uri: "https://video-message-001.paiyaapp.com/default/4a93713c04cef678b05cc161ad750fce/beb97e81-8daf-4e1e-af21-da64cb137197.jpg" }}
+                        rounded
+                        size={70}
+                        placeholderStyle={{ backgroundColor: 'rgba(255, 255, 255, 0)' }}
+                    />
+                    {
+                        index === 0 ? (<Image source={shootPng} placeholderStyle={{ backgroundColor: "transparent" }} containerStyle={{
+                            width: 27,
+                            height: 27,
+                            position: "absolute",
+                            zIndex: 4,
+                            right: 0,
+                            bottom: 0
 
-        return (<View style={styles.itemWrapper}>
-            <LinearGradient style={styles.backContainer} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} colors={colors} angle={90} useAngle={true}></LinearGradient>
-            <Avatar avatarStyle={styles.avatar}
-                source={{ uri: "https://video-message-001.paiyaapp.com/default/4a93713c04cef678b05cc161ad750fce/beb97e81-8daf-4e1e-af21-da64cb137197.jpg" }}
-                rounded
-                size={70}
-                placeholderStyle={{ backgroundColor: 'rgba(255, 255, 255, 0)' }}
-            />
-            {
-                index === 0 ? (<Image source={shootPng} placeholderStyle={{ backgroundColor: "transparent" }} containerStyle={{
-                    width: 27,
-                    height: 27,
-                    position: "absolute",
-                    zIndex: 4,
-                    right: 0,
-                    bottom: 0
+                        }}
+                            resizeMode={'contain'} />) : null
+                    }
 
-                }}
-                    resizeMode={'contain'} />) : null
-            }
-
-        </View>)
+                </View>
+            </Pressable>
+        )
     }
     return (
         <View style={styles.root}>
@@ -64,7 +72,7 @@ const ChannelCircle = () => {
                 keyExtractor={(item, index) => index}
                 renderItem={renderItem}
             ></FlatList>
-        </View>)
+        </View >)
 }
 const styles = StyleSheet.create({
     root: {

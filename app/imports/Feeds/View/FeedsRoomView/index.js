@@ -718,7 +718,8 @@ class RoomView extends React.Component {
 			user, Message_GroupingPeriod, Message_TimeFormat, useRealName, baseUrl, Message_Read_Receipt_Enabled, theme,
 			navigation
 		} = this.props;
-
+		let dateSeparator = null
+		let showUnreadSeparator = null
 		if (!previousItem) {
 			dateSeparator = item.ts;
 			showUnreadSeparator = moment(item.ts).isAfter(lastOpen);
@@ -766,21 +767,7 @@ class RoomView extends React.Component {
 						getCustomEmoji={this.getCustomEmoji}
 						highlighted={highlightedMessage === item.id}
 					/>
-					<List
-						// ref={this.list}
-						// listRef={this.flatList}
-						rid={this.rid}
-						t={t}
-						tmid={this.tmid}
-						theme={theme}
-						tunread={room?.tunread}
-						ignored={room?.ignored}
-						renderRow={this.renderItem}
-						// loading={loading}
-						navigation={navigation}
-						hideSystemMessages={true}
-						showMessageInMainThread={false}
-					/>
+
 				</>
 
 			);

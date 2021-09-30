@@ -11,6 +11,7 @@ import {
   Dimensions
 } from 'react-native';
 import { Image, Avatar } from "react-native-elements"
+import useThrottleFn from 'ahooks/es/useThrottleFn';
 
 import ImageMap from "../../../images"
 import Carousel, { Pagination } from 'react-native-snap-carousel';
@@ -24,22 +25,19 @@ import { LISTENER } from '../../../../../containers/Toast';
 const { width } = Dimensions.get("window")
 const { replycommentPng, sharePng, unlikePng, likePng } = ImageMap
 const LikeBtn = (props) => {
-  const { item } = props
-  const [starred, setStarred] = useState(item.starred)
-  const handleStar = async () => {
-    logEvent(starred ? events.ROOM_MSG_ACTION_UNSTAR : events.ROOM_MSG_ACTION_STAR);
+  const { item, setLikeCount } = props
+  const [starred, setStarred] = useState(!!item?.reactions?.find?.(i => i.emoji === ":+1:") || false)
+  const { run: handleStar } = useThrottleFn(async () => {
     try {
-      const a = await RocketChat.toggleStarMessage(item.id, starred || false);
-      console.info(item, a)
-
-      EventEmitter.emit(LISTENER, { message: starred ? I18n.t('Message_unstarred') : I18n.t('Message_starred') });
+      // const a = await RocketChat.toggleStarMessage(item.id, starred || false);
+      await RocketChat.setReaction(":+1:", item.id);
+      setLikeCount(starred ? -1 : 1)
+      // EventEmitter.emit(LISTENER, { message: starred ? I18n.t('Message_unstarred') : I18n.t('Message_starred') });
       setStarred(!starred)
     } catch (e) {
       console.info("asdasd", e)
-      logEvent(events.ROOM_MSG_ACTION_STAR_F);
-      log(e);
     }
-  };
+  }, { wait: 1000 });
 
   return <Image source={starred ? likePng : unlikePng} style={[styles.tool, { width: 24 }]} onPress={handleStar} resizeMode={'contain'}></Image>
 }

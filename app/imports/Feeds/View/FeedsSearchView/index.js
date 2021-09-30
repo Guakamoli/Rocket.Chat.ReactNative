@@ -158,7 +158,8 @@ const SearchResult = React.memo((props) => {
     const renderItem = props => {
         const { item, index } = props;
         const toProduct = () => {
-            navigation.navigate('User', { slug: item.id });
+            console.info(item, 'hahahahah')
+            navigation.navigate('FeedsUserView', { userInfo: { username: item.name, rid: item.rid, } });
         };
         const avatar = getRoomAvatar(item);
         return (
@@ -259,8 +260,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     contentContainerStyle: {
-        height: "100%",
         paddingHorizontal: 15,
+
     },
 
     itemAvatar: {
