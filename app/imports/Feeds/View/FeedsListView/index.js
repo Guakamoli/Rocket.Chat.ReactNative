@@ -422,8 +422,9 @@ class RoomsListView extends React.Component {
 				this.retryFindCount = this.retryFindCount + 1 || 1;
 				if (this.retryFindCount <= 10) {
 					this.retryFindTimeout = setTimeout(() => {
+						console.info("请求", e)
 						initInner(channelsDataIds, resolve);
-					}, 300 * this.retryFindCount);
+					}, 2000 * this.retryFindCount);
 				}
 			}
 

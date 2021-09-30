@@ -21,7 +21,8 @@ const UserView = React.memo((props) => {
       </View>
       <Image source={closeWhitePng}
         onPress={props.onClosePress}
-        containerStyle={styles.close} />
+        containerStyle={styles.close}
+        style={styles.close} />
 
     </View>
   );
@@ -39,8 +40,10 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   close: {
-    width: 15,
-    height: 15,
+    width: 23,
+    height: 23,
+    justifyContent: "center",
+    alignItems: "center",
   },
   userView: {
     flexDirection: 'row',
