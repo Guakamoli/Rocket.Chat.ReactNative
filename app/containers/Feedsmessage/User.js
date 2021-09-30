@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import {
 	View, Text, StyleSheet, TouchableOpacity
 } from 'react-native';
-import moment from 'moment';
 
 import { themes } from '../../constants/colors';
 import { withTheme } from '../../theme';
@@ -13,6 +12,7 @@ import sharedStyles from '../../views/Styles';
 import messageStyles from './styles';
 import MessageContext from './Context';
 import Content from './Content';
+import { formatDateDetail } from "../../utils/room"
 
 import { SYSTEM_MESSAGE_TYPES_WITH_AUTHOR_NAME } from './utils';
 
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
 let TimeComp = ({
 	isHeader, useRealName, author, alias, ts, timeFormat, hasError, theme, navToRoomInfo, type, ...props
 }) => {
-	const time = moment(ts).format(timeFormat);
+	const time = formatDateDetail(ts)
 
 	return (<Text style={[messageStyles.time, { color: themes[theme].auxiliaryText }]}>{time}</Text>)
 
@@ -72,7 +72,6 @@ const User = React.memo(props => {
 		const { user } = useContext(MessageContext);
 		const username = (useRealName && author.name) || author.username;
 		const aliasUsername = alias ? (<Text style={[styles.alias, { color: themes[theme].auxiliaryText }]}> @{username}</Text>) : null;
-		const time = moment(ts).format(timeFormat);
 		const onUserPress = () => navToRoomInfo(navParam);
 		const isDisabled = author._id === user.id;
 

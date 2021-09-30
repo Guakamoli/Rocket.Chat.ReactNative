@@ -118,7 +118,6 @@ const MessageTouchable = React.memo((props) => {
 		);
 	}
 	const { onPress, onLongPress } = useContext(MessageContext);
-	console.info(props.msg, 'msg')
 	return (
 		<Touchable
 			onLongPress={onLongPress}

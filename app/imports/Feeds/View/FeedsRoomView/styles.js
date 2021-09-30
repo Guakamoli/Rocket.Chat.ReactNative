@@ -46,7 +46,7 @@ export default StyleSheet.create({
 	joinRoomContainer: {
 		justifyContent: 'flex-end',
 		alignItems: 'center',
-		marginVertical: 15
+		marginVertical: 15,
 	},
 	joinRoomButton: {
 		width: 107,

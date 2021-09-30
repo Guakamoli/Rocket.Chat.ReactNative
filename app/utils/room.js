@@ -19,15 +19,26 @@ export const capitalize = (s) => {
 };
 
 export const formatDate = date => moment(date).calendar(null, {
-	lastDay: `[${ I18n.t('Yesterday') }]`,
+	lastDay: `[${I18n.t('Yesterday')}]`,
 	sameDay: 'LT',
 	lastWeek: 'dddd',
 	sameElse: 'L'
 });
+export const formatDateDetail = date => {
+	if (date > Date.now() - 24 * 60 * 60 * 1000) {
 
+		return moment(date).fromNow();
+	}
+	return moment(date).calendar(null, {
+		lastDay: `[${I18n.t('Yesterday')}]`,
+		sameDay: 'LT',
+		lastWeek: 'dddd HH:mm',
+		sameElse: 'YYYY/MM/DD HH:mm',
+	})
+};
 export const formatDateThreads = date => moment(date).calendar(null, {
 	sameDay: 'LT',
-	lastDay: `[${ I18n.t('Yesterday') }] LT`,
+	lastDay: `[${I18n.t('Yesterday')}] LT`,
 	lastWeek: 'dddd LT',
 	sameElse: 'LL'
 });

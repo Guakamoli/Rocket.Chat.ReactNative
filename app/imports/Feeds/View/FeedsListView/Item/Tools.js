@@ -35,11 +35,11 @@ const LikeBtn = (props) => {
       // EventEmitter.emit(LISTENER, { message: starred ? I18n.t('Message_unstarred') : I18n.t('Message_starred') });
       setStarred(!starred)
     } catch (e) {
-      console.info("asdasd", e)
     }
   }, { wait: 1000 });
 
-  return <Image source={starred ? likePng : unlikePng} style={[styles.tool, { width: 24 }]} onPress={handleStar} resizeMode={'contain'}></Image>
+  return <Image source={starred ? likePng : unlikePng} style={[styles.tool, { width: 24 }]} onPress={handleStar} resizeMode={'contain'}
+    placeholderStyle={{ backgroundColor: "transparent" }}></Image>
 }
 const OtherButton = React.memo((props) => {
   const { item, navigation } = props
@@ -59,7 +59,7 @@ const OtherButton = React.memo((props) => {
 
   return (<>
     {buttons.map((i) => {
-      return <Image source={i.icon} style={styles.tool} key={i.id} onPress={i.func} resizeMode={'contain'}></Image>
+      return <Image source={i.icon} style={styles.tool} key={i.id} onPress={i.func} resizeMode={'contain'} placeholderStyle={{ backgroundColor: "transparent" }}></Image>
     })}
   </>)
 })

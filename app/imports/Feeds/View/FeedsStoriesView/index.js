@@ -8,6 +8,7 @@ import StoryContainer from './components/StoryContainer';
 const { width, height } = Dimensions.get('window');
 
 const Stories = (props) => {
+
     const [isModelOpen, setModel] = useState(false);
     const [currentUserIndex, setCurrentUserIndex] = useState(0);
     const currentScrollValue = useRef(0);

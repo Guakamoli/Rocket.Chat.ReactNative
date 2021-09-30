@@ -718,20 +718,6 @@ class RoomView extends React.Component {
 			user, Message_GroupingPeriod, Message_TimeFormat, useRealName, baseUrl, Message_Read_Receipt_Enabled, theme,
 			navigation
 		} = this.props;
-		let dateSeparator = null
-		let showUnreadSeparator = null
-		if (!previousItem) {
-			dateSeparator = item.ts;
-			showUnreadSeparator = moment(item.ts).isAfter(lastOpen);
-		} else {
-			showUnreadSeparator = lastOpen
-				&& moment(item.ts).isSameOrAfter(lastOpen)
-				&& moment(previousItem.ts).isBefore(lastOpen);
-			if (!moment(item.ts).isSame(previousItem.ts, 'day')) {
-				dateSeparator = item.ts;
-			}
-		}
-		console.info(item, 'item')
 		let content = null;
 		if (MESSAGE_TYPE_ANY_LOAD.includes(item.t)) {
 			content = <LoadMore load={() => this.onLoadMoreMessages(item)} type={item.t} runOnRender={item.t === MESSAGE_TYPE_LOAD_MORE && !previousItem} />;
@@ -772,9 +758,6 @@ class RoomView extends React.Component {
 
 			);
 		}
-
-
-
 		return content;
 	}
 

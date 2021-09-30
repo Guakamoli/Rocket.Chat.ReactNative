@@ -14,7 +14,7 @@ import {
 import { Image } from "react-native-elements"
 import ImageMap from "../../../images"
 import Avatar from '../../../../../containers/Avatar';
-
+import { formatDateDetail } from "../../../../../utils/room"
 const { searchPng, companyTitlePng } = ImageMap
 const { width } = Dimensions.get("window")
 const Comment = React.memo((props) => {
@@ -25,11 +25,15 @@ const Comment = React.memo((props) => {
         });
     }
     // const [text, setText] = useState('')
-
+    const date = formatDateDetail(item.ts)
+    let commentCount = '暂无评论'
+    if (item.tcount > 0) {
+        commentCount = `${item.tcount}条评论`
+    }
     return (
         <View style={styles.root}>
             <View>
-                {item.tcount ? <Text style={styles.commentCount} onPress={toComments}>{item.tcount}条评论</Text> : null}
+                <Text style={styles.commentCount} onPress={toComments}>{commentCount}</Text>
             </View>
             <View style={styles.inputWrapper}>
                 <Avatar
@@ -45,7 +49,9 @@ const Comment = React.memo((props) => {
                     <Text style={styles.inputStyle} onPress={toComments}>{'添加评论...'}</Text>
                     {/* <TextInput placeholder={'添加评论...'} placeholderTextColor={'#929292FF'} style={styles.inputStyle} onChangeText={(t) => { setText(t) }}></TextInput> */}
                 </View>
+
             </View>
+            <Text style={styles.time} onPress={toComments}>{date}</Text>
         </View>
     )
 })
@@ -67,12 +73,19 @@ const styles = StyleSheet.create({
         color: '#8F8F8FFF',
         lineHeight: 20,
     },
+    time: {
+        fontSize: 12,
+        fontWeight: '400',
+        color: '#8F8F8FFF',
+        lineHeight: 17,
+    },
     inputBox: {
         marginLeft: 10,
     },
     inputWrapper: {
         flexDirection: "row",
-        alignItems: "center"
+        alignItems: "center",
+        marginBottom: 10,
     },
 
 })

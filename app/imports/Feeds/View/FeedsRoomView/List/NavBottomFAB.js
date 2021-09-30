@@ -59,7 +59,7 @@ const NavBottomFAB = ({ y, onPress, isThread }) => {
 				style={[styles.button, { backgroundColor: themes[theme].backgroundColor }]}
 			>
 				<View style={[styles.content, { borderColor: themes[theme].borderColor }]}>
-					<CustomIcon name='chevron-down' color={themes[theme].auxiliaryTintColor} size={36} />
+					<CustomIcon name='chevron-up' color={themes[theme].auxiliaryTintColor} size={36} />
 				</View>
 			</Touch>
 		</Animated.View>

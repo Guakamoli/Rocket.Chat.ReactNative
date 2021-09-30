@@ -72,6 +72,19 @@ class ListContainer extends React.Component {
 
 	componentDidMount() {
 		this.mounted = true;
+		// try {
+
+		// 	if (this.props.listRef.current) {
+		// 		setTimeout(() => {
+		// 			this.props.listRef.current.getNode().scrollToOffset({ offset: 0, animated: false })
+		// 		}, 100);
+
+		// 	}
+		// } catch (e) {
+
+		// }
+
+
 		console.timeEnd(`${this.constructor.name} mount`);
 	}
 
@@ -303,7 +316,7 @@ class ListContainer extends React.Component {
 
 	jumpToBottom = () => {
 		const { listRef } = this.props;
-		listRef.current.getNode().scrollToOffset({ offset: -100 });
+		listRef.current.getNode().scrollToOffset({ offset: 0 });
 	}
 
 	renderFooter = () => {

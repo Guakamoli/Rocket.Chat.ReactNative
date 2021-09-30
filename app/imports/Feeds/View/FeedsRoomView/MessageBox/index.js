@@ -951,7 +951,7 @@ class MessageBox extends Component {
 					onItemSelected={this.onEmojiSelected}
 					trackInteractive
 					// revealKeyboardInteractive
-					requiresSameParentToManageScrollView
+					// requiresSameParentToManageScrollView
 					addBottomView
 					bottomViewColor={themes[theme].messageboxBackground}
 					iOSScrollBehavior={iOSScrollBehavior}

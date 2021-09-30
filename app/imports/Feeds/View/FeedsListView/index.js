@@ -163,6 +163,7 @@ class RoomsListView extends React.Component {
 		this.urlMap = {}
 		this.retryFindCount = 0
 		this.hadGetNewMessage = false;
+		this.channelsDataIds = []
 		this.state = {
 			searching: false,
 			search: [],
@@ -188,7 +189,10 @@ class RoomsListView extends React.Component {
 		}
 		];
 		this.setHeader();
-		this.getSubscriptions();
+		setTimeout(() => {
+			this.getSubscriptions();
+
+		}, 1000)
 	}
 	handleItemsInViewPort(a, b) {
 		console.log(a, b, '222')
@@ -412,6 +416,7 @@ class RoomsListView extends React.Component {
 		const initInner = async (channelsDataIds, resolve) => {
 			try {
 				if (this.hadGetNewMessage) return
+
 				const channelsDataIdsPro = channelsDataIds.map((i) => {
 					return RoomServices.getMessages({ rid: i, lastOpen: true })
 				})
@@ -488,6 +493,7 @@ class RoomsListView extends React.Component {
 				Q.experimentalTake(1000)
 			).fetch()
 		const channelsDataIds = channelsData.map((i) => i.rid)
+		this.channelsDataIds = channelsDataIds
 		const whereClause = [
 			Q.where('rid', Q.oneOf(channelsDataIds)),
 			Q.where('tmid', null),
@@ -940,6 +946,7 @@ class RoomsListView extends React.Component {
 		if (searching) {
 			return;
 		}
+		this.init(this.channelsDataIds)
 		roomsRequest({ allData: true });
 	}
 
@@ -953,7 +960,7 @@ class RoomsListView extends React.Component {
 	getScrollRef = ref => (this.scroll = ref);
 
 	renderListHeader = () => {
-		const { searching } = this.state;
+		const { searching, } = this.state;
 		const {
 			sortBy, queueSize, inquiryEnabled, encryptionBanner, user
 		} = this.props;
@@ -1088,7 +1095,6 @@ class RoomsListView extends React.Component {
 				item={item}
 				theme={theme}
 				id={id}
-
 				baseUrl={baseUrl}
 				user={user}
 				type={item.t}
