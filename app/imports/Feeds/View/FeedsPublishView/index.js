@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, Component } from 'react';
+import React, { useState, useEffect, useCallback, Component, useRe } from 'react';
 import PropTypes from 'prop-types';
 import {
     View,
@@ -54,8 +54,8 @@ const PublishView = (props) => {
     const { navigation, user, server, FileUpload_MediaTypeWhiteList: mediaAllowList, FileUpload_MaxFileSize: maxFileSize } = props
     const { type, attachments, room = {} } = props.route?.params || {}
     const { rid } = room
-    console.info(room, props.route?.params, 'props.route?.params')
     const onPress = useCallback(() => navigation.goBack());
+    const hasPublish = useRef(false)
     const [text, setText] = useState('')
     const [options] = useState([{
         name: "订阅作品",
@@ -65,7 +65,8 @@ const PublishView = (props) => {
         type: "free"
     }])
     const publish = useCallback(async () => {
-        console.info("kaiasas")
+        if (hasPublish.current) return
+        hasPublish.current = true
         try {
 
 
@@ -77,7 +78,6 @@ const PublishView = (props) => {
                     item.filename = new Date().toISOString();
                 }
             }
-            console.info("kai22asas", attachments)
 
             await Promise.all(attachments.map(({
                 filename: name,
@@ -105,9 +105,11 @@ const PublishView = (props) => {
                         { id: user.id, token: user.token }
                     );
                 }
-                return Promise.resolve();
+                Promise.resolve();
+                return navigation.replace("FeedsListView")
             }));
         } catch (e) {
+            hasPublish.current = false
             console.info(e, 'sadasdfsdf')
         }
     }, [text, user, rid, attachments]);
