@@ -658,8 +658,7 @@ class MessageBox extends Component {
 			thread = message;
 			replyCancel();
 		}
-		Navigation.navigate('FeedsPublishView', { room: this.room, thread, attachments });
-		return
+
 		Navigation.navigate('ShareView', { room: this.room, thread, attachments });
 	}
 

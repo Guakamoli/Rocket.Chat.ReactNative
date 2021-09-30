@@ -87,7 +87,10 @@ const filterIsOmnichannel = s => s.t === 'l';
 const filterIsTeam = s => s.teamMain;
 const filterIsDiscussion = s => s.prid;
 const { width, height } = Dimensions.get('window');
-
+const shouldUpdateState = [
+	'messages',
+	'storyMessages'
+]
 const shouldUpdateProps = [
 	'searchText',
 	'loadingServer',
@@ -103,6 +106,7 @@ const shouldUpdateProps = [
 	'isMasterDetail',
 	'refreshing',
 	'queueSize',
+
 	'inquiryEnabled',
 	'encryptionBanner'
 ];
@@ -171,6 +175,9 @@ class RoomsListView extends React.Component {
 			chatsUpdate: [],
 			chats: [],
 			messages: [],
+			channelsDataMap: {},
+			channelsData: [],
+			storyMessages: [],
 			item: {}
 		};
 		this.viewabilityConfigCallbackPairs = [{
@@ -256,7 +263,10 @@ class RoomsListView extends React.Component {
 		if (propsUpdated) {
 			return true;
 		}
-
+		const stateUpdated = shouldUpdateState.some(key => nextState[key] !== this.state[key]);
+		if (stateUpdated) {
+			return true;
+		}
 		// Compare changes only once
 		const chatsNotEqual = !dequal(nextState.chatsUpdate, chatsUpdate);
 
@@ -347,6 +357,7 @@ class RoomsListView extends React.Component {
 			this.unsubscribeBlur();
 		}
 		this.unsubscribeMessages()
+
 		if (this.backHandler && this.backHandler.remove) {
 			this.backHandler.remove();
 		}
@@ -381,9 +392,9 @@ class RoomsListView extends React.Component {
 	}
 	toSearchView = () => {
 		const { navigation } = this.props;
-		navigation.navigate("RoomsListView")
-		return
-		navigation.navigate("FeedsSearchView" || "RoomsListView")
+		// navigation.navigate("RoomsListView")
+		// return
+		navigation.navigate("FeedsSearchView")
 	}
 	setHeader = () => {
 		const { navigation } = this.props;
@@ -410,6 +421,9 @@ class RoomsListView extends React.Component {
 	unsubscribeMessages = () => {
 		if (this.messagesSubscription && this.messagesSubscription.unsubscribe) {
 			this.messagesSubscription.unsubscribe();
+		}
+		if (this.messagesStorySubscription && this.messagesStorySubscription.unsubscribe) {
+			this.messagesStorySubscription.unsubscribe();
 		}
 	}
 	init = async (channelsDataIds) => {
@@ -492,13 +506,36 @@ class RoomsListView extends React.Component {
 				Q.experimentalSkip(0),
 				Q.experimentalTake(1000)
 			).fetch()
+
+		channelsDataMap = {}
+		for (const item of channelsData) {
+			channelsDataMap[item.rid] = item
+		}
+		console.info(channelsData, 'channelsDatachannelsDatachannelsData')
+		this.setState({ channelsDataMap, channelsData })
 		const channelsDataIds = channelsData.map((i) => i.rid)
 		this.channelsDataIds = channelsDataIds
 		const whereClause = [
 			Q.where('rid', Q.oneOf(channelsDataIds)),
 			Q.where('tmid', null),
 			Q.and(
+				Q.where('attachments', Q.like(`%paiyapost:%`)),
+
+				Q.or(
+					Q.where('attachments', Q.like(`%image_type%`)),
+					Q.where('attachments', Q.like(`%video_type%`))
+				)
+			),
+
+			Q.experimentalSortBy('ts', Q.desc),
+			Q.experimentalTake(50)
+		];
+		const whereStoryClause = [
+			Q.where('rid', Q.oneOf(channelsDataIds)),
+			Q.where('tmid', null),
+			Q.and(
 				Q.where('attachments', Q.like(`%"attachments":[]%`)),
+				Q.where('attachments', Q.like(`%paiyastory:%`)),
 				Q.or(
 					Q.where('attachments', Q.like(`%image_type%`)),
 					Q.where('attachments', Q.like(`%video_type%`))
@@ -515,12 +552,31 @@ class RoomsListView extends React.Component {
 		// 	.query(...whereClause)
 		// 	.fetch()
 		// this.setState({ messages })
+		this.unsubscribeMessages();
+
+		this.messagesStoryObservable = db.collections
+			.get('messages')
+			.query(...whereStoryClause)
+			.observe();
+		this.messagesStorySubscription = this.messagesStoryObservable
+			.subscribe((messages) => {
+
+				messages = messages.filter(m => m.attachments[0].attachments[0] === undefined);
+				console.info("消息11", messages,)
+
+				if (this.mounted) {
+					this.setState({ storyMessages: messages }, () => this.update());
+				} else {
+					this.state.storyMessages = messages;
+				}
+				// TODO: move it away from here
+				// this.readThreads();
+			});
 
 		this.messagesObservable = db.collections
 			.get('messages')
 			.query(...whereClause)
 			.observe();
-		this.unsubscribeMessages();
 		this.messagesSubscription = this.messagesObservable
 			.subscribe((messages) => {
 
@@ -960,9 +1016,10 @@ class RoomsListView extends React.Component {
 	getScrollRef = ref => (this.scroll = ref);
 
 	renderListHeader = () => {
-		const { searching, } = this.state;
+		const { searching, storyMessages, channelsDataMap, channelsData } = this.state;
 		const {
-			sortBy, queueSize, inquiryEnabled, encryptionBanner, user
+			sortBy, queueSize, inquiryEnabled, encryptionBanner, user,
+			navigation
 		} = this.props;
 		const [isModelOpen, setModel] = useState(false);
 		const [currentUserIndex, setCurrentUserIndex] = useState(0);
@@ -970,6 +1027,7 @@ class RoomsListView extends React.Component {
 		const modalScroll = useRef(null);
 
 		const onStorySelect = (index) => {
+
 			setCurrentUserIndex(index);
 			currentScrollValue.current = - (width * index)
 			setTimeout(() => {
@@ -1025,7 +1083,7 @@ class RoomsListView extends React.Component {
 		};
 		return (
 			<>
-				<ChannelCircle onStorySelect={onStorySelect} />
+				<ChannelCircle onStorySelect={onStorySelect} storyMessages={storyMessages} user={user} dataList={channelsData} navigation={navigation} />
 				<Modal
 					animationType="slide"
 					transparent={false}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, Component, useRe } from 'react';
+import React, { useState, useEffect, useCallback, Component, useRef } from 'react';
 import PropTypes from 'prop-types';
 import {
     View,
@@ -25,7 +25,8 @@ import Avatar from '../../../../containers/Avatar';
 import { HeaderBackButton } from '@react-navigation/elements';
 import { getUserSelector } from '../../../../selectors/login';
 import { canUploadFile } from '../../../../utils/media';
-
+import { LISTENER } from '../../../../containers/Toast';
+import EventEmitter from '../../../../utils/events';
 const { selectedPng, imageTypeIconPng, videoTypeIconPng } = ImageMap
 const screenOptions = {
     title: /** @type {string} */ (null),
@@ -88,12 +89,11 @@ const PublishView = (props) => {
                 canUpload
             }) => {
                 if (canUpload) {
-                    console.info("hahah")
                     return RocketChat.sendFileMessage(
                         room.rid,
                         {
                             name,
-                            description: text,
+                            description: `paiyastory:${text}`,
                             size,
                             type,
                             path,
@@ -105,9 +105,14 @@ const PublishView = (props) => {
                         { id: user.id, token: user.token }
                     );
                 }
-                Promise.resolve();
-                return navigation.replace("FeedsListView")
+
+                return Promise.resolve();
+
             }));
+            EventEmitter.emit(LISTENER, { message: '发布成功' });
+
+            return navigation.replace("FeedsListView")
+
         } catch (e) {
             hasPublish.current = false
             console.info(e, 'sadasdfsdf')

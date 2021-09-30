@@ -22,6 +22,7 @@ const UserView = React.memo((props) => {
       <Image source={closeWhitePng}
         onPress={props.onClosePress}
         containerStyle={styles.close}
+        placeholderStyle={{ backgroundColor: "transparent" }}
         style={styles.close} />
 
     </View>

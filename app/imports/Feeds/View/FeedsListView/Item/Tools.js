@@ -111,6 +111,7 @@ const IndexIndictator = React.memo((props) => {
       </View>
     )
   }
+  return null
   if (!attachments[0]?.image_url) return null
   return (
     <View style={styles.indexIndictator}>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
     View,
@@ -11,50 +11,90 @@ import {
     Pressable,
 
 } from 'react-native';
-import { Image, Avatar } from "react-native-elements"
+import { Image } from "react-native-elements"
 import LinearGradient from "react-native-linear-gradient"
 import ImageMap from "../../images"
+import Avatar from '../../../../containers/Avatar';
 
 const { shootPng } = ImageMap
 const colors = ['#E383DDFF', '#E383DDFF', '#7A83F5FF']
 const silentColors = ['#C7C7C7FF', '#C7C7C7FF']
 
 const ChannelCircle = (props) => {
-    const { onStorySelect } = props
-    const data = [
-        { icon: "" },
-        { icon: "" },
-        { icon: "" },
-        { icon: "" },
-        { icon: "" },
-        { icon: "" },
-        { icon: "" },
-        { icon: "" },
-    ]
+    const { onStorySelect, dataList, user, storyMessages, navigation } = props
+    const [data, setData] = useState([])
+
+    const generateData = () => {
+        const data = []
+
+        for (const item of dataList) {
+            data.push({
+                rid: item.rid,
+                name: item.name,
+                t: item.t
+                // rid: item.rid + Math.random()
+            })
+        }
+        const index = data.findIndex(i => i.name === user.username)
+
+        if (index !== -1) {
+
+            const item = data.splice(index, 1)[0]
+            const hitItem = storyMessages.find(i => i.rid === item.rid)
+            item.hasItem = !!hitItem
+            item.isSelf = true
+            data.unshift(item)
+        }
+        setData(data)
+    }
+    useEffect(() => {
+        generateData()
+    }, [dataList, user, storyMessages])
     const renderItem = ({ item, index }) => {
+        const toShoot = () => {
+            navigation.navigate("")
+        }
         const onPress = () => {
+
+            if (item.isSelf) {
+                // 根据情况而定
+                if (item.hasItem) {
+                    return onStorySelect(index)
+                } else {
+                    // 跳转界面'
+                    toShoot()
+                }
+            }
             onStorySelect(index)
         }
         return (
             <Pressable onPress={onPress}>
                 <View style={styles.itemWrapper}>
                     <LinearGradient style={styles.backContainer} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} colors={colors} angle={90} useAngle={true}></LinearGradient>
-                    <Avatar avatarStyle={styles.avatar}
-                        source={{ uri: "https://video-message-001.paiyaapp.com/default/4a93713c04cef678b05cc161ad750fce/beb97e81-8daf-4e1e-af21-da64cb137197.jpg" }}
-                        rounded
-                        size={70}
-                        placeholderStyle={{ backgroundColor: 'rgba(255, 255, 255, 0)' }}
+
+                    <Avatar
+
+                        size={66}
+                        type={item.t}
+                        text={item.name}
+                        style={styles.avatar}
+                        rid={item.rid} // 先用房间的头像
+                        // avatar={item?.avatar}
+                        borderRadius={66}
+
                     />
                     {
-                        index === 0 ? (<Image source={shootPng} placeholderStyle={{ backgroundColor: "transparent" }} containerStyle={{
-                            width: 27,
-                            height: 27,
-                            position: "absolute",
-                            zIndex: 4,
-                            right: 0,
-                            bottom: 0
+                        item.isSelf ? (<Image source={shootPng} placeholderStyle={{ backgroundColor: "transparent" }}
+                            onPress={toShoot}
+                            containerStyle={{
+                                width: 27,
+                                height: 27,
+                                position: "absolute",
+                                zIndex: 4,
+                                right: 0,
+                                bottom: 0
 
-                        }}
+                            }}
                             resizeMode={'contain'} />) : null
                     }
 
@@ -93,11 +133,11 @@ const styles = StyleSheet.create({
         position: "relative"
     },
     avatar: {
-        width: 70,
-        height: 70,
-        borderWidth: 3,
+        width: 66,
+        height: 66,
+        // borderWidth: 3,
         borderColor: "white",
-        borderRadius: 70,
+        // borderRadius: 70,
         zIndex: 3,
     },
     backContainer: {

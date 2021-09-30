@@ -36,7 +36,7 @@ const Content = React.memo((props) => {
             img = formatAttachmentUrl(img, user.id, user.token, baseUrl);
             return (
                 <Carousel
-                    data={[{ img }, { img }, { img }, { img }, { img }, { img }, { img }, { img }, { img }]}
+                    data={[{ img }]}
                     renderItem={renderItem}
                     sliderWidth={width}
                     itemWidth={width}
