@@ -9,12 +9,15 @@ import {
     RefreshControl,
     StyleSheet,
     Pressable,
+    ScrollView,
     Animated,
     ImageBackground,
 
 } from 'react-native';
 import { Q } from '@nozbe/watermelondb';
 // import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
+import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view';
+
 import { connect } from 'react-redux';
 import {
     leaveRoom as leaveRoomAction
@@ -26,13 +29,17 @@ import ImageMap from "../../images"
 import { Image, SearchBar, Button } from 'react-native-elements';
 import useDebounce from 'ahooks/es/useDebounce';
 import I18n from '../../../../i18n';
+import { withTheme } from '../../../../theme';
+import AsyncStorage from '@react-native-community/async-storage';
+
 import SafeAreaView from '../../../../containers/SafeAreaView';
 import RocketChat from '../../../../lib/rocketchat';
 import database from '../../../../lib/database';
 import Avatar from '../../../../containers/Avatar';
 import StatusBar from '../../../../containers/StatusBar';
 import log, { logEvent, events } from '../../../../utils/log';
-
+import ServicePage from "./ServicePage"
+import ComponentPage from "./ComponentPage"
 const { verifiedPng,
     plusSmallPng,
     shareUserPng, } = ImageMap
@@ -59,129 +66,58 @@ const screenOptions = {
         backgroundColor: 'white',
     },
 }
-const renderTabBar = props => {
-    const [opacity, setOpacity] = useState(0);
-    useEffect(() => {
-        setTimeout(() => {
-            setOpacity(1);
-        }, 10);
-    }, []);
-    return (
-        <TabBar
-            {...props}
-            tabStyle={styles.tabStyle}
-            labelStyle={styles.systemText}
-            pressColor={'transparent'}
-            activeColor={'#651FFF'}
-            inactiveColor={'#9B9B9B'}
-            // renderIndicator={miniProgramType === 'web' ? RenderIndicator : null}
-            scrollViewStyle={styles.TabBarscrollViewStyle}
-            indicatorStyle={styles.indicatorStyle}
-            style={[styles.tabBottomStyle]}
-        />
-    );
-}
-const ServicePage = () => {
-    return null
-}
-const ComponentPage = (props) => {
-    const { userInfo = null } = props.route.params || {}
-    const [data, setData] = useState([])
-    const getData = async (userInfo) => {
-        const whereClause = [
-            Q.where('rid', Q.oneOf(channelsDataIds)),
-            Q.where('tmid', null),
-            Q.where('u', Q.like(`%username: ${userInfo.username}%`)),
-            Q.and(
-                Q.or(
-                    Q.where('attachments', Q.like(`%image_type%`)),
-                    Q.where('attachments', Q.like(`%video_type%`))
-                )
-            ),
-            Q.experimentalSortBy('ts', Q.desc),
-            Q.experimentalTake(50)
-        ];
-        const messages = await db.collections
-            .get('messages')
-            .query(...whereClause)
-            .fetch()
-        setData(messages)
 
-    }
-    useEffect(() => {
-        if (userInfo && userInfo.username) {
-            getData()
-        }
-    }, [userInfo])
-    const renderItem = () => {
-        return null
-    }
-    return (
-        <FlatList
-            renderItem={renderItem}
-            scrollEventThrottle={16}
-            style={styles.flatListStyle}
-            contentContainerStyle={[styles.contentContainerStyle,]}
-            ListHeaderComponentStyle={styles.listHeaderComponentStyle}
-            data={data}
-            keyExtractor={item => item.id}
 
-        />
-    )
-}
+
 const BottomComponents = (props) => {
     // 在这里获取用户的作品信息
     const { navigation } = props
-    const [renderScene, setRenderScene] = useState(null);
-    const list = [
-        { key: 'components', title: '作品' },
-        { key: 'service', title: '服务' },
 
-    ]
-    const [activeindex, setActiveindex] = useState(
-        0
-    );
-
+    const [show, setShow] = useState(false)
     useEffect(() => {
-
-        const _map = {};
-        for (const [index, item] of list.entries()) {
-            _map[item.key] = () => {
-                if (item.key === 'components') {
-                    <ComponentPage
-                        type={item.key}
-                        {...props}
-                        navigation={navigation}
-                    />
-                } else {
-                    <ServicePage
-                        type={item.key}
-                        {...props}
-                        navigation={navigation}
-                    />
-                }
-
-            }
-        }
-        setRenderScene(_map);
-    }, []);
+        setTimeout(() => {
+            setShow(true)
+        }, 500);
+    }, [])
     const changeTabIndex = async index => {
         setActiveindex(index);
-
     };
-    if (!renderScene) return null;
-    return (<TabView
-        renderTabBar={renderTabBar}
-        style={{ paddingTop: 0 }}
-        navigationState={{ index: activeindex, routes: bookingTitleLabels }}
-        renderScene={SceneMap(renderScene)}
-        onIndexChange={changeTabIndex}
-        initialLayout={{ width: layout.width }}
-    />)
+    const scrollProps = {
+        keyboardShouldPersistTaps: 'always',
+        keyboardDismissMode: 'none'
+    };
+    if (!show) return null
+    return (<ScrollableTabView
+        contentProps={scrollProps}
+        style={{
+            // flex: 1,
+            backgroundColor: "white",
+
+        }}
+        tabBarUnderlineStyle={{
+            height: 2,
+            backgroundColor: "#000000FF",
+            alignContent: "center",
+
+        }}
+        tabBarActiveTextColor={'#000000FF'}
+        tabBarInactiveTextColor={'#8F8F8FFF'}
+        tabBarTextStyle={{
+            fontSize: 15,
+            lineHeight: 15,
+            fontWeight: "600"
+        }}
+
+    >
+        <ComponentPage tabLabel='作品' {...props} />
+
+        <ServicePage tabLabel='服务' {...props} />
+
+    </ScrollableTabView>)
 }
 const UserView = (props) => {
     const { leaveRoom, selfUser, navigation } = props
-    const { userInfo = { username: 'root', rid: "" } } = props.route.params || {}
+    const { userInfo = { username: "", rid: "" }, type } = props.route.params || {}
     const [user, setUser] = useState({
         username: userInfo.username,
         rid: userInfo.rid,
@@ -194,11 +130,9 @@ const UserView = (props) => {
     const getUserData = async (userInfo) => {
         const db = database.active;
         const userCollection = db.get('rooms');
-        console.info('userRecorduserRecorduserRecorduserRecord')
 
         const [userRecord] = await userCollection.query(Q.where('id', Q.eq(userInfo.rid))).fetch();
-        console.info(userRecord, 'userRecorduserRecorduserRecorduserRecord')
-        return
+        if (!userRecord) return
         setUser({
             username: userRecord.username,
             rid: userRecord.rid,
@@ -209,7 +143,6 @@ const UserView = (props) => {
         const db = database.active;
         const result = await RocketChat.spotlight(userInfo.username, [], { users: false, rooms: true })
         channelRef.current = result?.rooms?.[0]
-        console.info("channelRef.current", channelRef.current, userInfo.username, result)
         if (channelRef.current) {
             setUser({
                 username: channelRef.current.name,
@@ -221,7 +154,6 @@ const UserView = (props) => {
             Q.where("name", Q.eq(`${userInfo.username}`)),
             Q.where("t", Q.eq(`c`)),
         ).fetch();
-        console.info("data.0000", data[0])
 
         if (data && data[0]) {
             roomRef.current = data[0]
@@ -239,12 +171,13 @@ const UserView = (props) => {
             headerTitleAlign: 'center',
 
             headerLeft: () => (
-                <HeaderBackButton
-                    label={''}
-                    onPress={onPress}
-                    tintColor={'white'}
-                    style={{ marginLeft: 10, }}
-                />
+                type ?
+                    <HeaderBackButton
+                        label={''}
+                        onPress={onPress}
+                        tintColor={'white'}
+                        style={{ marginLeft: 10, }}
+                    /> : null
             ),
 
 
@@ -284,6 +217,7 @@ const UserView = (props) => {
                 leaveRoom('channel', roomRef.current)
 
                 setHasSubscribe(false)
+                await AsyncStorage.setItem("subscribeRoomInfo", JSON.stringify({ type: 0, rid: roomRef.current.rid }))
                 return
             }
 
@@ -291,6 +225,7 @@ const UserView = (props) => {
             if (channelRef.current) {
 
                 await RocketChat.joinRoom(channelRef.current._id, null, null);
+                await AsyncStorage.setItem("subscribeRoomInfo", JSON.stringify({ type: 1, rid: channelRef.current._id }))
 
                 setHasSubscribe(true)
 
@@ -313,7 +248,9 @@ const UserView = (props) => {
 
     };
     const renderHeader = (
-        <View>
+        <View style={{
+            backgroundColor: "white"
+        }}>
 
             <View style={styles.infoBox}>
                 <View style={styles.avatarBox}>
@@ -350,28 +287,27 @@ const UserView = (props) => {
                         很高兴能在此页面与您分享我的新系列和特别
                     </Text>
                 </View>
-                {/* {selfUser?.username && selfUser?.username === user?.username ? (null) : ( */}
-                <Button
-                    variant="contained"
-                    onPress={() => { onSubscribe() }}
-                    titleStyle={styles.btnTitleStyle}
-                    style={styles.btnStyle}
-                    buttonStyle={styles.btnButtonStyle}
-                    containerStyle={styles.btnButtonContainerStyle}
-                    icon={<Image source={plusSmallPng} style={{ width: 11, height: 11 }} resizeMode={'contain'} />}
-                    title={!hasSubscribe ? `${('关注')}` : "取消关注"}
-                />
-                {/* )} */}
+                {selfUser?.username && selfUser?.username === user?.username || !type ? (null) : (
+                    <Button
+                        variant="contained"
+                        onPress={() => { onSubscribe() }}
+                        titleStyle={styles.btnTitleStyle}
+                        style={styles.btnStyle}
+                        buttonStyle={styles.btnButtonStyle}
+                        containerStyle={styles.btnButtonContainerStyle}
+                        icon={<Image source={plusSmallPng} style={{ width: 11, height: 11 }} resizeMode={'contain'} />}
+                        title={!hasSubscribe ? `${('关注')}` : "取消关注"}
+                    />
+                )}
 
-                <View>
-                    {/* <BottomComponents {...props} /> */}
-                </View>
             </View>
+            <BottomComponents {...props} channelsDataMap={{ [`${user.rid}`]: { rid: user.rid, name: user.username } }} />
 
         </View>
     )
     return (
         <View style={styles.root}>
+
             <StatusBar barStyle='light-content' />
             <Animated.View style={[styles.background, {
                 transform: [
@@ -380,24 +316,28 @@ const UserView = (props) => {
             }]}>
                 <ImageBackground source={{ uri: 'https://video-message-001.paiyaapp.com/dhAgCqD36QCAhEqXj.jpg' }} style={styles.background} />
             </Animated.View>
-            <FlatList
+            <ScrollView showsVerticalScrollIndicator={false}
                 onScroll={onScroll}
                 scrollEventThrottle={16}
-                style={styles.flatListStyle}
-                contentContainerStyle={[styles.contentContainerStyle,]}
+                contentContainerStyle={[styles.contentContainerStyle,]}>
+                {renderHeader}
+            </ScrollView>
+            {/* <FlatList
+              
+          
                 ListHeaderComponent={renderHeader}
-                ListHeaderComponentStyle={styles.listHeaderComponentStyle}
                 data={[]}
                 keyExtractor={item => item.id}
 
-            />
+            /> */}
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     root: {
-        backgroundColor: "white"
+        backgroundColor: "white",
+        flex: 1,
     },
     icon: {
         width: 14,
@@ -529,7 +469,8 @@ const styles = StyleSheet.create({
     },
     contentContainerStyle: {
         marginTop: 175,
-        height: "100%",
+        paddingBottom: 205,
+        // height: "100%",
         backgroundColor: "white"
         // paddingHorizontal: 15,
     },
@@ -572,6 +513,8 @@ const styles = StyleSheet.create({
 })
 const mapStateToProps = state => ({
     selfUser: getUserSelector(state),
+    baseUrl: state.server.server,
+
 
 });
 const mapDispatchToProps = dispatch => ({
@@ -586,6 +529,6 @@ class UserViewWrapper extends Component {
 
 
 export default {
-    component: connect(mapStateToProps, mapDispatchToProps)(UserViewWrapper),
+    component: connect(mapStateToProps, mapDispatchToProps)(withTheme(UserViewWrapper)),
     options: screenOptions
 }

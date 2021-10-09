@@ -1,7 +1,8 @@
 import React from 'react';
-import { I18nManager, TouchableOpacity } from 'react-native';
+import { I18nManager, TouchableOpacity, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { Image } from 'react-native-elements';
 
 import { ThemeContext } from '../theme';
 import {
@@ -9,6 +10,7 @@ import {
 } from '../utils/navigation';
 import Sidebar from '../views/SidebarView';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { SafeAreaView, useSafeAreaInsets, useSafeAreaFrame } from 'react-native-safe-area-context';
 
 // Chats Stack
 import RoomView from '../views/RoomView';
@@ -81,33 +83,52 @@ import FeedsStoriesView from "../imports/Feeds/View/FeedsStoriesView";
 import FeedsRoomView from "../imports/Feeds/View/FeedsRoomView";
 import FeedsUserView from "../imports/Feeds/View/FeedsUserView";
 import FeedsPublishView from "../imports/Feeds/View/FeedsPublishView";
+import FeedsUnSubscribeView from "../imports/Feeds/View/FeedsUnSubscribeView";
+
 import ImageMap from "../imports/Feeds/images"
 
 const Tab = createBottomTabNavigator();
 
 // ChatsStackNavigator
-const { homeTab, homeTabActive, messageTab, messageTabActive, userCenterTab, userCenterTabActive } = ImageMap;
+const {
+	homeTab,
+	homeActiveTab,
+	discoverTab,
+	discoverActiveTab,
+	shootTab,
+	messageTab,
+	messageActiveTab,
+	userCenterTab,
+	userCenterActiveTab,
+} = ImageMap;
 
 const TAB_ICON_MAP = {
-	Home: {
+	FeedsListView: {
 		false: homeTab,
-		true: homeTabActive,
+		true: homeActiveTab,
 
 	},
-	Chat: {
+	Discover: {
+		false: discoverTab,
+		true: discoverActiveTab,
+	},
+	Shoot: {
+		false: shootTab,
+		true: shootTab,
+	},
+	RoomsListView: {
 		false: messageTab,
-		true: messageTabActive,
+		true: messageActiveTab,
 
 	},
-	My: {
+	FeedsUserView: {
 		false: userCenterTab,
-		true: userCenterTabActive,
+		true: userCenterActiveTab,
 
 	},
 };
 function MyTabBar({ state, descriptors, navigation }) {
 	// const focusedOptions = descriptors[state.routes[state.index].key].options;
-	const [viewer] = useViewer();
 	const inset = useSafeAreaInsets();
 
 	return (
@@ -156,15 +177,7 @@ function MyTabBar({ state, descriptors, navigation }) {
 						if (!isFocused && !event.defaultPrevented) {
 							navigation.navigate(route.name);
 						}
-						if (['My', 'Chat'].indexOf(route.name) > -1) {
-							if (!viewer || !viewer._id) {
-								const opts = {};
-								if (route.name == 'My') {
-									opts.from = 'profile';
-								}
-								navigation.navigate('LoginPage', opts);
-							}
-						}
+
 					};
 
 					const onLongPress = () => {
@@ -219,25 +232,28 @@ const IndexPage1 = React.memo(props => {
 	return (
 		<Tab.Navigator tabBar={props => <MyTabBar {...props} />} backBehavior="none">
 			<Tab.Screen
-				name="Home"
-				component={HomeStackComponent}
-				options={() => ({
-					title: '',
-				})}
+				name="FeedsListView"
+				component={FeedsListView}
+
 			/>
 			<Tab.Screen
-				name="Chat"
-				component={ChatStackComponent}
-				options={({ route }) => ({
-					title: '',
-				})}
+				name="Discover"
+				{...FeedsUnSubscribeView}
+
 			/>
 			<Tab.Screen
-				name="My"
-				component={UserCenterComponent}
-				options={() => ({
-					title: '',
-				})}
+				name="Shoot"
+				component={RoomsListView}
+
+			/>
+			<Tab.Screen
+				name="RoomsListView"
+				component={RoomsListView}
+
+			/>
+			<Tab.Screen
+				name="FeedsUserView"
+				{...FeedsUserView}
 			/>
 		</Tab.Navigator>
 	);
@@ -251,7 +267,13 @@ const ChatsStackNavigator = () => {
 				name='FeedsStoriesView'
 				component={FeedsStoriesView}
 			/> */}
-
+			<ChatsStack.Screen
+				name="main"
+				component={IndexPage1}
+				options={{
+					headerShown: false
+				}}
+			/>
 			<ChatsStack.Screen
 				name='FeedsListView'
 

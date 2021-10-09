@@ -20,5 +20,15 @@ const ImageMap = {
   selectedPng: require('../public/images/selected.png'),
   videoTypeIconPng: require('../public/images/videoTypeIcon.png'),
   imageTypeIconPng: require('../public/images/imageTypeIcon.png'),
+
+  homeTab: require('../public/images/homeTab.png'),
+  homeActiveTab: require('../public/images/homeActiveTab.png'),
+  discoverTab: require('../public/images/discoverTab.png'),
+  discoverActiveTab: require('../public/images/discoverActiveTab.png'),
+  shootTab: require('../public/images/shootTab.png'),
+  messageTab: require('../public/images/messageTab.png'),
+  messageActiveTab: require('../public/images/messageActiveTab.png'),
+  userCenterTab: require('../public/images/userCenterTab.png'),
+  userCenterActiveTab: require('../public/images/userCenterActiveTab.png'),
 }
 export default ImageMap

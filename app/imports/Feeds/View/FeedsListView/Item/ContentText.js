@@ -40,8 +40,6 @@ const ContentText = React.memo((props) => {
 const styles = StyleSheet.create({
     root: {
         width: "100%",
-
-        // backgroundColor: "red"
     },
     descContent: {
         lineHeight: 17,

@@ -34,7 +34,9 @@ const FeedsItem = (props) => {
         <View style={styles.root}>
             <Header {...props} />
             <Content {...props} setRootImageIndex={setRootImageIndex} />
-            <View style={{ paddingHorizontal: 15 }}>
+            <View style={{
+                paddingHorizontal: 15,
+            }}>
                 <Tools {...props} index={rootImageIndex} setLikeCount={setLikeCount} />
                 <ContentText {...props} likeCount={likeCount} setLikeCount={setLikeCount} />
                 <Comment {...props} />
@@ -44,6 +46,7 @@ const FeedsItem = (props) => {
 const styles = StyleSheet.create({
     root: {
         justifyContent: "center",
+
         paddingVertical: 10,
         marginBottom: 10,
     },

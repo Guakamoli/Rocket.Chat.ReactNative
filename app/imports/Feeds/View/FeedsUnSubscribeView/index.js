@@ -18,6 +18,7 @@ import SafeAreaView from '../../../../containers/SafeAreaView';
 import RocketChat from '../../../../lib/rocketchat';
 import database from '../../../../lib/database';
 import Avatar from '../../../../containers/Avatar';
+import LinearGradient from 'react-native-linear-gradient';
 
 const { searchInputPng, inputClearPng } = ImageMap
 const screenOptions = {
@@ -124,9 +125,7 @@ const SearchInput = React.memo((props) => {
                     borderBottomColor: 'transparent',
                 }}
             />
-            <Pressable style={styles.cancelBtn} onPress={setSearchStateWrapFalse}>
-                <Text style={styles.cancelText}>{I18n.t('cancel')}</Text>
-            </Pressable>
+
         </View>
     )
 })
@@ -148,11 +147,7 @@ const SearchResult = React.memo((props) => {
     const querySearchData = async (text) => {
         // 从本地查库拿到数据
         setSearching(true)
-        if (!text) {
-            setData([])
-            setSearching(false)
-            return
-        }
+
         const result = await RocketChat.search({ text, filterUsers: false });
         setData(result)
         setSearching(false)
@@ -172,29 +167,36 @@ const SearchResult = React.memo((props) => {
         const avatar = getRoomAvatar(item);
         return (
             <Pressable onPress={toProduct} style={styles.itemBox}>
-                <View style={styles.itemBoxInner}>
-                    <Avatar
-                        text={avatar}
-                        size={55}
-                        type={item.t}
-                        style={styles.itemAvatar}
-                        rid={item.rid}
-                        borderRadius={55}
+                <View style={styles.priceBox}>
+                    <LinearGradient
+                        angle={0}
+                        colors={['rgba(56, 56, 56, 0)', 'rgba(21, 21, 19, 0.5)']}
+                        style={[
+                            styles.priceCover,
 
-                    />
+                        ]}>
+                        <View
+                            style={{
+                                left: 7,
+                                flexDirection: 'row',
+                                alignItems: 'flex-end',
+                                bottom: 8,
+                            }}>
+                            <Avatar
+                                text={avatar}
+                                size={108}
+                                type={item.t}
+                                style={styles.itemAvatar}
+                                rid={item.rid}
+                                borderRadius={12}
 
-                    <View
-                        style={{
-                            maxWidth: 200,
-                        }}>
-                        <Text style={styles.itemName} numberOfLines={1} ellipsizeMode={'tail'}>
-                            {item.name}
-                        </Text>
-                        <Text style={styles.itemDesc} numberOfLines={1} ellipsizeMode={'tail'}>
-                            {item.desc}
-                        </Text>
-                    </View>
+                            />
+                            <Text style={styles.price}>{item.name}</Text>
+                        </View>
+                    </LinearGradient>
                 </View>
+
+
             </Pressable>
         );
     };
@@ -211,6 +213,8 @@ const SearchResult = React.memo((props) => {
             data={data}
             {...flatListConfig}
             keyExtractor={item => item._id}
+            // horizontal={true}
+            numColumns={3}
             ListEmptyComponent={
                 <View style={styles.noSearchBox}>
 
@@ -259,9 +263,8 @@ const styles = StyleSheet.create({
         height: 14
     },
     itemBox: {
-
-        backgroundColor: 'white',
-        marginTop: 12,
+        width: 108,
+        height: 170,
     },
     itemBoxInner: {
         flexDirection: 'row',
@@ -273,10 +276,9 @@ const styles = StyleSheet.create({
     },
 
     itemAvatar: {
-        width: 55,
-        height: 55,
-        aspectRatio: 1,
-        borderRadius: 100,
+        width: 108,
+        height: 108,
+        borderRadius: 12,
         marginRight: 10,
     },
     itemName: {
@@ -306,6 +308,30 @@ const styles = StyleSheet.create({
         fontSize: 14,
         lineHeight: 20,
         fontWeight: "500"
+    },
+    priceBox: {
+        position: 'absolute',
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        bottom: 0,
+        borderRadius: 12,
+        height: 35,
+        width: '100%',
+        // left: scaleSizeW(8),
+    },
+    price: {
+        fontSize: (14),
+        color: '#FFFFFF',
+        lineHeight: (19),
+    },
+    priceCover: {
+        width: '100%',
+        borderBottomLeftRadius: 12,
+        borderBottomRightRadius: 12,
+        height: 35,
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        // opacity: 0.5,
     },
 })
 export default {
