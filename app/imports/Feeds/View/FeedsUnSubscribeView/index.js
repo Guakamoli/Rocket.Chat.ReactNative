@@ -9,6 +9,7 @@ import {
     RefreshControl,
     StyleSheet,
     Pressable,
+    Dimensions,
 } from 'react-native';
 import ImageMap from "../../images"
 import { Image, SearchBar } from 'react-native-elements';
@@ -19,14 +20,17 @@ import RocketChat from '../../../../lib/rocketchat';
 import database from '../../../../lib/database';
 import Avatar from '../../../../containers/Avatar';
 import LinearGradient from 'react-native-linear-gradient';
-
+import Header from "..//FeedsListView/Header"
 const { searchInputPng, inputClearPng } = ImageMap
+const { width } = Dimensions.get("window")
+const itemWidth = (width - 30 - 20) / 3
+const itemHeight = itemWidth / 108 * 160
 const screenOptions = {
     title: /** @type {string} */ (null),
     headerShadowVisible: false,
     headerTransparent: true,
     statusBarTranslucent: true,
-    statusBarStyle: 'light',
+    statusBarStyle: 'dark',
     statusBarColor: 'transparent',
     headerStyle: {
         backgroundColor: 'transparent',
@@ -70,62 +74,69 @@ const SearchInput = React.memo((props) => {
         setRootText(throttledValue)
     }, [throttledValue])
     return (
-        <View style={styles.searchBox} key={'inputbar2'}>
-            <SearchBar
-                clearButtonMode="never"
-                inputContainerStyle={{
-                    borderRadius: 8,
-                    backgroundColor: '#EFEFEFFF',
-                    height: 40,
-                    paddingLeft: 0,
-                    marginLeft: 0,
-                }}
-                onChangeText={text => setText(text)}
-                style={{
-                    borderWidth: 0,
-                }}
-                inputStyle={{
-                    color: '#333333',
-                    paddingLeft: 0,
-                    fontSize: 14,
-                    lineHeight: 16,
-                }}
-                autoFocus={true}
-                selectionColor="#895EFF"
-                value={text}
-                leftIconContainerStyle={{
-                    paddingRight: 0,
-                    paddingLeft: 10,
-                    marginRight: 0,
-                }}
-                clearIcon={
-                    <ClearIcon text={text} clearText={clearText} />
-                }
+        <View style={styles.searchBox}>
+            <View style={styles.innerSearchBox}>
+                <SearchBar
+                    clearButtonMode="never"
+                    inputContainerStyle={{
+                        borderRadius: 25,
+                        backgroundColor: 'white',
+                        height: 40,
+                        paddingLeft: 0,
+                        marginLeft: 0,
+                        width: "100%",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center"
+                    }}
+                    onChangeText={text => setText(text)}
+                    style={{
+                        borderWidth: 0,
+                    }}
+                    inputStyle={{
+                        backgroundColor: "white",
+                        flex: 0.5,
+                        color: '#333333',
+                        paddingLeft: 0,
+                        fontSize: 14,
+                        lineHeight: 16,
+                    }}
+                    autoFocus={true}
+                    selectionColor="#895EFF"
+                    value={text}
 
-                placeholder={I18n.t('search')}
-                placeholderTextColor={'#8C8C8CFF'}
-                searchIcon={
-                    <Image
-                        source={searchInputPng}
-                        style={styles.icon}
-                        transitionDuration={0}
-                        transition={false}
-                        placeholderStyle={{
-                            backgroundColor: 'transparent',
-                        }}
-                    />
-                }
-                containerStyle={{
-                    width: '80%',
-                    flex: 1,
-                    paddingLeft: 0,
+                    leftIconContainerStyle={{
+                        paddingRight: 0,
+                        paddingLeft: 10,
+                        marginRight: 0,
+                    }}
+                    clearIcon={
+                        <ClearIcon text={text} clearText={clearText} />
+                    }
 
-                    backgroundColor: 'transparent',
-                    borderTopColor: 'transparent',
-                    borderBottomColor: 'transparent',
-                }}
-            />
-
+                    placeholder={I18n.t('search')}
+                    placeholderTextColor={'#8C8C8CFF'}
+                    searchIcon={
+                        <Image
+                            source={searchInputPng}
+                            style={styles.icon}
+                            transitionDuration={0}
+                            transition={false}
+                            placeholderStyle={{
+                                backgroundColor: 'transparent',
+                            }}
+                        />
+                    }
+                    containerStyle={{
+                        // width: '80%',
+                        flex: 1,
+                        paddingLeft: 0,
+                        backgroundColor: 'transparent',
+                        borderTopColor: 'transparent',
+                        borderBottomColor: 'transparent',
+                    }}
+                />
+            </View>
         </View>
     )
 })
@@ -133,9 +144,10 @@ const SeachView = (props) => {
     const [rootText, setRootText] = useState("")
 
     return (
-        <SafeAreaView vertical={false} style={{ backgroundColor: "white" }}>
+        <SafeAreaView edges={['top']} style={{ backgroundColor: "#F3F5F7FF", }}>
+            <Header showSearch={false} />
             <SearchInput {...props} setRootText={setRootText} />
-            <View style={styles.underLine}></View>
+            <Text style={styles.tip}>您还没有订阅任何一个达人,快来订阅一个吧</Text>
             <SearchResult {...props} text={rootText} />
         </SafeAreaView>
     )
@@ -148,7 +160,8 @@ const SearchResult = React.memo((props) => {
         // 从本地查库拿到数据
         setSearching(true)
 
-        const result = await RocketChat.search({ text, filterUsers: false });
+        let result = await RocketChat.search({ text, filterUsers: false });
+        result = result.concat([{ isFake: true, _id: Math.random() }, { isFake: true, _id: Math.random() }])
         setData(result)
         setSearching(false)
 
@@ -162,12 +175,27 @@ const SearchResult = React.memo((props) => {
     const renderItem = props => {
         const { item, index } = props;
         const toProduct = () => {
+            if (item.isFake) return
             navigation.navigate('FeedsUserView', { userInfo: { username: item.name, rid: item.rid, }, type: "pop" });
         };
         const avatar = getRoomAvatar(item);
+        if (item.isFake) {
+            return <View style={styles.itemBox}></View>
+        }
         return (
             <Pressable onPress={toProduct} style={styles.itemBox}>
                 <View style={styles.priceBox}>
+                    <Avatar
+                        text={avatar}
+                        width={itemWidth}
+                        size={itemHeight}
+                        height={itemHeight}
+                        type={item.t}
+                        style={styles.itemAvatar}
+                        rid={item.rid}
+                        borderRadius={12}
+
+                    />
                     <LinearGradient
                         angle={0}
                         colors={['rgba(56, 56, 56, 0)', 'rgba(21, 21, 19, 0.5)']}
@@ -182,16 +210,8 @@ const SearchResult = React.memo((props) => {
                                 alignItems: 'flex-end',
                                 bottom: 8,
                             }}>
-                            <Avatar
-                                text={avatar}
-                                size={108}
-                                type={item.t}
-                                style={styles.itemAvatar}
-                                rid={item.rid}
-                                borderRadius={12}
 
-                            />
-                            <Text style={styles.price}>{item.name}</Text>
+                            <Text style={styles.price} numberOfLines={1} ellipsizeMode={'tail'}>{item.name}</Text>
                         </View>
                     </LinearGradient>
                 </View>
@@ -213,22 +233,22 @@ const SearchResult = React.memo((props) => {
             data={data}
             {...flatListConfig}
             keyExtractor={item => item._id}
-            // horizontal={true}
+            columnWrapperStyle={{
+                justifyContent: "space-between",
+                paddingHorizontal: 15,
+                alignItems: "center",
+                marginBottom: 10,
+
+            }}
+
             numColumns={3}
-            ListEmptyComponent={
-                <View style={styles.noSearchBox}>
 
-                    <Text style={styles.noSearchText}>{(!text ? I18n.t('startSearchDesc') : (!searching && !data.length) ? I18n.t('searchNotFound') : '')}</Text>
-                </View>
-            }
-
-            ListFooterComponentStyle={{ paddingBottom: 100 }}
         />
     )
 })
 const styles = StyleSheet.create({
     root: {
-
+        backgroundColor: "#F3F5F7FF"
     },
     icon: {
         width: 14,
@@ -251,35 +271,36 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center',
         paddingHorizontal: 15,
+        marginTop: 55,
+        justifyContent: "center"
     },
-    underLine: {
-        height: 1,
-        marginHorizontal: 15,
-        marginTop: 10,
-        backgroundColor: "#F8F8F8FF"
+    innerSearchBox: {
+        width: 232,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: "center"
     },
+
     clearIcon: {
         width: 14,
         height: 14
     },
     itemBox: {
-        width: 108,
-        height: 170,
+        width: itemWidth,
+        height: itemHeight,
     },
     itemBoxInner: {
         flexDirection: 'row',
         alignItems: "center",
     },
     contentContainerStyle: {
-        paddingHorizontal: 15,
-
+        paddingBottom: 50,
     },
 
     itemAvatar: {
-        width: 108,
-        height: 108,
+        width: itemWidth,
+        height: itemHeight,
         borderRadius: 12,
-        marginRight: 10,
     },
     itemName: {
         fontSize: 15,
@@ -287,6 +308,15 @@ const styles = StyleSheet.create({
         color: '#070707FF',
         lineHeight: 21,
         // width: 65,
+    },
+    tip: {
+        fontSize: 12,
+        fontWeight: '400',
+        color: '#8F8F8FFF',
+        lineHeight: 17,
+        textAlign: "center",
+        marginTop: 5,
+        marginBottom: 20,
     },
     itemDesc: {
         fontSize: 12,
@@ -323,15 +353,16 @@ const styles = StyleSheet.create({
         fontSize: (14),
         color: '#FFFFFF',
         lineHeight: (19),
+        width: "95%"
     },
     priceCover: {
+        position: 'absolute',
         width: '100%',
         borderBottomLeftRadius: 12,
         borderBottomRightRadius: 12,
         height: 35,
         flexDirection: 'row',
         alignItems: 'flex-end',
-        // opacity: 0.5,
     },
 })
 export default {

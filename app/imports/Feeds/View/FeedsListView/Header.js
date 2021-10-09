@@ -13,12 +13,17 @@ import {
 import { Image, Avatar } from "react-native-elements"
 import ImageMap from "../../images"
 const { searchPng, companyTitlePng, replycommentPng } = ImageMap
-const Header = () => {
-
+const Header = (props) => {
+  const { showSearch = true } = props
   return (
     <View style={styles.root}>
-      <Image source={companyTitlePng} style={styles.companyTitlePng} resizeMode={'contain'} />
-      <Image source={searchPng} style={styles.searchPng} resizeMode={'contain'} />
+      <Image source={companyTitlePng}
+        style={styles.companyTitlePng}
+        resizeMode={'contain'}
+        placeholderStyle={{ backgroundColor: "transparent" }} />
+      {showSearch ? <Image source={searchPng} style={styles.searchPng}
+        resizeMode={'contain'}
+        placeholderStyle={{ backgroundColor: "transparent" }} /> : null}
     </View>
   )
 }

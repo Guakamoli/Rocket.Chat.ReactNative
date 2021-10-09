@@ -11,6 +11,8 @@ import Emoji from '../markdown/Emoji';
 const Avatar = React.memo(({
 	text,
 	size,
+	width,
+	height,
 	server,
 	borderRadius,
 	style,
@@ -33,8 +35,8 @@ const Avatar = React.memo(({
 	}
 
 	const avatarStyle = {
-		width: size,
-		height: size,
+		width: width || size,
+		height: height || size,
 		borderRadius
 	};
 
