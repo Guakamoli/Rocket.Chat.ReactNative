@@ -176,7 +176,7 @@ const SearchResult = React.memo((props) => {
         const { item, index } = props;
         const toProduct = () => {
             if (item.isFake) return
-            navigation.navigate('FeedsUserView', { userInfo: { username: item.name, rid: item.rid, }, type: "pop" });
+            navigation.push('FeedsUserView', { userInfo: { username: item.name, rid: item.rid, }, type: "pop" });
         };
         const avatar = getRoomAvatar(item);
         if (item.isFake) {

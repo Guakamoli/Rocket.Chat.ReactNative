@@ -155,16 +155,12 @@ class ListContainer extends React.Component {
 		}
 
 		if (tmid) {
-			try {
-				this.thread = await db.collections
-					.get('threads')
-					.find(tmid);
-			} catch (e) {
-				console.log(e);
-			}
+
+			console.info('没错', tmid)
 			this.messagesObservable = db.collections
 				.get('thread_messages')
 				.query(
+
 					Q.where('rid', tmid),
 					Q.where('id', Q.notEq(tmid)),
 					Q.experimentalSortBy('ts', Q.desc),
@@ -172,10 +168,11 @@ class ListContainer extends React.Component {
 					Q.experimentalTake(this.count)
 				)
 				.observe();
-			console.info("tmid", tmid)
 		} else if (rid) {
 			const whereClause = [
 				Q.where('rid', rid),
+				Q.where('tshow', null),
+				Q.where('attachments', '[]'),
 				Q.experimentalSortBy('ts', Q.desc),
 				Q.experimentalSkip(0),
 				Q.experimentalTake(this.count)
@@ -198,11 +195,9 @@ class ListContainer extends React.Component {
 			this.unsubscribeMessages();
 			this.messagesSubscription = this.messagesObservable
 				.subscribe((messages) => {
-					if (tmid && this.thread) {
-						messages = [...messages, this.thread];
-					}
-					messages = messages.filter(m => true && (!m.t || !hideSystemMessages?.includes(m.t)));
 
+					messages = messages.filter(m => true && (!m.t || !hideSystemMessages?.includes(m.t)));
+					console.info(messages, 'masdmasmdmasdmsadm', this.props.nochild, 'haha', this.props.tmid)
 					if (this.mounted) {
 
 						this.setState({ messages }, () => this.update());
@@ -330,7 +325,7 @@ class ListContainer extends React.Component {
 	renderItem = ({ item, index }) => {
 		const { messages, highlightedMessage } = this.state;
 		const { renderRow } = this.props;
-		return renderRow(item, messages[index + 1], highlightedMessage, messages);
+		return renderRow(item, messages[index + 1], highlightedMessage, messages, this.props.nochild);
 	}
 
 	onViewableItemsChanged = ({ viewableItems }) => {
@@ -344,7 +339,7 @@ class ListContainer extends React.Component {
 		const { theme } = this.props;
 		return (
 			<>
-				<EmptyRoom rid={rid} length={messages.length} mounted={this.mounted} theme={theme} />
+				{/* <EmptyRoom rid={rid} length={messages.length} mounted={this.mounted} theme={theme} /> */}
 				<List
 					onScroll={this.onScroll}
 
@@ -365,7 +360,7 @@ class ListContainer extends React.Component {
 						/>
 					)}
 				/>
-				<NavBottomFAB y={this.y} onPress={this.jumpToBottom} isThread={!!tmid} />
+				{/* <NavBottomFAB y={this.y} onPress={this.jumpToBottom} isThread={!!tmid} /> */}
 			</>
 		);
 	}

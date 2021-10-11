@@ -64,5 +64,16 @@ export default StyleSheet.create({
 	previewMode: {
 		fontSize: 16,
 		...sharedStyles.textMedium
-	}
+	},
+	subMessages: {},
+	moreText: {
+		fontSize: 10,
+		lineHeight: 14,
+		fontWeight: "400",
+		color: "#9D9D9DFF",
+		marginLeft: 20,
+	},
+	subMessages: {
+		marginLeft: 15 + 20,
+	},
 });

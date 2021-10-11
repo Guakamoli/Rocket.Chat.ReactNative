@@ -539,6 +539,7 @@ class RoomsListView extends React.Component {
 		const whereClause = [
 			Q.where('rid', Q.oneOf(channelsDataIds)),
 			Q.where('tmid', null),
+			Q.where('t', Q.eq('discussion-created')),
 			Q.and(
 				Q.where('attachments', Q.like(`%paiyapost:%`)),
 
@@ -666,7 +667,8 @@ class RoomsListView extends React.Component {
 			.observe();
 		this.messagesSubscription = this.messagesObservable
 			.subscribe((messages) => {
-				messages = messages.filter(m => m.attachments[0].attachments[0] === undefined);
+				console.info('postmessage', messages)
+				messages = messages.filter(m => m.attachments[0].attachments[0] !== undefined);
 				if (this.mounted) {
 					this.setState({ messages }, () => this.update());
 				} else {
@@ -1144,7 +1146,7 @@ class RoomsListView extends React.Component {
 			if (dataList.length - 2 > currentUserIndex) {
 				setCurrentUserIndex(newIndex);
 				if (!isScroll) {
-					modalScroll.current.scrollTo(newIndex, true);
+					modalScroll?.current?.scrollTo?.(newIndex, true);
 				}
 			} else {
 				setModel(false);
@@ -1159,7 +1161,7 @@ class RoomsListView extends React.Component {
 			if (currentUserIndex > 0) {
 				setCurrentUserIndex(newIndex);
 				if (!isScroll) {
-					modalScroll.current.scrollTo(newIndex, true);
+					modalScroll?.current?.scrollTo?.(newIndex, true);
 				}
 			}
 		};
@@ -1247,6 +1249,7 @@ class RoomsListView extends React.Component {
 			width
 
 		} = this.props;
+		console.info(item, 'itemasas')
 		const username = user.username
 		const id = this.getUidDirectMessage(item);
 		return (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Text, View, InteractionManager } from 'react-native';
 import { connect } from 'react-redux';
@@ -540,6 +540,7 @@ class RoomView extends React.Component {
 
 
 	shouldNavigateToRoom = (message) => {
+		return false
 		if (message.tmid && message.tmid === this.tmid) {
 			return false;
 		}
@@ -711,8 +712,9 @@ class RoomView extends React.Component {
 		rid: this.rid, tmid: this.tmid, t: this.t, loaderItem
 	})
 
-	renderItem = (item, previousItem, highlightedMessage, messages) => {
+	renderItem = (item, previousItem, highlightedMessage, messages, nochild) => {
 		const { room, lastOpen, canAutoTranslate } = this.state;
+		// const [collapse, setCollapse] = useState(false)
 		const {
 			user, Message_GroupingPeriod, Message_TimeFormat, useRealName, baseUrl, Message_Read_Receipt_Enabled, theme,
 			navigation
@@ -752,6 +754,23 @@ class RoomView extends React.Component {
 						getCustomEmoji={this.getCustomEmoji}
 						highlighted={highlightedMessage === item.id}
 					/>
+					{!nochild ? (
+						<View style={styles.subMessages}>
+							{ item.tcount ? <Text style={styles.moreText}>——查看更多评论</Text> : null}
+							<List
+								nochild={true}
+								rid={room.rid}
+								tmid={item.id}
+								theme={theme}
+								tunread={0}
+								ignored={0}
+								renderRow={this.renderItem}
+								navigation={navigation}
+								hideSystemMessages={true}
+								showMessageInMainThread={false}
+							/>
+						</View>
+					) : null}
 
 				</>
 
@@ -839,7 +858,7 @@ class RoomView extends React.Component {
 					ref={this.list}
 					listRef={this.flatList}
 					rid={rid}
-					t={t}
+
 					tmid={this.tmid}
 					theme={theme}
 					tunread={room?.tunread}

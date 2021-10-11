@@ -26,7 +26,7 @@ const EmptyRoom = React.memo(({
 	if ((length === 0 && mounted) || !rid) {
 		return (
 			<View style={styles.textBox}>
-				<Text style={styles.text}>暂无评论</Text>
+				{/* <Text style={styles.text}>暂无评论</Text> */}
 			</View>
 		);
 	}

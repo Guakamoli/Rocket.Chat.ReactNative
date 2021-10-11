@@ -7,6 +7,9 @@ import {
     StyleSheet,
     Platform
 } from 'react-native';
+import {
+    PanGestureHandler, State, TapGestureHandler
+} from 'react-native-gesture-handler';
 const { width, height } = Dimensions.get('window');
 
 const PESPECTIVE = Platform.OS === 'ios' ? 2.38 : 1.7;
@@ -29,66 +32,58 @@ export default class CubeNavigationHorizontal extends React.Component {
         this._animatedValue = new Animated.ValueXY();
         this._animatedValue.setValue({ x: this.pages[this.state.currentPage], y: 0 });
         this._value = { x: this.pages[this.state.currentPage], y: 0 };
+        this._onGestureEvent = Animated.event(
+            [{ nativeEvent: { translationX: this._animatedValue.x } }], {
+            useNativeDriver: true,
 
+        }
+        );
         this._animatedValue.addListener(value => {
+            // console.info(value.x, 'asdasd')
             this._value = value;
         });
 
-        const onDoneSwiping = (gestureState) => {
+        const onDoneSwiping = (e) => {
             if (this.props.callbackOnSwipe) {
                 this.props.callbackOnSwipe(false);
             }
-            let mod = gestureState.dx > 0 ? 100 : -100;
-
+            let mod = e.nativeEvent.translationX > 0 ? 100 : -100;
             const currentPage = this._closest(this._value.x + mod)
+            console.info(this._value.x, '哈哈哈', currentPage, e.nativeEvent.translationX)
+
             let goTo = this.pages[currentPage];
             this._animatedValue.flattenOffset({
                 x: this._value.x,
                 y: this._value.y
             });
+
             Animated.timing(this._animatedValue, {
                 toValue: { x: goTo, y: 0 },
                 friction: 3,
-                tension: 0.6
+                tension: 0.6,
+                useNativeDriver: true
             }).start();
+
             setTimeout(() => {
                 this.setState({
                     currentPage
                 });
-                if (this.props.callBackAfterSwipe)
+                if (this.props.callBackAfterSwipe) {
                     this.props.callBackAfterSwipe(goTo, Math.abs(goTo / width));
+                }
             }, 500);
         }
+        this._onHandlerStateChangeBegin = (gestureState) => {
+            this._animatedValue.stopAnimation();
+            this._animatedValue.setOffset({ x: this._value.x, y: this._value.y, },);
+        }
+        this._onHandlerStateChange = (e) => {
+            console.info("技术了", e,)
 
-        this._panResponder = PanResponder.create({
-            onMoveShouldSetResponderCapture: () => true,
-            onMoveShouldSetResponderCapture: () => Math.abs(gestureState.dx) > this.props.responderCaptureDx,
-            onMoveShouldSetPanResponderCapture: (evt, gestureState) =>
-                Math.abs(gestureState.dx) > this.props.responderCaptureDx,
-            onPanResponderGrant: (e, gestureState) => {
-                if (this.props.callbackOnSwipe) {
-                    this.props.callbackOnSwipe(true);
-                }
-                this._animatedValue.stopAnimation();
-                this._animatedValue.setOffset({ x: this._value.x, y: this._value.y });
-            },
-            onPanResponderMove: (e, gestureState) => {
-                if (this.props.loop) {
-                    if (gestureState.dx < 0 && this._value.x < - this.fullWidth) {
-                        this._animatedValue.setOffset({ x: width });
-                    } else if (gestureState.dx > 0 && this._value.x > 0) {
-                        this._animatedValue.setOffset({ x: - (this.fullWidth + width) });
-                    }
-                }
-                Animated.event([null, { dx: this._animatedValue.x }])(e, gestureState);
-            },
-            onPanResponderRelease: (e, gestureState) => {
-                onDoneSwiping(gestureState);
-            },
-            onPanResponderTerminate: (e, gestureState) => {
-                onDoneSwiping(gestureState);
-            },
-        });
+            onDoneSwiping(e);
+
+        }
+
     }
 
     componentWillReceiveProps(props) {
@@ -104,12 +99,14 @@ export default class CubeNavigationHorizontal extends React.Component {
     */
     scrollTo(page, animated) {
         animated = animated == undefined ? true : animated;
-
+        console.info(animated, 'animated')
         if (animated) {
+
             Animated.spring(this._animatedValue, {
                 toValue: { x: this.pages[page], y: 0 },
                 friction: 4,
-                tension: 0.8
+                tension: 0.8,
+                useNativeDriver: true
             }).start();
         } else {
             this._animatedValue.setValue({ x: this.pages[page], y: 0 });
@@ -201,6 +198,7 @@ export default class CubeNavigationHorizontal extends React.Component {
         let expandStyle = this.props.expandView
             ? { paddingTop: 100, paddingBottom: 100, height: height + 200 }
             : { width, height };
+        console.info("nikanana")
         let style = [child.props.style, expandStyle];
         let props = {
             i,
@@ -230,6 +228,7 @@ export default class CubeNavigationHorizontal extends React.Component {
         let ans;
         for (i in array) {
             let m = Math.abs(num - array[i]);
+            console.info(m, num, array[i], i, this.pages, minDiff)
             if (m < minDiff) {
                 minDiff = m;
                 ans = i;
@@ -244,22 +243,38 @@ export default class CubeNavigationHorizontal extends React.Component {
             : { width, height };
 
         return (
+            // <TapGestureHandler >
+
             <Animated.View
                 style={[{ position: 'absolute' }]}
                 ref={view => {
                     this._scrollView = view;
                 }}
-                {...this._panResponder.panHandlers}
+
+            // {...this._panResponder.panHandlers}
             >
-                <Animated.View
-                    style={[
-                        { backgroundColor: '#000', position: 'absolute', width, height },
-                        expandStyle
-                    ]}
+                <PanGestureHandler
+                    minDeltaX={60}
+                    onGestureEvent={this._onGestureEvent}
+                    onEnded={this._onHandlerStateChange}
+                    onBegan={this._onHandlerStateChangeBegin}
+                    // onHandlerStateChange={this._onHandlerStateChange}
+                    enabled={true}
                 >
-                    {this.props.children.map(this._renderChild)}
-                </Animated.View>
-            </Animated.View>
+
+                    <Animated.View
+                        style={[
+                            { backgroundColor: '#000', position: 'absolute', width, height },
+                            expandStyle
+                        ]}
+                    >
+                        {this.props.children.map(this._renderChild)}
+                    </Animated.View>
+
+                </PanGestureHandler>
+            </Animated.View >
+            // </TapGestureHandler>
+
         );
     }
 }

@@ -46,7 +46,7 @@ const OtherButton = React.memo((props) => {
 
   const toComments = (props) => {
     return navigation.push('FeedsRoomView', {
-      rid: item.rid, tmid: item.id, name: '评论', t: 'thread', roomUserId: ''
+      rid: item.drid, tmid: null, name: '评论', t: 'thread', roomUserId: ''
     });
   }
   const toShare = () => {
@@ -92,7 +92,7 @@ const IndexIndictator = React.memo((props) => {
   // pagination 
   const { item } = props
   const currentIndex = props.index
-  let attachments = item?.attachments || []
+  let attachments = item?.attachments?.[0]?.attachments || []
   const cref = useRef()
 
   useEffect(() => {
@@ -131,19 +131,7 @@ const IndexIndictator = React.memo((props) => {
       </View>
     </View>
   )
-  return (
-    <Pagination
-      dotsLength={attachments.length + 10}
-      activeDotIndex={currentIndex}
-      style={{ padding: 0, margin: 0 }}
-      containerStyle={{ paddingVertical: 0, paddingHorizontal: 0, marginLeft: 20, width: 50, backgroundColor: "red", overflow: "scroll" }}
-      dotElement={renderDotItem()}
-      inactiveDotElement={renderInactiveDotItem()}
 
-      inactiveDotOpacity={1.0}
-      inactiveDotScale={0.8}
-    />
-  )
 })
 const Tools = (props) => {
 

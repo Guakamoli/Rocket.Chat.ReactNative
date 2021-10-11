@@ -35,7 +35,7 @@ const Stories = (props) => {
         if (AllStories.length - 1 > currentUserIndex) {
             setCurrentUserIndex(newIndex);
             if (!isScroll) {
-                modalScroll.current.scrollTo(newIndex, true);
+                modalScroll.current.scrollTo(newIndex, false);
             }
         } else {
             setModel(false);
@@ -50,7 +50,7 @@ const Stories = (props) => {
         if (currentUserIndex > 0) {
             setCurrentUserIndex(newIndex);
             if (!isScroll) {
-                modalScroll.current.scrollTo(newIndex, true);
+                modalScroll.current.scrollTo(newIndex, false);
             }
         }
     };

@@ -16,7 +16,8 @@ import {
 } from 'react-native';
 import { Q } from '@nozbe/watermelondb';
 // import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
-import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view';
+import ScrollableTabView, { DefaultTabBar } from 'react-native-scrollable-tab-view';
+import { useHeaderHeight } from '@react-navigation/elements';
 
 import { connect } from 'react-redux';
 import {
@@ -40,6 +41,7 @@ import StatusBar from '../../../../containers/StatusBar';
 import log, { logEvent, events } from '../../../../utils/log';
 import ServicePage from "./ServicePage"
 import ComponentPage from "./ComponentPage"
+
 const { verifiedPng,
     plusSmallPng,
     shareUserPng, } = ImageMap
@@ -49,9 +51,10 @@ const screenOptions = {
     headerTransparent: true,
     statusBarTranslucent: true,
     statusBarStyle: 'light',
-    statusBarColor: 'transparent',
-    headerStyle: {
-        backgroundColor: 'transparent',
+
+    headerBackgroundContainerStyle: {
+        backgroundColor: 'rgba(255,255,255,1)',
+        opacity: 0
     },
     headerTintColor: 'rgba(255,255,255,1)',
     headerTitleStyle: {
@@ -71,14 +74,10 @@ const screenOptions = {
 
 const BottomComponents = (props) => {
     // 在这里获取用户的作品信息
-    const { navigation } = props
+    const { navigation, componentTop, scrollY, scrollRef } = props
+    const headerHeight = useHeaderHeight();
+    const [contentHeight, setContentHeight] = useState('auto')
 
-    const [show, setShow] = useState(false)
-    useEffect(() => {
-        setTimeout(() => {
-            setShow(true)
-        }, 500);
-    }, [])
     const changeTabIndex = async index => {
         setActiveindex(index);
     };
@@ -86,20 +85,46 @@ const BottomComponents = (props) => {
         keyboardShouldPersistTaps: 'always',
         keyboardDismissMode: 'none'
     };
-    if (!show) return null
+    const toTopDist = componentTop + 175 - headerHeight
+    const maxDist = toTopDist + 1000000000
+
+    const onChangeTab = (value) => {
+        // 切换了以后返回最上面
+        if (value.from === 0 && value.i === 1) {
+            setContentHeight(400)
+        } else if (value.from === 1 && value.i === 0) {
+            setContentHeight('auto')
+        }
+        scrollRef?.current?.scrollTo?.({ x: 0, y: 0, animated: true })
+
+    }
     return (<ScrollableTabView
+        onChangeTab={onChangeTab}
+        renderTabBar={(props) => <Animated.View style={{
+            transform: [{
+                translateY: scrollY.interpolate({
+                    inputRange: [-1000, 0, toTopDist, maxDist],
+                    outputRange: [0, 0, 0, maxDist]
+                })
+            }],
+            zIndex: 100
+        }}>
+            <DefaultTabBar {...props}></DefaultTabBar>
+        </Animated.View>}
         contentProps={scrollProps}
         style={{
             // flex: 1,
             backgroundColor: "white",
-
+            height: contentHeight
         }}
+
         tabBarUnderlineStyle={{
             height: 2,
             backgroundColor: "#000000FF",
             alignContent: "center",
 
         }}
+        tabBarBackgroundColor={'white'}
         tabBarActiveTextColor={'#000000FF'}
         tabBarInactiveTextColor={'#8F8F8FFF'}
         tabBarTextStyle={{
@@ -122,9 +147,13 @@ const UserView = (props) => {
         username: userInfo.username,
         rid: userInfo.rid,
     })
+    const headerHeight = useHeaderHeight();
+
     const channelRef = useRef(null)
     const roomRef = useRef(null)
+    const scrollRef = useRef(null)
     const onPress = useCallback(() => navigation.goBack());
+    const [componentTop, setComponentTop] = useState(1);
 
     const [hasSubscribe, setHasSubscribe] = useState(null)
     const getUserData = async (userInfo) => {
@@ -169,26 +198,43 @@ const UserView = (props) => {
     const setHeader = () => {
         navigation.setOptions({
             headerTitleAlign: 'center',
-
+            headerBackgroundContainerStyle: {
+                backgroundColor: 'rgba(255,255,255,1)',
+                opacity: scrollY.interpolate({
+                    inputRange: [0, toTopDist, toTopDist + 100],
+                    outputRange: [0, 0, 0.75]
+                })
+            },
             headerLeft: () => (
                 type ?
-                    <HeaderBackButton
+                    (<HeaderBackButton
                         label={''}
                         onPress={onPress}
                         tintColor={'white'}
-                        style={{ marginLeft: 10, }}
-                    /> : null
+                        // backImage={() => {
+                        //     return <View style={{ backgroundColor: "red", width: 100, height: 100 }} />
+                        // }}
+                        style={{
+                            marginLeft: 10,
+
+                        }}
+
+                    />
+
+                    ) : null
             ),
 
 
         })
     }
+    const toTopDist = componentTop + 175 - headerHeight
     useEffect(() => {
         setHeader()
         getHasSubscribe(userInfo)
         getUserData(userInfo)
     }, [])
-    const scale = useRef(new Animated.Value(1)).current;
+    // const scale = useRef(new Animated.Value(1)).current;
+    const scrollY = useRef(new Animated.Value(0)).current;
     const onSubscribe = async () => {
         // 加入和退出房间
         // logEvent(events.ROOM_JOIN);
@@ -236,17 +282,16 @@ const UserView = (props) => {
         }
     }
 
-    const onScroll = e => {
-        // 1. 背景图放大效果
-        // 2. 向上滚动的时候让头部显示出来，并且带上设置按钮
-
-        if (e.nativeEvent.contentOffset.y < 0) {
-            // 这里做的事情是 让视频有向下拖拽放大的效果
-            scale.setValue(1 - e.nativeEvent.contentOffset.y * 0.003);
-            return;
-        }
-
-    };
+    const onScroll = Animated.event(
+        [
+            {
+                nativeEvent: {
+                    contentOffset: { y: scrollY }
+                }
+            }
+        ],
+        { useNativeDriver: true }
+    );
     const renderHeader = (
         <View style={{
             backgroundColor: "white"
@@ -265,7 +310,9 @@ const UserView = (props) => {
 
                         />
                     </View>
-                    <Image source={shareUserPng} containerStyle={styles.shareUserPngStyle} resizeMode={'contain'} style={{ width: "100%", height: "100%" }} />
+                    <Image source={shareUserPng} containerStyle={styles.shareUserPngStyle}
+                        resizeMode={'contain'} style={{ width: "100%", height: "100%" }}
+                        placeholderStyle={{ backgroundColor: "transparent" }} />
                 </View>
 
                 <View style={styles.userNameBoxWrapper}>
@@ -273,7 +320,8 @@ const UserView = (props) => {
                         <Text style={styles.userName} numberOfLines={1} ellipsizeMode={'tail'}>
                             {user.username}
                         </Text>
-                        <Image source={verifiedPng} style={styles.verifiedPng} resizeMode={'contain'} />
+                        <Image source={verifiedPng} style={styles.verifiedPng} resizeMode={'contain'}
+                            placeholderStyle={{ backgroundColor: "transparent" }} />
 
                     </View>
                     <View>
@@ -301,8 +349,19 @@ const UserView = (props) => {
                 )}
 
             </View>
-            <BottomComponents {...props} channelsDataMap={{ [`${user.rid}`]: { rid: user.rid, name: user.username } }} />
-
+            <View onLayout={(a, b) => {
+                setComponentTop(a.nativeEvent.layout.y)
+                console.info(a.nativeEvent, 'ahah')
+            }}>
+                <BottomComponents
+                    {...props}
+                    channelsDataMap={{
+                        [`${user.rid}`]: { rid: user.rid, name: user.username }
+                    }}
+                    scrollRef={scrollRef}
+                    componentTop={componentTop}
+                    scrollY={scrollY} />
+            </View>
         </View>
     )
     return (
@@ -311,26 +370,31 @@ const UserView = (props) => {
             <StatusBar barStyle='light-content' />
             <Animated.View style={[styles.background, {
                 transform: [
-                    { scale: scale }
+                    {
+                        scale: scrollY.interpolate({
+                            inputRange: [-100, 0, 10],
+                            outputRange: [1.2, 1, 1]
+                        })
+                    }
                 ],
             }]}>
                 <ImageBackground source={{ uri: 'https://video-message-001.paiyaapp.com/dhAgCqD36QCAhEqXj.jpg' }} style={styles.background} />
             </Animated.View>
-            <ScrollView showsVerticalScrollIndicator={false}
+            <Animated.ScrollView showsVerticalScrollIndicator={false}
+                ref={scrollRef}
                 onScroll={onScroll}
                 scrollEventThrottle={16}
-                contentContainerStyle={[styles.contentContainerStyle,]}>
+                // style={{
+                //     marginTop: scrollY.interpolate({
+                //         inputRange: [-100, 0, 10],
+                //         outputRange: [100, 1, 0]
+                //     })
+                // }}
+                contentContainerStyle={[styles.contentContainerStyle]}>
                 {renderHeader}
-            </ScrollView>
-            {/* <FlatList
-              
-          
-                ListHeaderComponent={renderHeader}
-                data={[]}
-                keyExtractor={item => item.id}
+            </Animated.ScrollView>
 
-            /> */}
-        </View>
+        </View >
     )
 }
 

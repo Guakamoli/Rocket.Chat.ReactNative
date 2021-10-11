@@ -21,7 +21,7 @@ const { searchPng, companyTitlePng } = ImageMap
 const { width } = Dimensions.get("window")
 const Content = React.memo((props) => {
     const { item, baseUrl, user, setRootImageIndex, index, autoPlay = true } = props
-    const attachments = item?.attachments || []
+    const attachments = item?.attachments?.[0]?.attachments || []
     const onSnapToItem = (index) => {
         setRootImageIndex(index)
     }

@@ -21,14 +21,14 @@ const Comment = React.memo((props) => {
     const { user, item, navigation } = props
     const toComments = (props) => {
         return navigation.push('FeedsRoomView', {
-            rid: item.rid, tmid: item.id, name: '评论', t: 'thread', roomUserId: ''
+            rid: item.drid, tmid: null, name: '评论', t: 'thread', roomUserId: ''
         });
     }
     // const [text, setText] = useState('')
     const date = formatDateDetail(item.ts)
     let commentCount = '暂无评论'
-    if (item.tcount > 0) {
-        commentCount = `${item.tcount}条评论`
+    if (item.dcount > 0) {
+        commentCount = `${item.dcount}条评论`
     }
     return (
         <View style={styles.root}>

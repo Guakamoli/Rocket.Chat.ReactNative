@@ -183,6 +183,7 @@ class ListContainer extends React.Component {
 			this.unsubscribeMessages();
 			this.messagesSubscription = this.messagesObservable
 				.subscribe((messages) => {
+					console.info('你看', messages)
 					if (tmid && this.thread) {
 						messages = [...messages, this.thread];
 					}
