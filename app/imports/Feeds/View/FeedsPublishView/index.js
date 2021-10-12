@@ -118,7 +118,6 @@ const PublishView = (props) => {
 
         } catch (e) {
             hasPublish.current = false
-            console.info(e, 'sadasdfsdf')
         }
     }, [text, user, rid, attachments]);
 

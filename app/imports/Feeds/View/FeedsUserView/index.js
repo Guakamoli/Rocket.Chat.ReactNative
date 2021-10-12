@@ -142,6 +142,7 @@ const BottomComponents = (props) => {
     }
     return (<ScrollableTabView
         onChangeTab={onChangeTab}
+
         renderTabBar={(props) => <Animated.View style={{
             transform: [{
                 translateY: scrollY.interpolate({
@@ -300,7 +301,7 @@ const UserView = (props) => {
             console.info(e);
         }
     }
-    const setLeftButton = (color, title) => {
+    const setLeftButtonAndTitle = (color, title) => {
         navigation.setOptions({
             headerTitle: title,
             headerTitleStyle: {
@@ -341,19 +342,17 @@ const UserView = (props) => {
         {
             useNativeDriver: true,
             listener: (e) => {
-                if (e.nativeEvent.contentOffset.y > headerHeight) {
+                if (e.nativeEvent.contentOffset.y > headerHeight + 100) {
                     if (!scrollBreakPointRef.current) {
                         scrollBreakPointRef.current = true
-                        setLeftButton('black', userInfo.username || selfUser.username)
+                        setLeftButtonAndTitle('black', userInfo.username || selfUser.username)
                     }
-
 
                 } else if (scrollBreakPointRef.current) {
                     scrollBreakPointRef.current = false
-                    setLeftButton('white', '')
+                    setLeftButtonAndTitle('white', '')
                 }
 
-                console.info(e.nativeEvent.contentOffset.y, 'contentOffsetcontentOffset')
             }
         }
     );
@@ -448,19 +447,17 @@ const UserView = (props) => {
             }]}>
                 <ImageBackground source={{ uri: 'https://video-message-001.paiyaapp.com/dhAgCqD36QCAhEqXj.jpg' }} style={styles.background} />
             </Animated.View>
-            <Animated.ScrollView showsVerticalScrollIndicator={false}
+            <Animated.FlatList showsVerticalScrollIndicator={false}
                 ref={scrollRef}
                 onScroll={onScroll}
+
+                ListHeaderComponent={renderHeader}
                 scrollEventThrottle={16}
-                // style={{
-                //     marginTop: scrollY.interpolate({
-                //         inputRange: [-100, 0, 10],
-                //         outputRange: [100, 1, 0]
-                //     })
-                // }}
+
+
                 contentContainerStyle={[styles.contentContainerStyle]}>
-                {renderHeader}
-            </Animated.ScrollView>
+
+            </Animated.FlatList>
 
         </View >
     )

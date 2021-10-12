@@ -109,11 +109,14 @@ const CountList = (props) => {
         })}
     </View>
 }
+const QUERY_SIZE = 10
 const ComponentPage = React.memo((props) => {
     const { selfUser: user, baseUrl, theme, channelsDataMap, loaded } = props
     const { userInfo = null } = props.route.params || {}
     const [data, setData] = useState([])
+    const [noMore, setNoMore] = useState(false)
     const [type, _setType] = useState(null)
+    const countRef = useRef(0)
     const db = database.active;
     const setType = async (type) => {
         await getData(type)
@@ -128,7 +131,8 @@ const ComponentPage = React.memo((props) => {
 
                 Q.where('tmid', null),
                 Q.experimentalSortBy('ts', Q.desc),
-                Q.experimentalTake(50)
+                Q.experimentalSkip(countRef.current),
+                Q.experimentalTake(countRef.current + QUERY_SIZE)
             ];
             if (!type) {
                 whereClause.push(
@@ -156,7 +160,11 @@ const ComponentPage = React.memo((props) => {
                 .get('messages')
                 .query(...whereClause)
                 .fetch()
-            setData(messages)
+            setData(data.concat(messages))
+            countRef.current += QUERY_SIZE
+            if ((messages?.length || 0) < QUERY_SIZE) {
+                setNoMore(true)
+            }
             console.info('结果', messages, type)
         } catch (e) {
             console.info(e, '错误')
@@ -182,15 +190,22 @@ const ComponentPage = React.memo((props) => {
             channelsDataMap={channelsDataMap}
         />
     }
+    const _onEndReached = () => {
+        console.info('end')
+        getData(type)
+    }
     return (
         <FlatList
             // bounces={false}
+            onEndReachedThreshold={0.2}
+            onEndReached={_onEndReached}
             alwaysBounceVertical={false}
             showsVerticalScrollIndicator={false}
             renderItem={renderItem}
             scrollEventThrottle={16}
             style={styles.flatListStyle}
             ListHeaderComponent={<CountList {...props} setType={setType} />}
+            ListFooterComponent={noMore ? <Text style={styles.noMoreText}>没有更多了</Text> : null}
             contentContainerStyle={[styles.contentContainerStyle,]}
             data={data}
             keyExtractor={item => item.id}
@@ -235,6 +250,13 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         marginRight: 10,
         // paddingVertical: 12,
+    },
+    noMoreText: {
+        color: '#8E8E8EFF',
+        fontSize: 12,
+        fontWeight: '400',
+        lineHeight: 20,
+        textAlign: "center"
     },
 })
 export default ComponentPage
