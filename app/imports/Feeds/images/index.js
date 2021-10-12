@@ -20,5 +20,23 @@ const ImageMap = {
   selectedPng: require('../public/images/selected.png'),
   videoTypeIconPng: require('../public/images/videoTypeIcon.png'),
   imageTypeIconPng: require('../public/images/imageTypeIcon.png'),
+
+  cameraFlipPng: require('../public/images/cameraFlipIcon.png'),
+  captureButtonPng: require('../public/images/cameraButton.png'),
+  closePng: require('../public/images/close.png'),
+  musicPng: require('../public/images/music.png'),
+  beautifyPng: require('../public/images/beautify.png'),
+  beautyAdjustPng: require('../public/images/beautyAdjust.png'),
+  AaPng: require('../public/images/Aa.png'),
+  filterPng: require('../public/images/filter.png'),
+  musicRevampPng: require('../public/images/musicRevamp.png'),
+  giveUpPng: require('../public/images/giveUp.png'),
+  noVolumePng: require('../public/images/noVolume.png'),
+  tailorPng: require('../public/images/tailor.png'),
+  volumePng: require('../public/images/volume.png'),
+  multipleBtnPng: require('../public/images/multipleBtn.png'),
+  startMultipleBtnPng: require('../public/images/startMultipleBtn.png'),
+  postCameraPng: require('../public/images/postCamera.png'),
+  changeSizePng: require('../public/images/changeSize.png'),
 }
 export default ImageMap
