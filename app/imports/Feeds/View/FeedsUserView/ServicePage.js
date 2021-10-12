@@ -34,7 +34,7 @@ import database from '../../../../lib/database';
 import Avatar from '../../../../containers/Avatar';
 import StatusBar from '../../../../containers/StatusBar';
 import log, { logEvent, events } from '../../../../utils/log';
-const ServicePage = (props) => {
+const ServicePage = React.memo((props) => {
   const data = [{
     name: "定制服务",
     rate: "5.0评分",
@@ -66,7 +66,7 @@ const ServicePage = (props) => {
         )
       })}
     </View>)
-}
+})
 const styles = StyleSheet.create({
   root: {
     marginTop: 27,

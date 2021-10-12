@@ -75,9 +75,51 @@ const screenOptions = {
 const BottomComponents = (props) => {
     // 在这里获取用户的作品信息
     const { navigation, componentTop, scrollY, scrollRef } = props
+    const { userInfo = { username: "", rid: "" }, type } = props.route.params || {}
+
     const headerHeight = useHeaderHeight();
     const [contentHeight, setContentHeight] = useState('auto')
+    const [loaded, setLoaded] = useState(false)
+    const [countMap, setCountMap] = useState({
+        component: 0,
+        service: 0,
+    })
+    const getCountData = async () => {
+        const db = database.active;
+        try {
+            const whereClause = [
+                Q.where('rid', Q.eq(userInfo.rid)),
+                Q.where('tmid', null),
+                Q.where('t', Q.eq('discussion-created')),
 
+                Q.and(
+                    Q.where('attachments', Q.like(`%paiyapost:%`)),
+
+                    Q.or(
+                        Q.where('attachments', Q.like(`%image_type%`)),
+                        Q.where('attachments', Q.like(`%video_type%`))
+                    )
+                ),
+            ];
+            const componentCount = await db
+                .get('messages')
+                .query(...whereClause)
+                .fetchCount()
+            setCountMap({
+                component: componentCount,
+                service: 1
+            })
+            console.info("loading", true)
+            setLoaded(true)
+        }
+        catch (e) {
+            console.log(e)
+        }
+
+    }
+    useEffect(() => {
+        getCountData()
+    }, [])
     const changeTabIndex = async index => {
         setActiveindex(index);
     };
@@ -134,9 +176,8 @@ const BottomComponents = (props) => {
         }}
 
     >
-        <ComponentPage tabLabel='作品' {...props} />
-
-        <ServicePage tabLabel='服务' {...props} />
+        <ComponentPage tabLabel={`作品 ${countMap.component ? countMap.component : ''}`} {...props} loaded={loaded} key="ComponentPage" />
+        <ServicePage tabLabel={`服务 ${countMap.component ? countMap.service : ''}`} {...props} loaded={loaded} key="ServicePage" />
 
     </ScrollableTabView>)
 }
@@ -144,56 +185,53 @@ const UserView = (props) => {
     const { leaveRoom, selfUser, navigation } = props
     const { userInfo = { username: "", rid: "" }, type } = props.route.params || {}
     const [user, setUser] = useState({
-        username: userInfo.username,
+        username: userInfo.username || selfUser.username,
         rid: userInfo.rid,
     })
     const headerHeight = useHeaderHeight();
 
     const channelRef = useRef(null)
-    const roomRef = useRef(null)
     const scrollRef = useRef(null)
+    const scrollBreakPointRef = useRef(true)
     const onPress = useCallback(() => navigation.goBack());
     const [componentTop, setComponentTop] = useState(1);
-
     const [hasSubscribe, setHasSubscribe] = useState(null)
     const getUserData = async (userInfo) => {
+        // 先查找有没有房间，没有房间就用用户信息
         const db = database.active;
-        const userCollection = db.get('rooms');
+        const roomCollection = db.get('rooms');
 
-        const [userRecord] = await userCollection.query(Q.where('id', Q.eq(userInfo.rid))).fetch();
-        if (!userRecord) return
+        const [roomRecord] = await roomCollection.query(Q.where('id', Q.eq(userInfo.rid))).fetch();
+        console.info(roomRecord, 'roomRecord', {
+            username: roomRecord?.username || userInfo.username || selfUser.username,
+            rid: roomRecord?.id,
+        })
+        if (roomRecord) {
+            channelRef.current = {
+                rid: roomRecord?.id,
+                t: "c"
+            }
+        }
         setUser({
-            username: userRecord.username,
-            rid: userRecord.rid,
+            username: roomRecord?.username || userInfo.username || selfUser.username,
+            rid: roomRecord?.id,
         })
     }
     const getHasSubscribe = async (userInfo) => {
         if (!userInfo.username) return
         const db = database.active;
-        const result = await RocketChat.spotlight(userInfo.username, [], { users: false, rooms: true })
-        channelRef.current = result?.rooms?.[0]
-        if (channelRef.current) {
-            setUser({
-                username: channelRef.current.name,
-                rid: channelRef.current._id,
-            })
-        }
 
         let data = await db.get('subscriptions').query(
             Q.where("name", Q.eq(`${userInfo.username}`)),
             Q.where("t", Q.eq(`c`)),
         ).fetch();
-
         if (data && data[0]) {
-            roomRef.current = data[0]
-            setUser({
-                username: roomRef.current.name,
-                rid: roomRef.current.rid,
-            })
+
             setHasSubscribe(true)
         }
 
     }
+    const toTopDist = componentTop + 175 - headerHeight
 
     const setHeader = () => {
         navigation.setOptions({
@@ -211,6 +249,7 @@ const UserView = (props) => {
                         label={''}
                         onPress={onPress}
                         tintColor={'white'}
+
                         // backImage={() => {
                         //     return <View style={{ backgroundColor: "red", width: 100, height: 100 }} />
                         // }}
@@ -227,7 +266,6 @@ const UserView = (props) => {
 
         })
     }
-    const toTopDist = componentTop + 175 - headerHeight
     useEffect(() => {
         setHeader()
         getHasSubscribe(userInfo)
@@ -240,48 +278,58 @@ const UserView = (props) => {
         // logEvent(events.ROOM_JOIN);
         try {
             if (!channelRef.current) {
-                const db = database.active;
-
-                const result = await RocketChat.spotlight(userInfo.username, [], { users: false, rooms: true })
-                channelRef.current = result?.rooms?.[0]
-                let data = await db.get('subscriptions').query(
-                    Q.where("name", Q.eq(`${userInfo.username}`)),
-                    Q.where("t", Q.eq(`c`)),
-                ).fetch();
-                if (data && data[0]) {
-                    roomRef.current = data[0]
-
-                }
-                if (!roomRef.current) {
-                    roomRef.current = {
-                        rid: channelRef.current._id,
-                        t: "c"
-                    }
-                }
+                return
             }
-            if (hasSubscribe && roomRef.current) {
-                leaveRoom('channel', roomRef.current)
+            if (hasSubscribe) {
+                leaveRoom('channel', channelRef.current)
 
                 setHasSubscribe(false)
-                await AsyncStorage.setItem("subscribeRoomInfo", JSON.stringify({ type: 0, rid: roomRef.current.rid }))
+                await AsyncStorage.setItem("subscribeRoomInfo", JSON.stringify({ type: 0, rid: channelRef.current.rid }))
                 return
             }
 
             // 搜索网络。然后加入
-            if (channelRef.current) {
 
-                await RocketChat.joinRoom(channelRef.current._id, null, null);
-                await AsyncStorage.setItem("subscribeRoomInfo", JSON.stringify({ type: 1, rid: channelRef.current._id }))
+            await RocketChat.joinRoom(channelRef.current.rid, null, null);
+            await AsyncStorage.setItem("subscribeRoomInfo", JSON.stringify({ type: 1, rid: channelRef.current.rid }))
 
-                setHasSubscribe(true)
+            setHasSubscribe(true)
 
-            }
 
         } catch (e) {
             console.info(e);
         }
     }
+    const setLeftButton = (color, title) => {
+        navigation.setOptions({
+            headerTitle: title,
+            headerTitleStyle: {
+                color,
+                fontSize: 18,
+                fontWeight: '500',
+                lineHeight: 25,
+            },
+            headerLeft: () => (
+                type ?
+                    (<HeaderBackButton
+                        label={''}
+                        onPress={onPress}
+                        tintColor={color}
 
+                        // backImage={() => {
+                        //     return <View style={{ backgroundColor: "red", width: 100, height: 100 }} />
+                        // }}
+                        style={{
+                            marginLeft: 10,
+
+                        }}
+
+                    />
+
+                    ) : null
+            ),
+        })
+    }
     const onScroll = Animated.event(
         [
             {
@@ -290,7 +338,24 @@ const UserView = (props) => {
                 }
             }
         ],
-        { useNativeDriver: true }
+        {
+            useNativeDriver: true,
+            listener: (e) => {
+                if (e.nativeEvent.contentOffset.y > headerHeight) {
+                    if (!scrollBreakPointRef.current) {
+                        scrollBreakPointRef.current = true
+                        setLeftButton('black', userInfo.username || selfUser.username)
+                    }
+
+
+                } else if (scrollBreakPointRef.current) {
+                    scrollBreakPointRef.current = false
+                    setLeftButton('white', '')
+                }
+
+                console.info(e.nativeEvent.contentOffset.y, 'contentOffsetcontentOffset')
+            }
+        }
     );
     const renderHeader = (
         <View style={{
@@ -343,7 +408,11 @@ const UserView = (props) => {
                         style={styles.btnStyle}
                         buttonStyle={styles.btnButtonStyle}
                         containerStyle={styles.btnButtonContainerStyle}
-                        icon={<Image source={plusSmallPng} style={{ width: 11, height: 11 }} resizeMode={'contain'} />}
+                        icon={<Image
+                            source={plusSmallPng}
+                            style={{ width: 11, height: 11 }}
+                            resizeMode={'contain'}
+                            placeholderStyle={{ backgroundColor: "transparent" }} />}
                         title={!hasSubscribe ? `${('关注')}` : "取消关注"}
                     />
                 )}
@@ -351,7 +420,6 @@ const UserView = (props) => {
             </View>
             <View onLayout={(a, b) => {
                 setComponentTop(a.nativeEvent.layout.y)
-                console.info(a.nativeEvent, 'ahah')
             }}>
                 <BottomComponents
                     {...props}

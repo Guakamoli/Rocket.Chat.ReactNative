@@ -81,6 +81,8 @@ import FeedsListView from "../imports/Feeds/View/FeedsListView";
 import FeedsSearchView from "../imports/Feeds/View/FeedsSearchView";
 import FeedsStoriesView from "../imports/Feeds/View/FeedsStoriesView";
 import FeedsRoomView from "../imports/Feeds/View/FeedsRoomView";
+import FeedsVideoRoomView from "../imports/Feeds/View/FeedsVideoRoomView";
+
 import FeedsUserView from "../imports/Feeds/View/FeedsUserView";
 import FeedsPublishView from "../imports/Feeds/View/FeedsPublishView";
 import FeedsUnSubscribeView from "../imports/Feeds/View/FeedsUnSubscribeView";
@@ -300,7 +302,10 @@ const ChatsStackNavigator = () => {
 				name='FeedsRoomView'
 				component={FeedsRoomView}
 			/>
-
+			<ChatsStack.Screen
+				name='FeedsVideoRoomView'
+				component={FeedsVideoRoomView}
+			/>
 			<ChatsStack.Screen
 				name='FeedsSearchView'
 				{...FeedsSearchView}
