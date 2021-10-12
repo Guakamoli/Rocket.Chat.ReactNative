@@ -37,6 +37,7 @@ class MessageContainer extends React.Component {
 		highlighted: PropTypes.bool,
 		getCustomEmoji: PropTypes.func,
 		onLongPress: PropTypes.func,
+		onReplyInit: PropTypes.func,
 		onReactionPress: PropTypes.func,
 		onEncryptedPress: PropTypes.func,
 		onDiscussionPress: PropTypes.func,
@@ -61,6 +62,7 @@ class MessageContainer extends React.Component {
 	static defaultProps = {
 		getCustomEmoji: () => { },
 		onLongPress: () => { },
+		onReplyInit: () => { },
 		onReactionPress: () => { },
 		onEncryptedPress: () => { },
 		onDiscussionPress: () => { },
@@ -124,15 +126,16 @@ class MessageContainer extends React.Component {
 
 	onPress = debounce(() => {
 		const { onPress } = this.props;
+		const { item, isThreadRoom } = this.props;
+
 		if (this.isIgnored) {
 			return this.onIgnoredMessagePress();
 		}
 
 		if (onPress) {
-			return onPress();
+			return onPress(item, true);
 		}
 
-		const { item, isThreadRoom } = this.props;
 		Keyboard.dismiss();
 
 		if (((item.tlm || item.tmid) && !isThreadRoom)) {
@@ -149,7 +152,11 @@ class MessageContainer extends React.Component {
 			onLongPress(item);
 		}
 	}
-
+	onReplyInit = () => {
+		if (onReplyInit) {
+			onReplyInit(item);
+		}
+	}
 	onErrorPress = () => {
 		const { errorActionsShow, item } = this.props;
 		if (errorActionsShow) {
@@ -368,6 +375,7 @@ class MessageContainer extends React.Component {
 					baseUrl,
 					onPress: this.onPress,
 					onLongPress: this.onLongPress,
+					onReplyInit: this.onReplyInit,
 					reactionInit: this.reactionInit,
 					onErrorPress: this.onErrorPress,
 					replyBroadcast: this.replyBroadcast,

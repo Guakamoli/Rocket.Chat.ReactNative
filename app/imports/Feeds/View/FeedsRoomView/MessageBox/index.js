@@ -253,6 +253,8 @@ class MessageBox extends Component {
 			}
 			this.focus();
 		} else if (replying !== nextProps.replying && nextProps.replying) {
+			this.setInput(`@${nextProps.message.u.username} `);
+
 			this.focus();
 		} else if (!nextProps.message) {
 			this.clearInput();
@@ -774,6 +776,7 @@ class MessageBox extends Component {
 			} = this.props;
 
 			// Thread
+			console.info(threadsEnabled, replyWithMention, 'replyWithMentionreplyWithMentionreplyWithMention')
 			if (threadsEnabled && replyWithMention) {
 				onSubmit(message, replyingMessage.id, tshow);
 

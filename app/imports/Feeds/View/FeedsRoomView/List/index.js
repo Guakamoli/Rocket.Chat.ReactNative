@@ -1,5 +1,5 @@
 import React from 'react';
-import { RefreshControl } from 'react-native';
+import { RefreshControl, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { Q } from '@nozbe/watermelondb';
 import moment from 'moment';
@@ -16,6 +16,7 @@ import { themes } from '../../../../../constants/colors';
 import List from './List';
 import NavBottomFAB from './NavBottomFAB';
 import debounce from '../../../../../utils/debounce';
+import styles from '../styles';
 
 const QUERY_SIZE = 50;
 
@@ -49,6 +50,7 @@ class ListContainer extends React.Component {
 		super(props);
 		console.time(`${this.constructor.name} init`);
 		console.time(`${this.constructor.name} mount`);
+		const { showList = true } = props
 		this.count = 0;
 		this.mounted = false;
 		this.animated = false;
@@ -56,11 +58,14 @@ class ListContainer extends React.Component {
 		this.state = {
 			messages: [],
 			refreshing: false,
-			highlightedMessage: null
+			highlightedMessage: null,
+			showList: showList,
 		};
 		this.y = new Value(0);
 		this.onScroll = onScroll({ y: this.y });
-		this.query();
+		if (showList) {
+			this.query();
+		}
 		this.unsubscribeFocus = props.navigation.addListener('focus', () => {
 			this.animated = true;
 		});
@@ -331,35 +336,44 @@ class ListContainer extends React.Component {
 	onViewableItemsChanged = ({ viewableItems }) => {
 		this.viewableItems = viewableItems;
 	}
-
+	loadAndShowMessage = () => {
+		this.setState({
+			showList: true
+		})
+		this.query()
+	}
 	render() {
 		console.count(`${this.constructor.name}.render calls`);
-		const { rid, tmid, listRef } = this.props;
+		const { rid, tmid, listRef, item } = this.props;
 		const { messages, refreshing } = this.state;
 		const { theme } = this.props;
 		return (
 			<>
 				{/* <EmptyRoom rid={rid} length={messages.length} mounted={this.mounted} theme={theme} /> */}
-				<List
-					onScroll={this.onScroll}
+				{ item?.tcount ? <Text onPress={this.loadAndShowMessage} style={styles.moreText}>——查看更多评论</Text> : null}
+				{this.state.showList ? (
+					<List
+						onScroll={this.onScroll}
 
-					scrollEventThrottle={16}
-					listRef={listRef}
-					data={messages}
-					renderItem={this.renderItem}
-					onEndReached={this.onEndReached}
-					ListFooterComponent={this.renderFooter}
-					onScrollToIndexFailed={this.handleScrollToIndexFailed}
-					onViewableItemsChanged={this.onViewableItemsChanged}
-					viewabilityConfig={this.viewabilityConfig}
-					refreshControl={(
-						<RefreshControl
-							refreshing={refreshing}
-							onRefresh={this.onRefresh}
-							tintColor={themes[theme].auxiliaryText}
-						/>
-					)}
-				/>
+						scrollEventThrottle={16}
+						listRef={listRef}
+						data={messages}
+						renderItem={this.renderItem}
+						onEndReached={this.onEndReached}
+						ListFooterComponent={this.renderFooter}
+						onScrollToIndexFailed={this.handleScrollToIndexFailed}
+						onViewableItemsChanged={this.onViewableItemsChanged}
+						viewabilityConfig={this.viewabilityConfig}
+						refreshControl={(
+							<RefreshControl
+								refreshing={refreshing}
+								onRefresh={this.onRefresh}
+								tintColor={themes[theme].auxiliaryText}
+							/>
+						)}
+					/>
+				) : null}
+
 				{/* <NavBottomFAB y={this.y} onPress={this.jumpToBottom} isThread={!!tmid} /> */}
 			</>
 		);

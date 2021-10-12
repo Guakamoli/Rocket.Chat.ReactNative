@@ -459,6 +459,7 @@ class RoomView extends React.Component {
 	}
 
 	onReplyInit = (message, mention) => {
+		console.info(message, 'hahahahah')
 		this.setState({
 			selectedMessage: message, replying: true, replyWithMention: mention
 		});
@@ -473,7 +474,9 @@ class RoomView extends React.Component {
 	onMessageLongPress = (message) => {
 		this.messageActions?.showMessageActions(message);
 	}
-
+	onMessagePress = (message) => {
+		// 传递参数给输入框做文本回复
+	}
 	showAttachment = (attachment) => {
 		const { navigation } = this.props;
 		navigation.navigate('AttachmentView', { attachment });
@@ -737,8 +740,11 @@ class RoomView extends React.Component {
 						onReactionPress={this.onReactionPress}
 						onReactionLongPress={this.onReactionLongPress}
 						onLongPress={this.onMessageLongPress}
+						onPress={this.onReplyInit}
+
 						onEncryptedPress={this.onEncryptedPress}
 						onDiscussionPress={this.onDiscussionPress}
+						onMessagePress={this.onMessagePress}
 						onAnswerButtonPress={this.sendMessage}
 						showAttachment={this.showAttachment}
 						reactionInit={this.onReactionInit}
@@ -756,11 +762,12 @@ class RoomView extends React.Component {
 					/>
 					{!nochild ? (
 						<View style={styles.subMessages}>
-							{ item.tcount ? <Text style={styles.moreText}>——查看更多评论</Text> : null}
 							<List
+								showList={false}
 								nochild={true}
 								rid={room.rid}
 								tmid={item.id}
+								item={item}
 								theme={theme}
 								tunread={0}
 								ignored={0}
