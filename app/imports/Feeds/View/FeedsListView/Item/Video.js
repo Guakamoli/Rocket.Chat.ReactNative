@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState, createRef } from 'react';
 import { Animated, Pressable, View, TouchableWithoutFeedback, StyleSheet, Dimensions } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Image } from 'react-native-elements';
+import { useIsFocused } from '@react-navigation/native';
 
 import ImageMap from '../../../images';
 import Video from 'react-native-video';
@@ -10,8 +11,13 @@ const videoRefMap = createRef({});
 videoRefMap.current = {};
 import EventEmitter from '../../../../../utils/events';
 EventEmitter.addEventListener('home_video_play', (data) => {
-  return
-  console.info('sJisasd', data, videoRefMap.current[data.url])
+
+  if (data.stopAll) {
+    for (let key in videoRefMap.current) {
+      videoRefMap.current[key].playOrStopVideo(false, false)
+    }
+    return
+  }
   if (videoRefMap.current[data.url]) {
     videoRefMap.current[data.url].playOrStopVideo(data.play, true)
   }
@@ -223,8 +229,8 @@ class VideoPlayer extends React.Component {
   }
 }
 const VideoPlayerWrapper = props => {
-  // const isFocused = useIsFocused();
-  return <VideoPlayer {...props} isFocused={true} />;
+  const isFocused = useIsFocused();
+  return <VideoPlayer {...props} isFocused={isFocused} />;
 };
 
 const windowWidth = Dimensions.get('window').width;

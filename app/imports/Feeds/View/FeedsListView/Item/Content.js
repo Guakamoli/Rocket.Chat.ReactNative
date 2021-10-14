@@ -36,7 +36,7 @@ const Content = React.memo((props) => {
             img = formatAttachmentUrl(img, user.id, user.token, baseUrl);
             return (
                 <Carousel
-                    data={[{ img }, { img }, { img }, { img }, { img }, { img }, { img }, { img }, { img }]}
+                    data={[{ img }]}
                     renderItem={renderItem}
                     sliderWidth={width}
                     itemWidth={width}
@@ -52,7 +52,7 @@ const Content = React.memo((props) => {
             url = formatAttachmentUrl(url, user.id, user.token, baseUrl);
             const VideoProps = {
                 uri: url,
-                autoplay: false,
+                autoplay: index === 0,
                 muted: true,
                 loop: true,
             }

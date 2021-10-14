@@ -22,6 +22,8 @@ import RoomItem, { ROW_HEIGHT } from '../../../../presentation/RoomItem';
 import styles from './styles';
 import log, { logEvent, events } from '../../../../utils/log';
 import I18n from '../../../../i18n';
+import AsyncStorage from '@react-native-community/async-storage';
+
 import {
 	toggleSortDropdown as toggleSortDropdownAction,
 	openSearchHeader as openSearchHeaderAction,
@@ -69,6 +71,8 @@ import { formatAttachmentUrl } from '../../../../lib/utils.js';
 import CubeNavigationHorizontal from '../FeedsStoriesView/cubicTransForm';
 import AllStories from '../FeedsStoriesView/constants/AllStories';
 import StoryContainer from '../FeedsStoriesView/components/StoryContainer';
+import { formatDateDetail } from "../../../../utils/room"
+
 const { searchPng, companyTitlePng } = ImageMap
 const INITIAL_NUM_TO_RENDER = isTablet ? 20 : 12;
 const CHATS_HEADER = 'Chats';
@@ -87,7 +91,10 @@ const filterIsOmnichannel = s => s.t === 'l';
 const filterIsTeam = s => s.teamMain;
 const filterIsDiscussion = s => s.prid;
 const { width, height } = Dimensions.get('window');
-
+const shouldUpdateState = [
+	'messages',
+	'storyMessages'
+]
 const shouldUpdateProps = [
 	'searchText',
 	'loadingServer',
@@ -103,6 +110,7 @@ const shouldUpdateProps = [
 	'isMasterDetail',
 	'refreshing',
 	'queueSize',
+
 	'inquiryEnabled',
 	'encryptionBanner'
 ];
@@ -171,6 +179,10 @@ class RoomsListView extends React.Component {
 			chatsUpdate: [],
 			chats: [],
 			messages: [],
+			channelsDataMap: {},
+			channelsData: [],
+			dataList: [],
+			storyMessages: [],
 			item: {}
 		};
 		this.viewabilityConfigCallbackPairs = [{
@@ -256,7 +268,10 @@ class RoomsListView extends React.Component {
 		if (propsUpdated) {
 			return true;
 		}
-
+		const stateUpdated = shouldUpdateState.some(key => nextState[key] !== this.state[key]);
+		if (stateUpdated) {
+			return true;
+		}
 		// Compare changes only once
 		const chatsNotEqual = !dequal(nextState.chatsUpdate, chatsUpdate);
 
@@ -347,6 +362,7 @@ class RoomsListView extends React.Component {
 			this.unsubscribeBlur();
 		}
 		this.unsubscribeMessages()
+
 		if (this.backHandler && this.backHandler.remove) {
 			this.backHandler.remove();
 		}
@@ -381,9 +397,9 @@ class RoomsListView extends React.Component {
 	}
 	toSearchView = () => {
 		const { navigation } = this.props;
-		navigation.navigate("RoomsListView")
-		return
-		navigation.navigate("FeedsSearchView" || "RoomsListView")
+		// navigation.navigate("RoomsListView")
+		// return
+		navigation.navigate("FeedsSearchView")
 	}
 	setHeader = () => {
 		const { navigation } = this.props;
@@ -411,6 +427,9 @@ class RoomsListView extends React.Component {
 		if (this.messagesSubscription && this.messagesSubscription.unsubscribe) {
 			this.messagesSubscription.unsubscribe();
 		}
+		if (this.messagesStorySubscription && this.messagesStorySubscription.unsubscribe) {
+			this.messagesStorySubscription.unsubscribe();
+		}
 	}
 	init = async (channelsDataIds) => {
 		const initInner = async (channelsDataIds, resolve) => {
@@ -427,7 +446,6 @@ class RoomsListView extends React.Component {
 				this.retryFindCount = this.retryFindCount + 1 || 1;
 				if (this.retryFindCount <= 10) {
 					this.retryFindTimeout = setTimeout(() => {
-						console.info("请求", e)
 						initInner(channelsDataIds, resolve);
 					}, 2000 * this.retryFindCount);
 				}
@@ -446,7 +464,9 @@ class RoomsListView extends React.Component {
 			showUnread,
 			showFavorites,
 			groupByType,
-			user
+			user,
+			baseUrl,
+
 		} = this.props;
 
 		const db = database.active;
@@ -492,13 +512,37 @@ class RoomsListView extends React.Component {
 				Q.experimentalSkip(0),
 				Q.experimentalTake(1000)
 			).fetch()
+
+		channelsDataMap = {}
+		for (const item of channelsData) {
+			channelsDataMap[item.rid] = item
+		}
+		this.setState({ channelsDataMap, channelsData })
 		const channelsDataIds = channelsData.map((i) => i.rid)
 		this.channelsDataIds = channelsDataIds
 		const whereClause = [
 			Q.where('rid', Q.oneOf(channelsDataIds)),
 			Q.where('tmid', null),
 			Q.and(
+				Q.where('attachments', Q.like(`%paiyapost:%`)),
+
+				Q.or(
+					Q.where('attachments', Q.like(`%image_type%`)),
+					Q.where('attachments', Q.like(`%video_type%`))
+				)
+			),
+
+			Q.experimentalSortBy('ts', Q.desc),
+			Q.experimentalTake(50)
+		];
+		const zeroDate = new Date().setHours(0, 0, 0, 0)
+		const whereStoryClause = [
+			Q.where('rid', Q.oneOf(channelsDataIds)),
+			Q.where('tmid', null),
+			// Q.where('ts', Q.gt(zeroDate)),
+			Q.and(
 				Q.where('attachments', Q.like(`%"attachments":[]%`)),
+				Q.where('attachments', Q.like(`%paiyastory:%`)),
 				Q.or(
 					Q.where('attachments', Q.like(`%image_type%`)),
 					Q.where('attachments', Q.like(`%video_type%`))
@@ -508,24 +552,106 @@ class RoomsListView extends React.Component {
 			Q.experimentalTake(50)
 		];
 		await this.init(channelsDataIds)
-		console.info("开始计算")
 
 		// const messages = await db.collections
 		// 	.get('messages')
 		// 	.query(...whereClause)
 		// 	.fetch()
 		// this.setState({ messages })
+		this.unsubscribeMessages();
+
+		this.messagesStoryObservable = db.collections
+			.get('messages')
+			.query(...whereStoryClause)
+			.observe();
+		this.messagesStorySubscription = this.messagesStoryObservable
+			.subscribe(async (messages) => {
+				try {
+					messages = messages.filter(m => m.attachments[0].attachments[0] === undefined);
+					console.info(messages, "messagesStoryObservable")
+					let storyReadMap = await AsyncStorage.getItem("storyReadMap")
+					if (storyReadMap) {
+						storyReadMap = JSON.parse(storyReadMap)
+					} else {
+						storyReadMap = {}
+					}
+					// 这里构造整体数据解耦
+					const roomHitMap = {}
+					const dataList = []
+					for (const item of messages) {
+						const roomHit = channelsDataMap[item.rid]
+						if (!roomHitMap[item.rid]) {
+							const roomItem = {
+								name: roomHit.name,
+								rid: roomHit.rid,
+								t: roomHit.t,
+								hasUnread: false,
+								stories: []
+							}
+							dataList.push(roomItem)
+							roomHitMap[item.rid] = roomItem
+
+						}
+						const attachment = item.attachments[0]
+						const type = attachment.video_type || attachment.image_type
+						const isRead = !!storyReadMap[item.title]
+						if (!isRead) {
+							roomHitMap[item.rid].hasUnread = true
+						}
+						let url = formatAttachmentUrl(attachment.video_url || attachment.image_url, user.id, user.token, baseUrl)
+						roomHitMap[item.rid].stories.push({
+							id: item.title,
+							url,
+							type,
+							isRead,
+							date: formatDateDetail(item.ts)
+						})
+
+
+					}
+					const index = dataList.findIndex(i => i.name === user.username)
+
+					if (index !== -1) {
+						const item = dataList.splice(index, 1)[0]
+						item.isSelf = true
+						dataList.unshift(item)
+					} else {
+						const roomHit = channelsData.find(i => i.name === user.username)
+						if (roomHit) {
+							const roomItem = {
+								name: roomHit.name,
+								rid: roomHit.rid,
+								t: roomHit.t,
+								stories: [],
+								hasUnread: false,
+								isSelf: true
+							}
+							dataList.unshift(roomItem)
+
+						}
+					}
+
+					if (this.mounted) {
+						this.setState({ storyMessages: messages, dataList }, () => this.update());
+					} else {
+						this.state.storyMessages = messages;
+						this.state.dataList = dataList;
+					}
+				} catch (e) {
+					console.info(e)
+				}
+				// TODO: move it away from here
+				// this.readThreads();
+			});
 
 		this.messagesObservable = db.collections
 			.get('messages')
 			.query(...whereClause)
 			.observe();
-		this.unsubscribeMessages();
 		this.messagesSubscription = this.messagesObservable
 			.subscribe((messages) => {
-
+				console.info(messages, 'messages')
 				messages = messages.filter(m => m.attachments[0].attachments[0] === undefined);
-				console.info("消息", messages,)
 				if (this.mounted) {
 					this.setState({ messages }, () => this.update());
 				} else {
@@ -960,18 +1086,23 @@ class RoomsListView extends React.Component {
 	getScrollRef = ref => (this.scroll = ref);
 
 	renderListHeader = () => {
-		const { searching, } = this.state;
+		const { searching, storyMessages, channelsDataMap, channelsData, dataList } = this.state;
 		const {
-			sortBy, queueSize, inquiryEnabled, encryptionBanner, user
+			sortBy, queueSize, inquiryEnabled, encryptionBanner, user,
+			navigation
 		} = this.props;
 		const [isModelOpen, setModel] = useState(false);
 		const [currentUserIndex, setCurrentUserIndex] = useState(0);
 		const currentScrollValue = useRef(0);
+		const itemRef = useRef(null)
 		const modalScroll = useRef(null);
 
-		const onStorySelect = (index) => {
+		const onStorySelect = (index, item) => {
+			itemRef.current = item
 			setCurrentUserIndex(index);
 			currentScrollValue.current = - (width * index)
+			EventEmitter.emit('home_video_play', { stopAll: true })
+
 			setTimeout(() => {
 				setModel(true);
 
@@ -986,8 +1117,10 @@ class RoomsListView extends React.Component {
 		const onStoryNext = (isScroll) => {
 			const newIndex = currentUserIndex + 1;
 			currentScrollValue.current -= width
-			console.info(AllStories.length, currentScrollValue.current, 'hshsh')
-			if (AllStories.length - 1 > currentUserIndex) {
+			if (itemRef.current?.isSelf) {
+				return setModel(false);
+			}
+			if (dataList.length - 2 > currentUserIndex) {
 				setCurrentUserIndex(newIndex);
 				if (!isScroll) {
 					modalScroll.current.scrollTo(newIndex, true);
@@ -1010,7 +1143,6 @@ class RoomsListView extends React.Component {
 			}
 		};
 		const onScrollChange = (scrollValue) => {
-			console.info(currentScrollValue.current, scrollValue)
 			if (currentScrollValue.current > scrollValue) {
 				onStoryNext(true);
 				console.info('next');
@@ -1023,9 +1155,16 @@ class RoomsListView extends React.Component {
 			}
 
 		};
+		let dataListSlice = dataList
+		if (itemRef.current?.isSelf) {
+			dataListSlice = dataListSlice.slice(0, 1)
+		} else {
+			dataListSlice = dataListSlice.slice(1,)
+		}
+
 		return (
 			<>
-				<ChannelCircle onStorySelect={onStorySelect} />
+				<ChannelCircle onStorySelect={onStorySelect} storyMessages={storyMessages} user={user} dataList={dataList} navigation={navigation} />
 				<Modal
 					animationType="slide"
 					transparent={false}
@@ -1039,7 +1178,7 @@ class RoomsListView extends React.Component {
 				>
 					{/* eslint-disable-next-line max-len */}
 					<CubeNavigationHorizontal callBackAfterSwipe={g => onScrollChange(g)} ref={modalScroll} style={styles.container} initialPage={currentUserIndex}>
-						{AllStories.map((item, index) => (
+						{dataListSlice.map((item, index) => (
 							<StoryContainer
 								onClose={onStoryClose}
 								onStoryNext={onStoryNext}
@@ -1099,6 +1238,7 @@ class RoomsListView extends React.Component {
 				user={user}
 				type={item.t}
 				index={index}
+				channelsDataMap={channelsDataMap}
 				onPress={this.onPressItem}
 			/>
 		)

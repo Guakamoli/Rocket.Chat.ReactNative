@@ -9,11 +9,11 @@ import PropTypes from 'prop-types';
 const Story = (props) => {
   const { story } = props;
   const { url, type } = story || {};
-
+  if (!type) return null
   return (
     <View style={styles.container}>
 
-      {type === 'image' ? (
+      {type.includes('image') ? (
         <Image
           source={{ uri: url }}
           onLoadEnd={props.onImageLoaded}

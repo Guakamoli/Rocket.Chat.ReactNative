@@ -6,7 +6,6 @@ const ProgressArray = (props) => {
 
   const [duration] = useState(Math.max(15 / props.length.length, 4))
   const currentPageActive = props.currentUserIndex == props.index
-  console.info("currentPageActive", currentPageActive, props.currentUserIndex, props.index)
   return (
     <Animated.View style={[styles.progressBarArray,]}>
       {props.length.map((i, index) => (
