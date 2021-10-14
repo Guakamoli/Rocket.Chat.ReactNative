@@ -144,10 +144,19 @@ const SeachView = (props) => {
 const SearchResult = React.memo((props) => {
     const { text, navigation } = props
     const [data, setData] = useState([])
+    const [searching, setSearching] = useState(false)
     const querySearchData = async (text) => {
         // 从本地查库拿到数据
+        setSearching(true)
+        if (!text) {
+            setData([])
+            setSearching(false)
+            return
+        }
         const result = await RocketChat.search({ text, filterUsers: false });
         setData(result)
+        setSearching(false)
+
     }
 
     useEffect(() => {
@@ -158,8 +167,7 @@ const SearchResult = React.memo((props) => {
     const renderItem = props => {
         const { item, index } = props;
         const toProduct = () => {
-            console.info(item, 'hahahahah')
-            navigation.navigate('FeedsUserView', { userInfo: { username: item.name, rid: item.rid, } });
+            navigation.navigate('FeedsUserView', { userInfo: { username: item.name, rid: item.rid, }, type: "pop" });
         };
         const avatar = getRoomAvatar(item);
         return (
@@ -206,7 +214,7 @@ const SearchResult = React.memo((props) => {
             ListEmptyComponent={
                 <View style={styles.noSearchBox}>
 
-                    <Text style={styles.noSearchText}>{I18n.t(!text ? 'startSearchDesc' : 'searchNotFound')}</Text>
+                    <Text style={styles.noSearchText}>{(!text ? I18n.t('startSearchDesc') : (!searching && !data.length) ? I18n.t('searchNotFound') : '')}</Text>
                 </View>
             }
 

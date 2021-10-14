@@ -11,12 +11,12 @@ const MessageAvatar = React.memo(({
 	const { user } = useContext(MessageContext);
 	const navParam = {
 		t: 'd',
-		rid: author._id
+		rid: author?._id
 	};
 	return (
 		<Avatar
 			style={styles.avatar}
-			text={avatar ? '' : author.username}
+			text={avatar ? '' : author?.username}
 			size={32}
 			borderRadius={32}
 			onPress={author._id === user.id ? undefined : () => navToRoomInfo(navParam)}

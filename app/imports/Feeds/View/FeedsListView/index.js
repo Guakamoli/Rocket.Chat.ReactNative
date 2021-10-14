@@ -213,6 +213,19 @@ class RoomsListView extends React.Component {
 		console.log(a, b, '3333')
 
 	}
+	operateSubscribe = async () => {
+		let data = await AsyncStorage.getItem("subscribeRoomInfo")
+		if (data) {
+			data = JSON.parse(data)
+			if (data.type && data.rid) {
+				await AsyncStorage.removeItem("subscribeRoomInfo")
+				await RoomServices.getMessages({ rid: data.rid, lastOpen: true })
+				this.getSubscriptions();
+				// 在这里重新指向
+			}
+		}
+
+	}
 	componentDidMount() {
 		const {
 			navigation, closeServerDropdown
@@ -224,6 +237,7 @@ class RoomsListView extends React.Component {
 		}
 		this.unsubscribeFocus = navigation.addListener('focus', () => {
 			Orientation.unlockAllOrientations();
+			this.operateSubscribe()
 			this.animated = true;
 			// Check if there were changes while not focused (it's set on sCU)
 			if (this.shouldUpdate) {
@@ -434,7 +448,9 @@ class RoomsListView extends React.Component {
 	init = async (channelsDataIds) => {
 		const initInner = async (channelsDataIds, resolve) => {
 			try {
-				if (this.hadGetNewMessage) return
+				if (this.hadGetNewMessage) {
+					return resolve()
+				}
 
 				const channelsDataIdsPro = channelsDataIds.map((i) => {
 					return RoomServices.getMessages({ rid: i, lastOpen: true })
@@ -523,6 +539,7 @@ class RoomsListView extends React.Component {
 		const whereClause = [
 			Q.where('rid', Q.oneOf(channelsDataIds)),
 			Q.where('tmid', null),
+			Q.where('t', Q.eq('discussion-created')),
 			Q.and(
 				Q.where('attachments', Q.like(`%paiyapost:%`)),
 
@@ -551,6 +568,7 @@ class RoomsListView extends React.Component {
 			Q.experimentalSortBy('ts', Q.desc),
 			Q.experimentalTake(50)
 		];
+
 		await this.init(channelsDataIds)
 
 		// const messages = await db.collections
@@ -568,7 +586,6 @@ class RoomsListView extends React.Component {
 			.subscribe(async (messages) => {
 				try {
 					messages = messages.filter(m => m.attachments[0].attachments[0] === undefined);
-					console.info(messages, "messagesStoryObservable")
 					let storyReadMap = await AsyncStorage.getItem("storyReadMap")
 					if (storyReadMap) {
 						storyReadMap = JSON.parse(storyReadMap)
@@ -650,8 +667,8 @@ class RoomsListView extends React.Component {
 			.observe();
 		this.messagesSubscription = this.messagesObservable
 			.subscribe((messages) => {
-				console.info(messages, 'messages')
-				messages = messages.filter(m => m.attachments[0].attachments[0] === undefined);
+				console.info('postmessage', messages)
+				messages = messages.filter(m => m.attachments[0].attachments[0] !== undefined);
 				if (this.mounted) {
 					this.setState({ messages }, () => this.update());
 				} else {
@@ -782,6 +799,12 @@ class RoomsListView extends React.Component {
 
 	// eslint-disable-next-line react/sort-comp
 	search = debounce(async (text) => {
+		if (!text) {
+			return this.internalSetState({
+				search: [],
+				searching: true
+			});
+		}
 		const result = await RocketChat.search({ text });
 
 		// if the search was cancelled before the promise is resolved
@@ -1123,7 +1146,7 @@ class RoomsListView extends React.Component {
 			if (dataList.length - 2 > currentUserIndex) {
 				setCurrentUserIndex(newIndex);
 				if (!isScroll) {
-					modalScroll.current.scrollTo(newIndex, true);
+					modalScroll?.current?.scrollTo?.(newIndex, true);
 				}
 			} else {
 				setModel(false);
@@ -1138,7 +1161,7 @@ class RoomsListView extends React.Component {
 			if (currentUserIndex > 0) {
 				setCurrentUserIndex(newIndex);
 				if (!isScroll) {
-					modalScroll.current.scrollTo(newIndex, true);
+					modalScroll?.current?.scrollTo?.(newIndex, true);
 				}
 			}
 		};
@@ -1226,6 +1249,7 @@ class RoomsListView extends React.Component {
 			width
 
 		} = this.props;
+		console.info(item, 'itemasas')
 		const username = user.username
 		const id = this.getUidDirectMessage(item);
 		return (
@@ -1305,7 +1329,7 @@ class RoomsListView extends React.Component {
 				data={messages}
 				extraData={messages}
 				keyExtractor={keyExtractor}
-				style={[styles.list, { backgroundColor: themes[theme].backgroundColor }]}
+				style={[styles.list, { backgroundColor: "white" }]}
 				renderItem={this.renderItem}
 				ListHeaderComponent={this.renderListHeader}
 				removeClippedSubviews={isIOS}
@@ -1345,7 +1369,7 @@ class RoomsListView extends React.Component {
 
 		return (
 			<>
-				<SafeAreaView testID='rooms-list-view' style={{ backgroundColor: themes[theme].backgroundColor }}>
+				<SafeAreaView testID='rooms-list-view' style={{ backgroundColor: "white" }}>
 					<StatusBar />
 					{this.renderHeader()}
 					{this.renderScroll()}

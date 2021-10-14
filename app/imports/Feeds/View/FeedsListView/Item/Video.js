@@ -237,6 +237,7 @@ const windowWidth = Dimensions.get('window').width;
 
 let styles = StyleSheet.create({
   video: {
+    backgroundColor: "white",
     zIndex: 1,
     width: windowWidth,
     height: windowWidth,
@@ -299,7 +300,7 @@ let styles = StyleSheet.create({
   },
   loadingBlock: {
     width: windowWidth,
-    height: (windowWidth / 3) * 6,
+    height: windowWidth,
     backgroundColor: '#F5F6F9',
     position: 'absolute',
     alignItems: 'center',
@@ -307,7 +308,7 @@ let styles = StyleSheet.create({
   },
   loadingPngBox: {
     width: windowWidth,
-    height: (windowWidth / 3) * 4,
+    height: windowWidth,
     alignItems: 'center',
     justifyContent: 'center',
   },

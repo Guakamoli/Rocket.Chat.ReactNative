@@ -9,12 +9,16 @@ import {
     RefreshControl,
     StyleSheet,
     Pressable,
+    ScrollView,
     Animated,
     ImageBackground,
 
 } from 'react-native';
 import { Q } from '@nozbe/watermelondb';
 // import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
+import ScrollableTabView, { DefaultTabBar } from 'react-native-scrollable-tab-view';
+import { useHeaderHeight } from '@react-navigation/elements';
+
 import { connect } from 'react-redux';
 import {
     leaveRoom as leaveRoomAction
@@ -26,12 +30,17 @@ import ImageMap from "../../images"
 import { Image, SearchBar, Button } from 'react-native-elements';
 import useDebounce from 'ahooks/es/useDebounce';
 import I18n from '../../../../i18n';
+import { withTheme } from '../../../../theme';
+import AsyncStorage from '@react-native-community/async-storage';
+
 import SafeAreaView from '../../../../containers/SafeAreaView';
 import RocketChat from '../../../../lib/rocketchat';
 import database from '../../../../lib/database';
 import Avatar from '../../../../containers/Avatar';
 import StatusBar from '../../../../containers/StatusBar';
 import log, { logEvent, events } from '../../../../utils/log';
+import ServicePage from "./ServicePage"
+import ComponentPage from "./ComponentPage"
 
 const { verifiedPng,
     plusSmallPng,
@@ -42,9 +51,10 @@ const screenOptions = {
     headerTransparent: true,
     statusBarTranslucent: true,
     statusBarStyle: 'light',
-    statusBarColor: 'transparent',
-    headerStyle: {
-        backgroundColor: 'transparent',
+
+    headerBackgroundContainerStyle: {
+        backgroundColor: 'rgba(255,255,255,1)',
+        opacity: 0
     },
     headerTintColor: 'rgba(255,255,255,1)',
     headerTitleStyle: {
@@ -59,192 +69,198 @@ const screenOptions = {
         backgroundColor: 'white',
     },
 }
-const renderTabBar = props => {
-    const [opacity, setOpacity] = useState(0);
-    useEffect(() => {
-        setTimeout(() => {
-            setOpacity(1);
-        }, 10);
-    }, []);
-    return (
-        <TabBar
-            {...props}
-            tabStyle={styles.tabStyle}
-            labelStyle={styles.systemText}
-            pressColor={'transparent'}
-            activeColor={'#651FFF'}
-            inactiveColor={'#9B9B9B'}
-            // renderIndicator={miniProgramType === 'web' ? RenderIndicator : null}
-            scrollViewStyle={styles.TabBarscrollViewStyle}
-            indicatorStyle={styles.indicatorStyle}
-            style={[styles.tabBottomStyle]}
-        />
-    );
-}
-const ServicePage = () => {
-    return null
-}
-const ComponentPage = (props) => {
-    const { userInfo = null } = props.route.params || {}
-    const [data, setData] = useState([])
-    const getData = async (userInfo) => {
-        const whereClause = [
-            Q.where('rid', Q.oneOf(channelsDataIds)),
-            Q.where('tmid', null),
-            Q.where('u', Q.like(`%username: ${userInfo.username}%`)),
-            Q.and(
-                Q.or(
-                    Q.where('attachments', Q.like(`%image_type%`)),
-                    Q.where('attachments', Q.like(`%video_type%`))
-                )
-            ),
-            Q.experimentalSortBy('ts', Q.desc),
-            Q.experimentalTake(50)
-        ];
-        const messages = await db.collections
-            .get('messages')
-            .query(...whereClause)
-            .fetch()
-        setData(messages)
 
-    }
-    useEffect(() => {
-        if (userInfo && userInfo.username) {
-            getData()
-        }
-    }, [userInfo])
-    const renderItem = () => {
-        return null
-    }
-    return (
-        <FlatList
-            renderItem={renderItem}
-            scrollEventThrottle={16}
-            style={styles.flatListStyle}
-            contentContainerStyle={[styles.contentContainerStyle,]}
-            ListHeaderComponentStyle={styles.listHeaderComponentStyle}
-            data={data}
-            keyExtractor={item => item.id}
 
-        />
-    )
-}
+
 const BottomComponents = (props) => {
     // 在这里获取用户的作品信息
-    const { navigation } = props
-    const [renderScene, setRenderScene] = useState(null);
-    const list = [
-        { key: 'components', title: '作品' },
-        { key: 'service', title: '服务' },
+    const { navigation, componentTop, scrollY, scrollRef } = props
+    const { userInfo = { username: "", rid: "" }, type } = props.route.params || {}
 
-    ]
-    const [activeindex, setActiveindex] = useState(
-        0
-    );
+    const headerHeight = useHeaderHeight();
+    const [contentHeight, setContentHeight] = useState('auto')
+    const [loaded, setLoaded] = useState(false)
+    const [countMap, setCountMap] = useState({
+        component: 0,
+        service: 0,
+    })
+    const getCountData = async () => {
+        const db = database.active;
+        try {
+            const whereClause = [
+                Q.where('rid', Q.eq(userInfo.rid)),
+                Q.where('tmid', null),
+                Q.where('t', Q.eq('discussion-created')),
 
-    useEffect(() => {
+                Q.and(
+                    Q.where('attachments', Q.like(`%paiyapost:%`)),
 
-        const _map = {};
-        for (const [index, item] of list.entries()) {
-            _map[item.key] = () => {
-                if (item.key === 'components') {
-                    <ComponentPage
-                        type={item.key}
-                        {...props}
-                        navigation={navigation}
-                    />
-                } else {
-                    <ServicePage
-                        type={item.key}
-                        {...props}
-                        navigation={navigation}
-                    />
-                }
-
-            }
+                    Q.or(
+                        Q.where('attachments', Q.like(`%image_type%`)),
+                        Q.where('attachments', Q.like(`%video_type%`))
+                    )
+                ),
+            ];
+            const componentCount = await db
+                .get('messages')
+                .query(...whereClause)
+                .fetchCount()
+            setCountMap({
+                component: componentCount,
+                service: 1
+            })
+            console.info("loading", true)
+            setLoaded(true)
         }
-        setRenderScene(_map);
-    }, []);
+        catch (e) {
+            console.log(e)
+        }
+
+    }
+    useEffect(() => {
+        getCountData()
+    }, [])
     const changeTabIndex = async index => {
         setActiveindex(index);
-
     };
-    if (!renderScene) return null;
-    return (<TabView
-        renderTabBar={renderTabBar}
-        style={{ paddingTop: 0 }}
-        navigationState={{ index: activeindex, routes: bookingTitleLabels }}
-        renderScene={SceneMap(renderScene)}
-        onIndexChange={changeTabIndex}
-        initialLayout={{ width: layout.width }}
-    />)
+    const scrollProps = {
+        keyboardShouldPersistTaps: 'always',
+        keyboardDismissMode: 'none'
+    };
+    const toTopDist = componentTop + 175 - headerHeight
+    const maxDist = toTopDist + 1000000000
+
+    const onChangeTab = (value) => {
+        // 切换了以后返回最上面
+        if (value.from === 0 && value.i === 1) {
+            setContentHeight(400)
+        } else if (value.from === 1 && value.i === 0) {
+            setContentHeight('auto')
+        }
+        scrollRef?.current?.scrollTo?.({ x: 0, y: 0, animated: true })
+
+    }
+    return (<ScrollableTabView
+        onChangeTab={onChangeTab}
+        renderTabBar={(props) => <Animated.View style={{
+            transform: [{
+                translateY: scrollY.interpolate({
+                    inputRange: [-1000, 0, toTopDist, maxDist],
+                    outputRange: [0, 0, 0, maxDist]
+                })
+            }],
+            zIndex: 100
+        }}>
+            <DefaultTabBar {...props}></DefaultTabBar>
+        </Animated.View>}
+        contentProps={scrollProps}
+        style={{
+            // flex: 1,
+            backgroundColor: "white",
+            height: contentHeight
+        }}
+
+        tabBarUnderlineStyle={{
+            height: 2,
+            backgroundColor: "#000000FF",
+            alignContent: "center",
+
+        }}
+        tabBarBackgroundColor={'white'}
+        tabBarActiveTextColor={'#000000FF'}
+        tabBarInactiveTextColor={'#8F8F8FFF'}
+        tabBarTextStyle={{
+            fontSize: 15,
+            lineHeight: 15,
+            fontWeight: "600"
+        }}
+
+    >
+        <ComponentPage tabLabel={`作品 ${countMap.component ? countMap.component : ''}`} {...props} loaded={loaded} key="ComponentPage" />
+        <ServicePage tabLabel={`服务 ${countMap.component ? countMap.service : ''}`} {...props} loaded={loaded} key="ServicePage" />
+
+    </ScrollableTabView>)
 }
 const UserView = (props) => {
     const { leaveRoom, selfUser, navigation } = props
-    const { userInfo = { username: 'root', rid: "" } } = props.route.params || {}
+    const { userInfo = { username: "", rid: "" }, type } = props.route.params || {}
     const [user, setUser] = useState({
-        username: userInfo.username,
+        username: userInfo.username || selfUser.username,
         rid: userInfo.rid,
     })
-    const channelRef = useRef(null)
-    const roomRef = useRef(null)
-    const onPress = useCallback(() => navigation.goBack());
+    const headerHeight = useHeaderHeight();
 
+    const channelRef = useRef(null)
+    const scrollRef = useRef(null)
+    const scrollBreakPointRef = useRef(true)
+    const onPress = useCallback(() => navigation.goBack());
+    const [componentTop, setComponentTop] = useState(1);
     const [hasSubscribe, setHasSubscribe] = useState(null)
     const getUserData = async (userInfo) => {
+        // 先查找有没有房间，没有房间就用用户信息
         const db = database.active;
-        const userCollection = db.get('rooms');
-        console.info('userRecorduserRecorduserRecorduserRecord')
+        const roomCollection = db.get('rooms');
 
-        const [userRecord] = await userCollection.query(Q.where('id', Q.eq(userInfo.rid))).fetch();
-        console.info(userRecord, 'userRecorduserRecorduserRecorduserRecord')
-        return
+        const [roomRecord] = await roomCollection.query(Q.where('id', Q.eq(userInfo.rid))).fetch();
+        console.info(roomRecord, 'roomRecord', {
+            username: roomRecord?.username || userInfo.username || selfUser.username,
+            rid: roomRecord?.id,
+        })
+        if (roomRecord) {
+            channelRef.current = {
+                rid: roomRecord?.id,
+                t: "c"
+            }
+        }
         setUser({
-            username: userRecord.username,
-            rid: userRecord.rid,
+            username: roomRecord?.username || userInfo.username || selfUser.username,
+            rid: roomRecord?.id,
         })
     }
     const getHasSubscribe = async (userInfo) => {
         if (!userInfo.username) return
         const db = database.active;
-        const result = await RocketChat.spotlight(userInfo.username, [], { users: false, rooms: true })
-        channelRef.current = result?.rooms?.[0]
-        console.info("channelRef.current", channelRef.current, userInfo.username, result)
-        if (channelRef.current) {
-            setUser({
-                username: channelRef.current.name,
-                rid: channelRef.current._id,
-            })
-        }
 
         let data = await db.get('subscriptions').query(
             Q.where("name", Q.eq(`${userInfo.username}`)),
             Q.where("t", Q.eq(`c`)),
         ).fetch();
-        console.info("data.0000", data[0])
-
         if (data && data[0]) {
-            roomRef.current = data[0]
-            setUser({
-                username: roomRef.current.name,
-                rid: roomRef.current.rid,
-            })
+
             setHasSubscribe(true)
         }
 
     }
+    const toTopDist = componentTop + 175 - headerHeight
 
     const setHeader = () => {
         navigation.setOptions({
             headerTitleAlign: 'center',
-
+            headerBackgroundContainerStyle: {
+                backgroundColor: 'rgba(255,255,255,1)',
+                opacity: scrollY.interpolate({
+                    inputRange: [0, toTopDist, toTopDist + 100],
+                    outputRange: [0, 0, 0.75]
+                })
+            },
             headerLeft: () => (
-                <HeaderBackButton
-                    label={''}
-                    onPress={onPress}
-                    tintColor={'white'}
-                    style={{ marginLeft: 10, }}
-                />
+                type ?
+                    (<HeaderBackButton
+                        label={''}
+                        onPress={onPress}
+                        tintColor={'white'}
+
+                        // backImage={() => {
+                        //     return <View style={{ backgroundColor: "red", width: 100, height: 100 }} />
+                        // }}
+                        style={{
+                            marginLeft: 10,
+
+                        }}
+
+                    />
+
+                    ) : null
             ),
 
 
@@ -255,65 +271,96 @@ const UserView = (props) => {
         getHasSubscribe(userInfo)
         getUserData(userInfo)
     }, [])
-    const scale = useRef(new Animated.Value(1)).current;
+    // const scale = useRef(new Animated.Value(1)).current;
+    const scrollY = useRef(new Animated.Value(0)).current;
     const onSubscribe = async () => {
         // 加入和退出房间
         // logEvent(events.ROOM_JOIN);
         try {
             if (!channelRef.current) {
-                const db = database.active;
-
-                const result = await RocketChat.spotlight(userInfo.username, [], { users: false, rooms: true })
-                channelRef.current = result?.rooms?.[0]
-                let data = await db.get('subscriptions').query(
-                    Q.where("name", Q.eq(`${userInfo.username}`)),
-                    Q.where("t", Q.eq(`c`)),
-                ).fetch();
-                if (data && data[0]) {
-                    roomRef.current = data[0]
-
-                }
-                if (!roomRef.current) {
-                    roomRef.current = {
-                        rid: channelRef.current._id,
-                        t: "c"
-                    }
-                }
+                return
             }
-            if (hasSubscribe && roomRef.current) {
-                leaveRoom('channel', roomRef.current)
+            if (hasSubscribe) {
+                leaveRoom('channel', channelRef.current)
 
                 setHasSubscribe(false)
+                await AsyncStorage.setItem("subscribeRoomInfo", JSON.stringify({ type: 0, rid: channelRef.current.rid }))
                 return
             }
 
             // 搜索网络。然后加入
-            if (channelRef.current) {
 
-                await RocketChat.joinRoom(channelRef.current._id, null, null);
+            await RocketChat.joinRoom(channelRef.current.rid, null, null);
+            await AsyncStorage.setItem("subscribeRoomInfo", JSON.stringify({ type: 1, rid: channelRef.current.rid }))
 
-                setHasSubscribe(true)
+            setHasSubscribe(true)
 
-            }
 
         } catch (e) {
             console.info(e);
         }
     }
+    const setLeftButton = (color, title) => {
+        navigation.setOptions({
+            headerTitle: title,
+            headerTitleStyle: {
+                color,
+                fontSize: 18,
+                fontWeight: '500',
+                lineHeight: 25,
+            },
+            headerLeft: () => (
+                type ?
+                    (<HeaderBackButton
+                        label={''}
+                        onPress={onPress}
+                        tintColor={color}
 
-    const onScroll = e => {
-        // 1. 背景图放大效果
-        // 2. 向上滚动的时候让头部显示出来，并且带上设置按钮
+                        // backImage={() => {
+                        //     return <View style={{ backgroundColor: "red", width: 100, height: 100 }} />
+                        // }}
+                        style={{
+                            marginLeft: 10,
 
-        if (e.nativeEvent.contentOffset.y < 0) {
-            // 这里做的事情是 让视频有向下拖拽放大的效果
-            scale.setValue(1 - e.nativeEvent.contentOffset.y * 0.003);
-            return;
+                        }}
+
+                    />
+
+                    ) : null
+            ),
+        })
+    }
+    const onScroll = Animated.event(
+        [
+            {
+                nativeEvent: {
+                    contentOffset: { y: scrollY }
+                }
+            }
+        ],
+        {
+            useNativeDriver: true,
+            listener: (e) => {
+                if (e.nativeEvent.contentOffset.y > headerHeight) {
+                    if (!scrollBreakPointRef.current) {
+                        scrollBreakPointRef.current = true
+                        setLeftButton('black', userInfo.username || selfUser.username)
+                    }
+
+
+                } else if (scrollBreakPointRef.current) {
+                    scrollBreakPointRef.current = false
+                    setLeftButton('white', '')
+                }
+
+                console.info(e.nativeEvent.contentOffset.y, 'contentOffsetcontentOffset')
+            }
         }
-
-    };
+    );
     const renderHeader = (
-        <View>
+        <View style={{
+            backgroundColor: "white"
+        }}>
 
             <View style={styles.infoBox}>
                 <View style={styles.avatarBox}>
@@ -328,7 +375,9 @@ const UserView = (props) => {
 
                         />
                     </View>
-                    <Image source={shareUserPng} containerStyle={styles.shareUserPngStyle} resizeMode={'contain'} style={{ width: "100%", height: "100%" }} />
+                    <Image source={shareUserPng} containerStyle={styles.shareUserPngStyle}
+                        resizeMode={'contain'} style={{ width: "100%", height: "100%" }}
+                        placeholderStyle={{ backgroundColor: "transparent" }} />
                 </View>
 
                 <View style={styles.userNameBoxWrapper}>
@@ -336,7 +385,8 @@ const UserView = (props) => {
                         <Text style={styles.userName} numberOfLines={1} ellipsizeMode={'tail'}>
                             {user.username}
                         </Text>
-                        <Image source={verifiedPng} style={styles.verifiedPng} resizeMode={'contain'} />
+                        <Image source={verifiedPng} style={styles.verifiedPng} resizeMode={'contain'}
+                            placeholderStyle={{ backgroundColor: "transparent" }} />
 
                     </View>
                     <View>
@@ -350,54 +400,76 @@ const UserView = (props) => {
                         很高兴能在此页面与您分享我的新系列和特别
                     </Text>
                 </View>
-                {/* {selfUser?.username && selfUser?.username === user?.username ? (null) : ( */}
-                <Button
-                    variant="contained"
-                    onPress={() => { onSubscribe() }}
-                    titleStyle={styles.btnTitleStyle}
-                    style={styles.btnStyle}
-                    buttonStyle={styles.btnButtonStyle}
-                    containerStyle={styles.btnButtonContainerStyle}
-                    icon={<Image source={plusSmallPng} style={{ width: 11, height: 11 }} resizeMode={'contain'} />}
-                    title={!hasSubscribe ? `${('关注')}` : "取消关注"}
-                />
-                {/* )} */}
+                {selfUser?.username && selfUser?.username === user?.username || !type ? (null) : (
+                    <Button
+                        variant="contained"
+                        onPress={() => { onSubscribe() }}
+                        titleStyle={styles.btnTitleStyle}
+                        style={styles.btnStyle}
+                        buttonStyle={styles.btnButtonStyle}
+                        containerStyle={styles.btnButtonContainerStyle}
+                        icon={<Image
+                            source={plusSmallPng}
+                            style={{ width: 11, height: 11 }}
+                            resizeMode={'contain'}
+                            placeholderStyle={{ backgroundColor: "transparent" }} />}
+                        title={!hasSubscribe ? `${('关注')}` : "取消关注"}
+                    />
+                )}
 
-                <View>
-                    {/* <BottomComponents {...props} /> */}
-                </View>
             </View>
-
+            <View onLayout={(a, b) => {
+                setComponentTop(a.nativeEvent.layout.y)
+            }}>
+                <BottomComponents
+                    {...props}
+                    channelsDataMap={{
+                        [`${user.rid}`]: { rid: user.rid, name: user.username }
+                    }}
+                    scrollRef={scrollRef}
+                    componentTop={componentTop}
+                    scrollY={scrollY} />
+            </View>
         </View>
     )
     return (
         <View style={styles.root}>
+
             <StatusBar barStyle='light-content' />
             <Animated.View style={[styles.background, {
                 transform: [
-                    { scale: scale }
+                    {
+                        scale: scrollY.interpolate({
+                            inputRange: [-100, 0, 10],
+                            outputRange: [1.2, 1, 1]
+                        })
+                    }
                 ],
             }]}>
                 <ImageBackground source={{ uri: 'https://video-message-001.paiyaapp.com/dhAgCqD36QCAhEqXj.jpg' }} style={styles.background} />
             </Animated.View>
-            <FlatList
+            <Animated.ScrollView showsVerticalScrollIndicator={false}
+                ref={scrollRef}
                 onScroll={onScroll}
                 scrollEventThrottle={16}
-                style={styles.flatListStyle}
-                contentContainerStyle={[styles.contentContainerStyle,]}
-                ListHeaderComponent={renderHeader}
-                ListHeaderComponentStyle={styles.listHeaderComponentStyle}
-                data={[]}
-                keyExtractor={item => item.id}
+                // style={{
+                //     marginTop: scrollY.interpolate({
+                //         inputRange: [-100, 0, 10],
+                //         outputRange: [100, 1, 0]
+                //     })
+                // }}
+                contentContainerStyle={[styles.contentContainerStyle]}>
+                {renderHeader}
+            </Animated.ScrollView>
 
-            />
-        </View>
+        </View >
     )
 }
 
 const styles = StyleSheet.create({
     root: {
-        backgroundColor: "white"
+        backgroundColor: "white",
+        flex: 1,
     },
     icon: {
         width: 14,
@@ -529,7 +601,8 @@ const styles = StyleSheet.create({
     },
     contentContainerStyle: {
         marginTop: 175,
-        height: "100%",
+        paddingBottom: 205,
+        // height: "100%",
         backgroundColor: "white"
         // paddingHorizontal: 15,
     },
@@ -572,6 +645,8 @@ const styles = StyleSheet.create({
 })
 const mapStateToProps = state => ({
     selfUser: getUserSelector(state),
+    baseUrl: state.server.server,
+
 
 });
 const mapDispatchToProps = dispatch => ({
@@ -586,6 +661,6 @@ class UserViewWrapper extends Component {
 
 
 export default {
-    component: connect(mapStateToProps, mapDispatchToProps)(UserViewWrapper),
+    component: connect(mapStateToProps, mapDispatchToProps)(withTheme(UserViewWrapper)),
     options: screenOptions
 }

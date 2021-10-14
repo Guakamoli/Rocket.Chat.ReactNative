@@ -20,14 +20,19 @@ import Video from "./Video"
 const { searchPng, companyTitlePng } = ImageMap
 const { width } = Dimensions.get("window")
 const Content = React.memo((props) => {
-    const { item, baseUrl, user, setRootImageIndex, index } = props
-    const attachments = item?.attachments || []
+    const { item, baseUrl, user, setRootImageIndex, index, autoPlay = true } = props
+    const attachments = item?.attachments?.[0]?.attachments || []
     const onSnapToItem = (index) => {
         setRootImageIndex(index)
     }
     const renderItem = ({ item }) => {
 
-        return <Image source={{ uri: encodeURI(item.img) }} ImageComponent={FastImage} style={{ width: width, height: width, }} resizeMode={'cover'} />
+        return <Image source={{ uri: encodeURI(item.img) }}
+            ImageComponent={FastImage}
+            style={{ width: width, height: width, }}
+            resizeMode={'cover'}
+            placeholderStyle={{ backgroundColor: "transparent" }}
+        />
     }
     const renderContent = () => {
         let img = attachments[0]?.image_url
@@ -52,7 +57,7 @@ const Content = React.memo((props) => {
             url = formatAttachmentUrl(url, user.id, user.token, baseUrl);
             const VideoProps = {
                 uri: url,
-                autoplay: index === 0,
+                autoplay: autoPlay && index === 0,
                 muted: true,
                 loop: true,
             }

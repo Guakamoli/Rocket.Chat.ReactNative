@@ -50,16 +50,16 @@ let TimeComp = ({
 }) => {
 	const time = formatDateDetail(ts)
 
-	return (<Text style={[messageStyles.time, { color: themes[theme].auxiliaryText }]}>{time}</Text>)
+	return (
+		<View style={{ flexDirection: "row", alignItems: "center" }}>
+			<Text style={[messageStyles.time, { color: themes[theme].auxiliaryText }]}>{time}</Text>
+			<Text style={[messageStyles.time, { color: themes[theme].auxiliaryText, marginLeft: 10 }]}>{'回复'}</Text>
+			<Text style={[messageStyles.time, { color: themes[theme].auxiliaryText, marginLeft: 10 }]}>{'举报'}</Text>
+		</View>
+	)
 
 }
-const Aa = () => {
-	return <Text style={{
-		fontSize: 16,
-		lineHeight: 22,
-		fontWeight: "500"
-	}}></Text>
-}
+
 const User = React.memo(props => {
 	let {
 		isHeader, useRealName, author, alias, ts, timeFormat, hasError, theme, navToRoomInfo, type, ...props1
@@ -103,7 +103,6 @@ const User = React.memo(props => {
 				>
 					<Text style={[styles.username, { color: themes[theme].titleText }]}>
 						{textContent}
-						{/* <Aa /> */}
 						{`   `}
 						<Content {...props} />
 					</Text>

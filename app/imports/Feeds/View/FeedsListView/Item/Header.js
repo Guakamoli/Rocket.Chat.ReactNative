@@ -17,7 +17,9 @@ import Avatar from '../../../../../containers/Avatar';
 const { searchPng, companyTitlePng } = ImageMap
 const Header = React.memo((props) => {
     const { username, item, navigation, channelsDataMap } = props
-    const onPress = useCallback(() => navigation.navigate("FeedsUserView", { userInfo: { username: channelsDataMap?.[item.rid]?.name, rid: item.rid } }));
+    const onPress = useCallback(() => {
+        navigation.push("FeedsUserView", { userInfo: { username: channelsDataMap?.[item.rid]?.name, rid: item.rid, }, type: "pop" })
+    });
     return (
         <Pressable onPress={onPress}>
             <View style={styles.root}>
