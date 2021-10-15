@@ -19,7 +19,6 @@ module.exports = (async () => {
   const {
     resolver: { sourceExts },
   } = await getDefaultConfig();
-  console.log(sourceExts, 'sourceExtssourceExts')
   return {
 
     transformer: {
@@ -32,12 +31,12 @@ module.exports = (async () => {
         },
       }),
     },
-	maxWorkers: 2,
+    maxWorkers: 2,
 
     resolver: {
-		blocklistRE: blocklist([
-			/ios\/Pods\/JitsiMeetSDK\/Frameworks\/JitsiMeet.framework\/assets\/node_modules\/react-native\/.*/
-		]),
+      blocklistRE: blocklist([
+        /ios\/Pods\/JitsiMeetSDK\/Frameworks\/JitsiMeet.framework\/assets\/node_modules\/react-native\/.*/
+      ]),
       sourceExts: [...sourceExts, 'gql', 'graphql'],
     },
   };

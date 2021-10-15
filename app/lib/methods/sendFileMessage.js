@@ -103,7 +103,6 @@ export function sendFileMessage(rid, fileInfo, tmid, server, user) {
 
 			uploadQueue[fileInfo.path].then(async (response) => {
 				if (response.respInfo.status >= 200 && response.respInfo.status < 400) { // If response is all good...
-					console.info("发送成功看来是")
 					try {
 						await db.action(async () => {
 							await uploadRecord.destroyPermanently();

@@ -21,7 +21,10 @@ export default StyleSheet.create({
 	boxWrapper: {
 		flexDirection: "row",
 		alignItems: "center",
-		paddingHorizontal: 12
+		paddingHorizontal: 12,
+		zIndex: 9999,
+		// position: "absolute",
+		// bottom: 0,
 	},
 	avatarBottom: {
 		width: 45,

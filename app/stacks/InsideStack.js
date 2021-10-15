@@ -78,6 +78,8 @@ import AddChannelTeamView from '../views/AddChannelTeamView';
 import AddExistingChannelView from '../views/AddExistingChannelView';
 import SelectListView from '../views/SelectListView';
 import FeedsListView from "../imports/Feeds/View/FeedsListView";
+import FeedsDiscoverListView from "../imports/Feeds/View/FeedsDiscoverListView";
+
 import FeedsSearchView from "../imports/Feeds/View/FeedsSearchView";
 import FeedsStoriesView from "../imports/Feeds/View/FeedsStoriesView";
 import FeedsRoomView from "../imports/Feeds/View/FeedsRoomView";
@@ -240,7 +242,7 @@ const IndexPage1 = React.memo(props => {
 			/>
 			<Tab.Screen
 				name="Discover"
-				{...FeedsUnSubscribeView}
+				{...FeedsDiscoverListView}
 
 			/>
 			<Tab.Screen
@@ -277,11 +279,11 @@ const ChatsStackNavigator = () => {
 				}}
 			/>
 			<ChatsStack.Screen
-				name='FeedsListView'
-
-				component={FeedsListView}
+				name="FeedsUnSubscribeView"
+				{...FeedsUnSubscribeView}
 
 			/>
+
 			<ChatsStack.Screen
 				name='FeedsUserView'
 
@@ -304,7 +306,7 @@ const ChatsStackNavigator = () => {
 			/>
 			<ChatsStack.Screen
 				name='FeedsVideoRoomView'
-				component={FeedsVideoRoomView}
+				{...FeedsVideoRoomView}
 			/>
 			<ChatsStack.Screen
 				name='FeedsSearchView'

@@ -4,7 +4,6 @@ import { FlatList, Image, Modal, StyleSheet, Text, TouchableOpacity, View, Dimen
 import CubeNavigationHorizontal from './cubicTransForm';
 import AllStories from './constants/AllStories';
 import StoryContainer from './components/StoryContainer';
-
 const { width, height } = Dimensions.get('window');
 
 const Stories = (props) => {
@@ -125,6 +124,7 @@ const Stories = (props) => {
                 <CubeNavigationHorizontal callBackAfterSwipe={g => onScrollChange(g)} ref={modalScroll} style={styles.container} initialPage={currentUserIndex}>
                     {AllStories.map((item, index) => (
                         <StoryContainer
+                            key={item.url}
                             onClose={onStoryClose}
                             onStoryNext={onStoryNext}
                             onStoryPrevious={onStoryPrevious}
@@ -135,6 +135,7 @@ const Stories = (props) => {
                         />
                     ))}
                 </CubeNavigationHorizontal>
+
             </Modal>
         </View>
     );

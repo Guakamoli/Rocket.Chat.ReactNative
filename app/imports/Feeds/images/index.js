@@ -6,6 +6,11 @@ const ImageMap = {
   sharePng: require('../public/images/share.png'),
   replycommentPng: require('../public/images/replycomment.png'),
   unlikePng: require('../public/images/unlike.png'),
+
+  shareWhitePng: require('../public/images/shareWhite.png'),
+  replycommentWhitePng: require('../public/images/replycommentWhite.png'),
+  unlikeWhitePng: require('../public/images/unlikeWhite.png'),
+
   likePng: require('../public/images/like.png'),
   mutePng: require('../public/images/muted.png'),
   unmutePng: require('../public/images/unmuted.png'),
@@ -47,5 +52,10 @@ const ImageMap = {
   messageActiveTab: require('../public/images/messageActiveTab.png'),
   userCenterTab: require('../public/images/userCenterTab.png'),
   userCenterActiveTab: require('../public/images/userCenterActiveTab.png'),
+
+  playWhitePng: require('../public/images/playWhite.png'),
+  pauseWhitePng: require('../public/images/pauseWhite.png'),
+  downLoadingGif: require('../public/images/downLoading.gif'),
+
 }
 export default ImageMap

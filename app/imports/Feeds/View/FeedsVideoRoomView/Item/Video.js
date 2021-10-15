@@ -1,27 +1,24 @@
 import React, { useRef, useEffect, useState, createRef } from 'react';
-import { Animated, Pressable, View, TouchableWithoutFeedback, StyleSheet, Dimensions } from 'react-native';
+import { Pressable, View, TouchableWithoutFeedback, StyleSheet, Dimensions } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Image } from 'react-native-elements';
 import { useIsFocused } from '@react-navigation/native';
 
 import ImageMap from '../../../images';
-import Video from 'react-native-video';
-const { mutePng, unmutePng, loadingPng } = ImageMap;
-const videoRefMap = createRef({});
-videoRefMap.current = {};
+import StartAndComment from "./StartAndComment"
+import Tools from "./Tools"
+import VideoTools from "./VideoTools"
 import EventEmitter from '../../../../../utils/events';
-EventEmitter.addEventListener('home_video_play', (data) => {
 
-  if (data.stopAll) {
-    for (let key in videoRefMap.current) {
-      videoRefMap.current[key].playOrStopVideo(false, false)
-    }
-    return
-  }
-  if (videoRefMap.current[data.url]) {
-    videoRefMap.current[data.url].playOrStopVideo(data.play, true)
-  }
-})
+import Video from 'react-native-video';
+import Animated, {
+  Extrapolate,
+  interpolate,
+  Value,
+  Easing
+} from 'react-native-reanimated';
+const { mutePng, unmutePng, loadingPng } = ImageMap;
+
 const MuteIcon = props => {
   const { opacity = 0, clickBackRandom } = props;
   const st = useRef(null);
@@ -94,13 +91,15 @@ class VideoPlayer extends React.Component {
     let { autoplay, from } = props;
     this.autoplay = autoplay;
     this._id = props?.uri;
+    this.video = createRef(null)
     this.state = {
+      end: false,
       muted: props.muted,
       playing: autoplay,
       animationData: null,
+      duration: 0,
       opacity: autoplay && !props.notFade ? 0 : 1,
     };
-    videoRefMap.current[this._id] = this;
   }
   handleViewRef = ref => (this.view = ref);
   fadeIn = () => {
@@ -141,21 +140,19 @@ class VideoPlayer extends React.Component {
   }
 
   playOrStopVideo = async (playing, searchOtherVideo = false) => {
+    if (playing && this.state.end) {
+      this.setState({
+        end: false,
+      })
+      this.video.current.seek(0)
+    }
     this.setState({
       playing: playing,
     })
-    // this.props?.setClickBackRandom?.();
-
     if (!playing) {
       this.fadeIn();
     } else {
-      if (searchOtherVideo) {
-        for (const key in videoRefMap.current) {
-          if (key !== this._id && videoRefMap.current[key].state.playing) {
-            videoRefMap.current[key].playOrStopVideo(false);
-          }
-        }
-      }
+
       this.hideTimeout();
     }
   };
@@ -165,9 +162,13 @@ class VideoPlayer extends React.Component {
       muted: !this.state.muted,
     });
   };
-  toVideoRoom = () => {
-    return this.props.navigation.navigate('FeedsVideoRoomView', {
-      rid: this.props.item.drid || this.props.item.id, tmid: null, name: '', t: 'thread', roomUserId: ''
+  seekTime = (time) => {
+    // 跳转视频到对应的时间
+    this.video.current.seek(time)
+
+    this.setState({
+      playing: true,
+      end: false
     })
   }
   RenderCustomeCover = () => {
@@ -178,7 +179,7 @@ class VideoPlayer extends React.Component {
         style={styles.controlTools}>
         <Pressable
           style={styles.controlTools}
-          onPress={this.toVideoRoom}>
+        >
           <MuteIcon
             muteVideo={this.muteVideo}
             muted={muted}
@@ -188,20 +189,34 @@ class VideoPlayer extends React.Component {
       </Animatable.View>
     );
   };
+  _onProgress = (e) => {
+    EventEmitter.emit('videoplayprogress', e)
+  }
+  _onLoad = (e) => {
+    console.info(e, 'hahaha')
+    this.setState({ duration: e.duration })
+  }
+  _onEnd = () => {
+    this.setState({ end: true })
+    return this.playOrStopVideo(false)
+  }
   render() {
-    const { playing, muted } = this.state
-    const { uri } = this.props
-    const resizeMode = 'contain'
-    const videoPorps = {
+    const { playing, muted, duration } = this.state
+    const { uri, likeCount, item, navigation } = this.props
+    const resizeMode = 'cover'
+    const videoProps = {
       objectFit: resizeMode,
       source: { uri },
       resizeMode: resizeMode,
       controls: false,
-      loop: true,
       autoplay: this.autoplay,
-      repeat: true,
+      repeat: false,
       paused: !playing,
       muted: muted,
+      onEnd: this._onEnd,
+      onProgress: this._onProgress,
+      onLoad: this._onLoad,
+      progressUpdateInterval: 16.0,
       bufferConfig: {
         minBufferMs: 6000,
         maxBufferMs: 10000,
@@ -212,9 +227,13 @@ class VideoPlayer extends React.Component {
 
     return (
       <>
-        {this.RenderCustomeCover()}
+        <View style={[styles.root]}>
 
-        <View>
+          {this.RenderCustomeCover()}
+          <View style={styles.tools}>
+            <StartAndComment {...this.props} />
+            <Tools {...this.props} />
+          </View>
           <View style={[styles.loadingBlock]}>
             <View style={[styles.loadingPngBox]}>
               <Image
@@ -223,10 +242,36 @@ class VideoPlayer extends React.Component {
                 placeholderStyle={{ backgroundColor: 'transparent' }}></Image>
             </View>
           </View>
-          <View style={styles.videoBox}>
-            <Video {...videoPorps} style={styles.video} />
-          </View>
+          <Animated.View style={[styles.videoBox, {
+            transform: [
+              // {
+              //   translateX: interpolate(this.props?.animatedPosition?.current, {
+              //     inputRange: [0, 1],
+              //     outputRange: [0, -windowWidth],
+              //     extrapolate: Extrapolate.CLAMP
+              //   })
+              // },
+              // {
+              //   translateY: interpolate(this.props?.animatedPosition?.current, {
+              //     inputRange: [0, 1],
+              //     outputRange: [0, -windowWidth / 2,],
+              //     extrapolate: Extrapolate.CLAMP
+
+              //   })
+              // },
+              // {
+              //   scale: interpolate(this.props?.animatedPosition?.current, {
+              //     inputRange: [0, 1],
+              //     outputRange: [1, 0],
+              //     extrapolate: Extrapolate.CLAMP
+              //   })
+              // }
+            ]
+          }]}>
+            <Video {...videoProps} style={styles.video} ref={this.video} />
+          </Animated.View>
         </View>
+        <VideoTools playing={playing} playOrStopVideo={this.playOrStopVideo} duration={duration} seekTime={this.seekTime} />
       </>
     );
   }
@@ -239,15 +284,26 @@ const VideoPlayerWrapper = props => {
 const windowWidth = Dimensions.get('window').width;
 
 let styles = StyleSheet.create({
-  video: {
-    backgroundColor: "white",
-    zIndex: 1,
+  root: {
     width: windowWidth,
-    height: windowWidth,
+    height: windowWidth / 3 * 5.5,
+  },
+  tools: {
+    bottom: 0,
+    position: "absolute",
+    zIndex: 10,
+    marginLeft: 15
+  },
+  video: {
+
+    width: windowWidth,
+    height: windowWidth / 3 * 5.5,
     position: 'relative',
   },
   videoBox: {
     position: 'relative',
+    justifyContent: "flex-start",
+
   },
   controlTools: {
     position: 'absolute',
@@ -304,7 +360,6 @@ let styles = StyleSheet.create({
   loadingBlock: {
     width: windowWidth,
     height: windowWidth,
-    backgroundColor: '#F5F6F9',
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'flex-start',

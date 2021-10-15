@@ -8,7 +8,8 @@ import {
     Keyboard,
     RefreshControl,
     StyleSheet,
-    Dimensions
+    Dimensions,
+    Pressable
 } from 'react-native';
 import FastImage from '@rocket.chat/react-native-fast-image';
 import { formatAttachmentUrl } from '../../../../../lib/utils.js';
@@ -20,7 +21,7 @@ import Video from "./Video"
 const { searchPng, companyTitlePng } = ImageMap
 const { width } = Dimensions.get("window")
 const Content = React.memo((props) => {
-    const { item, baseUrl, user, setRootImageIndex, index, autoPlay = true } = props
+    const { item, baseUrl, user, setRootImageIndex, index, autoPlay = true, navigation } = props
     const attachments = item?.attachments?.[0]?.attachments || []
     const onSnapToItem = (index) => {
         setRootImageIndex(index)
@@ -61,14 +62,18 @@ const Content = React.memo((props) => {
                 muted: true,
                 loop: true,
             }
-            return <Video {...VideoProps} />
+            return <Video {...VideoProps} navigation={navigation} item={item} />
         }
         return null
     }
     return (
-        <View style={styles.root}>
+        <Pressable style={styles.root} onPress={() => {
+            navigation.navigate('FeedsVideoRoomView', {
+                rid: item.drid || item.id, item: item,
+            })
+        }}>
             {renderContent()}
-        </View>
+        </Pressable>
     )
 })
 const styles = StyleSheet.create({
