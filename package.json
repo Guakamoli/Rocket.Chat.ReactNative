@@ -100,6 +100,7 @@
     "react-dom": "^17.0.2",
     "react-i18next": "^11.8.11",
     "react-native": "RocketChat/react-native#0.64.2",
+    "react-native-aliavkit": "Guakamoli/react-native-aliavkit#feat/postUI",
     "react-native-animatable": "^1.3.3",
     "react-native-appearance": "0.3.4",
     "react-native-appstate-hook": "^1.0.5",
