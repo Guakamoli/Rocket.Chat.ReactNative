@@ -1,36 +1,20 @@
-diff --git a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/Database.swift b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/Database.swift
-index 43f2c9c..e24a24f 100644
---- a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/Database.swift
-+++ b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/Database.swift
-@@ -1,14 +1,14 @@
- import Foundation
+diff --git a/node_modules/@nozbe/watermelondb/decorators/date/index.js b/node_modules/@nozbe/watermelondb/decorators/date/index.js
+index 65690af..ce71aa0 100644
+--- a/node_modules/@nozbe/watermelondb/decorators/date/index.js
++++ b/node_modules/@nozbe/watermelondb/decorators/date/index.js
+@@ -44,7 +44,7 @@ var dateDecorator = (0, _makeDecorator.default)(function (columnName) {
+         var rawValue = date ? +new Date(date) : null;
  
--class Database {
--    typealias SQL = String
--    typealias TableName = String
--    typealias QueryArgs = [Any]
-+public class Database {
-+    public typealias SQL = String
-+    public typealias TableName = String
-+    public typealias QueryArgs = [Any]
- 
-     private let fmdb: FMDatabase
-     private let path: String
- 
--    init(path: String) {
-+    public init(path: String) {
-         self.path = path
-         fmdb = FMDatabase(path: path)
-         open()
-@@ -53,7 +53,7 @@ class Database {
+         if (rawValue && date) {
+-          cache.set(rawValue, date);
++          cache.set(rawValue, new Date(date));
          }
-     }
  
--    func queryRaw(_ query: SQL, _ args: QueryArgs = []) throws -> AnyIterator<FMResultSet> {
-+    public func queryRaw(_ query: SQL, _ args: QueryArgs = []) throws -> AnyIterator<FMResultSet> {
-         let resultSet = try fmdb.executeQuery(query, values: args)
- 
-         return AnyIterator {
+         this.asModel._setRaw(columnName, rawValue);
+diff --git a/node_modules/@nozbe/watermelondb/native/.DS_Store b/node_modules/@nozbe/watermelondb/native/.DS_Store
+new file mode 100644
+index 0000000..36d39ae
+Binary files /dev/null and b/node_modules/@nozbe/watermelondb/native/.DS_Store differ
 diff --git a/node_modules/@nozbe/watermelondb/native/android/src/main/java/com/nozbe/watermelondb/Database.kt b/node_modules/@nozbe/watermelondb/native/android/src/main/java/com/nozbe/watermelondb/Database.kt
 index 2217222..5b2eb73 100644
 --- a/node_modules/@nozbe/watermelondb/native/android/src/main/java/com/nozbe/watermelondb/Database.kt
@@ -53,16 +37,2884 @@ index 2217222..5b2eb73 100644
  
      fun count(query: SQL, args: RawQueryArgs = emptyArray()): Int =
              rawQuery(query, args).use {
-diff --git a/node_modules/@nozbe/watermelondb/decorators/date/index.js b/node_modules/@nozbe/watermelondb/decorators/date/index.js
-index 65690af..ce71aa0 100644
---- a/node_modules/@nozbe/watermelondb/decorators/date/index.js
-+++ b/node_modules/@nozbe/watermelondb/decorators/date/index.js
-@@ -44,7 +44,7 @@ var dateDecorator = (0, _makeDecorator.default)(function (columnName) {
-         var rawValue = date ? +new Date(date) : null;
+diff --git a/node_modules/@nozbe/watermelondb/native/ios/.DS_Store b/node_modules/@nozbe/watermelondb/native/ios/.DS_Store
+new file mode 100644
+index 0000000..09d3747
+Binary files /dev/null and b/node_modules/@nozbe/watermelondb/native/ios/.DS_Store differ
+diff --git a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB.xcodeproj/project.pbxproj b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB.xcodeproj/project.pbxproj
+index c85a690..a2416d7 100644
+--- a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB.xcodeproj/project.pbxproj
++++ b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB.xcodeproj/project.pbxproj
+@@ -9,11 +9,11 @@
+ /* Begin PBXBuildFile section */
+ 		6E5E6259246C1F61003DBEF4 /* DatabasePlatformIOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6E5E6257246C1F61003DBEF4 /* DatabasePlatformIOS.mm */; };
+ 		6E660D95213BD75D00189354 /* WatermelonDB.modulemap in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E660D94213BD74F00189354 /* WatermelonDB.modulemap */; };
+-		6E9477D4213BDE2E0077EDFB /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E9477CA213BDE220077EDFB /* FMDatabaseQueue.m */; };
+-		6E9477D5213BDE2E0077EDFB /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E9477CD213BDE220077EDFB /* FMDatabaseAdditions.m */; };
+-		6E9477D6213BDE2E0077EDFB /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E9477CE213BDE220077EDFB /* FMDatabase.m */; };
+-		6E9477D7213BDE2E0077EDFB /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E9477D2213BDE220077EDFB /* FMDatabasePool.m */; };
+-		6E9477D8213BDE2E0077EDFB /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E9477D3213BDE220077EDFB /* FMResultSet.m */; };
++		6E9477D4213BDE2E0077EDFB /* WFMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E9477CA213BDE220077EDFB /* WFMDatabaseQueue.m */; };
++		6E9477D5213BDE2E0077EDFB /* WFMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E9477CD213BDE220077EDFB /* WFMDatabaseAdditions.m */; };
++		6E9477D6213BDE2E0077EDFB /* WFMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E9477CE213BDE220077EDFB /* WFMDatabase.m */; };
++		6E9477D7213BDE2E0077EDFB /* WFMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E9477D2213BDE220077EDFB /* WFMDatabasePool.m */; };
++		6E9477D8213BDE2E0077EDFB /* WFMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E9477D3213BDE220077EDFB /* WFMResultSet.m */; };
+ 		6E9477F0213BDF8A0077EDFB /* DatabaseDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9477E8213BDF8A0077EDFB /* DatabaseDriver.swift */; };
+ 		6E9477F1213BDF8A0077EDFB /* DatabaseBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9477E9213BDF8A0077EDFB /* DatabaseBridge.swift */; };
+ 		6E9477F2213BDF8A0077EDFB /* DatabaseBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E9477EA213BDF8A0077EDFB /* DatabaseBridge.m */; };
+@@ -47,17 +47,17 @@
+ 		6E660D94213BD74F00189354 /* WatermelonDB.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = WatermelonDB.modulemap; sourceTree = "<group>"; };
+ 		6E9477C5213BDE220077EDFB /* README.markdown */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.markdown; sourceTree = "<group>"; };
+ 		6E9477C6213BDE220077EDFB /* LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
+-		6E9477C9213BDE220077EDFB /* FMDatabase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FMDatabase.h; sourceTree = "<group>"; };
+-		6E9477CA213BDE220077EDFB /* FMDatabaseQueue.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseQueue.m; sourceTree = "<group>"; };
+-		6E9477CB213BDE220077EDFB /* FMResultSet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
+-		6E9477CC213BDE220077EDFB /* FMDatabasePool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FMDatabasePool.h; sourceTree = "<group>"; };
+-		6E9477CD213BDE220077EDFB /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseAdditions.m; sourceTree = "<group>"; };
+-		6E9477CE213BDE220077EDFB /* FMDatabase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FMDatabase.m; sourceTree = "<group>"; };
+-		6E9477CF213BDE220077EDFB /* FMDatabaseQueue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FMDatabaseQueue.h; sourceTree = "<group>"; };
+-		6E9477D0213BDE220077EDFB /* FMDB.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FMDB.h; sourceTree = "<group>"; };
+-		6E9477D1213BDE220077EDFB /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FMDatabaseAdditions.h; sourceTree = "<group>"; };
+-		6E9477D2213BDE220077EDFB /* FMDatabasePool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FMDatabasePool.m; sourceTree = "<group>"; };
+-		6E9477D3213BDE220077EDFB /* FMResultSet.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
++		6E9477C9213BDE220077EDFB /* WFMDatabase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WFMDatabase.h; sourceTree = "<group>"; };
++		6E9477CA213BDE220077EDFB /* WFMDatabaseQueue.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WFMDatabaseQueue.m; sourceTree = "<group>"; };
++		6E9477CB213BDE220077EDFB /* WFMResultSet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WFMResultSet.h; sourceTree = "<group>"; };
++		6E9477CC213BDE220077EDFB /* WFMDatabasePool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WFMDatabasePool.h; sourceTree = "<group>"; };
++		6E9477CD213BDE220077EDFB /* WFMDatabaseAdditions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WFMDatabaseAdditions.m; sourceTree = "<group>"; };
++		6E9477CE213BDE220077EDFB /* WFMDatabase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WFMDatabase.m; sourceTree = "<group>"; };
++		6E9477CF213BDE220077EDFB /* WFMDatabaseQueue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WFMDatabaseQueue.h; sourceTree = "<group>"; };
++		6E9477D0213BDE220077EDFB /* WFMDB.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WFMDB.h; sourceTree = "<group>"; };
++		6E9477D1213BDE220077EDFB /* WFMDatabaseAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WFMDatabaseAdditions.h; sourceTree = "<group>"; };
++		6E9477D2213BDE220077EDFB /* WFMDatabasePool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WFMDatabasePool.m; sourceTree = "<group>"; };
++		6E9477D3213BDE220077EDFB /* WFMResultSet.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WFMResultSet.m; sourceTree = "<group>"; };
+ 		6E9477E8213BDF8A0077EDFB /* DatabaseDriver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DatabaseDriver.swift; path = WatermelonDB/DatabaseDriver.swift; sourceTree = SOURCE_ROOT; };
+ 		6E9477E9213BDF8A0077EDFB /* DatabaseBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DatabaseBridge.swift; path = WatermelonDB/DatabaseBridge.swift; sourceTree = SOURCE_ROOT; };
+ 		6E9477EA213BDF8A0077EDFB /* DatabaseBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DatabaseBridge.m; path = WatermelonDB/DatabaseBridge.m; sourceTree = SOURCE_ROOT; };
+@@ -156,17 +156,17 @@
+ 		6E9477C8213BDE220077EDFB /* fmdb */ = {
+ 			isa = PBXGroup;
+ 			children = (
+-				6E9477C9213BDE220077EDFB /* FMDatabase.h */,
+-				6E9477CA213BDE220077EDFB /* FMDatabaseQueue.m */,
+-				6E9477CB213BDE220077EDFB /* FMResultSet.h */,
+-				6E9477CC213BDE220077EDFB /* FMDatabasePool.h */,
+-				6E9477CD213BDE220077EDFB /* FMDatabaseAdditions.m */,
+-				6E9477CE213BDE220077EDFB /* FMDatabase.m */,
+-				6E9477CF213BDE220077EDFB /* FMDatabaseQueue.h */,
+-				6E9477D0213BDE220077EDFB /* FMDB.h */,
+-				6E9477D1213BDE220077EDFB /* FMDatabaseAdditions.h */,
+-				6E9477D2213BDE220077EDFB /* FMDatabasePool.m */,
+-				6E9477D3213BDE220077EDFB /* FMResultSet.m */,
++				6E9477C9213BDE220077EDFB /* WFMDatabase.h */,
++				6E9477CA213BDE220077EDFB /* WFMDatabaseQueue.m */,
++				6E9477CB213BDE220077EDFB /* WFMResultSet.h */,
++				6E9477CC213BDE220077EDFB /* WFMDatabasePool.h */,
++				6E9477CD213BDE220077EDFB /* WFMDatabaseAdditions.m */,
++				6E9477CE213BDE220077EDFB /* WFMDatabase.m */,
++				6E9477CF213BDE220077EDFB /* WFMDatabaseQueue.h */,
++				6E9477D0213BDE220077EDFB /* WFMDB.h */,
++				6E9477D1213BDE220077EDFB /* WFMDatabaseAdditions.h */,
++				6E9477D2213BDE220077EDFB /* WFMDatabasePool.m */,
++				6E9477D3213BDE220077EDFB /* WFMResultSet.m */,
+ 			);
+ 			path = fmdb;
+ 			sourceTree = "<group>";
+@@ -254,16 +254,16 @@
+ 				6EBBB7162472B4A200E43F26 /* Sqlite.cpp in Sources */,
+ 				6EF7F86223630D6D0041E1F6 /* JSIInstaller.mm in Sources */,
+ 				6E9477F1213BDF8A0077EDFB /* DatabaseBridge.swift in Sources */,
+-				6E9477D8213BDE2E0077EDFB /* FMResultSet.m in Sources */,
+-				6E9477D7213BDE2E0077EDFB /* FMDatabasePool.m in Sources */,
++				6E9477D8213BDE2E0077EDFB /* WFMResultSet.m in Sources */,
++				6E9477D7213BDE2E0077EDFB /* WFMDatabasePool.m in Sources */,
+ 				6E9477F2213BDF8A0077EDFB /* DatabaseBridge.m in Sources */,
+ 				6E9477F4213BDF8A0077EDFB /* std_ext.swift in Sources */,
+ 				6ED8793123665D7800F45881 /* JSLockPerfHack.mm in Sources */,
+ 				6E9477F6213BDF8A0077EDFB /* Database.swift in Sources */,
+ 				6E5E6259246C1F61003DBEF4 /* DatabasePlatformIOS.mm in Sources */,
+-				6E9477D5213BDE2E0077EDFB /* FMDatabaseAdditions.m in Sources */,
+-				6E9477D4213BDE2E0077EDFB /* FMDatabaseQueue.m in Sources */,
+-				6E9477D6213BDE2E0077EDFB /* FMDatabase.m in Sources */,
++				6E9477D5213BDE2E0077EDFB /* WFMDatabaseAdditions.m in Sources */,
++				6E9477D4213BDE2E0077EDFB /* WFMDatabaseQueue.m in Sources */,
++				6E9477D6213BDE2E0077EDFB /* WFMDatabase.m in Sources */,
+ 				6EF7F8602362E9100041E1F6 /* Database.cpp in Sources */,
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 0;
+diff --git a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB.xcodeproj/xcuserdata/a1234.xcuserdatad/xcschemes/xcschememanagement.plist b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB.xcodeproj/xcuserdata/a1234.xcuserdatad/xcschemes/xcschememanagement.plist
+new file mode 100644
+index 0000000..2cf6f9e
+--- /dev/null
++++ b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB.xcodeproj/xcuserdata/a1234.xcuserdatad/xcschemes/xcschememanagement.plist
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
++<plist version="1.0">
++<dict>
++	<key>SchemeUserState</key>
++	<dict>
++		<key>WatermelonDB.xcscheme_^#shared#^_</key>
++		<dict>
++			<key>orderHint</key>
++			<integer>171</integer>
++		</dict>
++	</dict>
++</dict>
++</plist>
+diff --git a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB.xcodeproj/xcuserdata/jimmy.xcuserdatad/xcschemes/xcschememanagement.plist b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB.xcodeproj/xcuserdata/jimmy.xcuserdatad/xcschemes/xcschememanagement.plist
+new file mode 100644
+index 0000000..2cf6f9e
+--- /dev/null
++++ b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB.xcodeproj/xcuserdata/jimmy.xcuserdatad/xcschemes/xcschememanagement.plist
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
++<plist version="1.0">
++<dict>
++	<key>SchemeUserState</key>
++	<dict>
++		<key>WatermelonDB.xcscheme_^#shared#^_</key>
++		<dict>
++			<key>orderHint</key>
++			<integer>171</integer>
++		</dict>
++	</dict>
++</dict>
++</plist>
+diff --git a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/.DS_Store b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/.DS_Store
+new file mode 100644
+index 0000000..d5a9111
+Binary files /dev/null and b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/.DS_Store differ
+diff --git a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/Database.swift b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/Database.swift
+index 43f2c9c..4646dc4 100644
+--- a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/Database.swift
++++ b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/Database.swift
+@@ -1,16 +1,16 @@
+ import Foundation
  
-         if (rawValue && date) {
--          cache.set(rawValue, date);
-+          cache.set(rawValue, new Date(date));
+-class Database {
+-    typealias SQL = String
+-    typealias TableName = String
+-    typealias QueryArgs = [Any]
++public class Database {
++    public typealias SQL = String
++    public typealias TableName = String
++    public typealias QueryArgs = [Any]
+ 
+-    private let fmdb: FMDatabase
++    private let fmdb: WFMDatabase
+     private let path: String
+ 
+-    init(path: String) {
++    public init(path: String) {
+         self.path = path
+-        fmdb = FMDatabase(path: path)
++        fmdb = WFMDatabase(path: path)
+         open()
+     }
+ 
+@@ -53,7 +53,7 @@ class Database {
          }
+     }
  
-         this.asModel._setRaw(columnName, rawValue);
+-    func queryRaw(_ query: SQL, _ args: QueryArgs = []) throws -> AnyIterator<FMResultSet> {
++    public func queryRaw(_ query: SQL, _ args: QueryArgs = []) throws -> AnyIterator<WFMResultSet> {
+         let resultSet = try fmdb.executeQuery(query, values: args)
+ 
+         return AnyIterator {
+diff --git a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDB.h b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDB.h
+deleted file mode 100644
+index 1ff5465..0000000
+--- a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDB.h
++++ /dev/null
+@@ -1,10 +0,0 @@
+-#import <Foundation/Foundation.h>
+-
+-FOUNDATION_EXPORT double FMDBVersionNumber;
+-FOUNDATION_EXPORT const unsigned char FMDBVersionString[];
+-
+-#import "FMDatabase.h"
+-#import "FMResultSet.h"
+-#import "FMDatabaseAdditions.h"
+-#import "FMDatabaseQueue.h"
+-#import "FMDatabasePool.h"
+diff --git a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDB.h b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDB.h
+new file mode 100644
+index 0000000..02ee77c
+--- /dev/null
++++ b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDB.h
+@@ -0,0 +1,10 @@
++#import <Foundation/Foundation.h>
++
++FOUNDATION_EXPORT double WFMDBVersionNumber;
++FOUNDATION_EXPORT const unsigned char WFMDBVersionString[];
++
++#import "WFMDatabase.h"
++#import "WFMResultSet.h"
++#import "WFMDatabaseAdditions.h"
++#import "WFMDatabaseQueue.h"
++#import "WFMDatabasePool.h"
+diff --git a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabase.h b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabase.h
+similarity index 84%
+rename from node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabase.h
+rename to node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabase.h
+index 574db3e..259b8fe 100644
+--- a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabase.h
++++ b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabase.h
+@@ -1,36 +1,36 @@
+ #import <Foundation/Foundation.h>
+-#import "FMResultSet.h"
+-#import "FMDatabasePool.h"
++#import "WFMResultSet.h"
++#import "WFMDatabasePool.h"
+ 
+ NS_ASSUME_NONNULL_BEGIN
+ 
+ #if ! __has_feature(objc_arc)
+-    #define FMDBAutorelease(__v) ([__v autorelease]);
+-    #define FMDBReturnAutoreleased FMDBAutorelease
++    #define WFMDBAutorelease(__v) ([__v autorelease]);
++    #define WFMDBReturnAutoreleased WFMDBAutorelease
+ 
+-    #define FMDBRetain(__v) ([__v retain]);
+-    #define FMDBReturnRetained FMDBRetain
++    #define WFMDBRetain(__v) ([__v retain]);
++    #define WFMDBReturnRetained WFMDBRetain
+ 
+-    #define FMDBRelease(__v) ([__v release]);
++    #define WFMDBRelease(__v) ([__v release]);
+ 
+-    #define FMDBDispatchQueueRelease(__v) (dispatch_release(__v));
++    #define WFMDBDispatchQueueRelease(__v) (dispatch_release(__v));
+ #else
+     // -fobjc-arc
+-    #define FMDBAutorelease(__v)
+-    #define FMDBReturnAutoreleased(__v) (__v)
++    #define WFMDBAutorelease(__v)
++    #define WFMDBReturnAutoreleased(__v) (__v)
+ 
+-    #define FMDBRetain(__v)
+-    #define FMDBReturnRetained(__v) (__v)
++    #define WFMDBRetain(__v)
++    #define WFMDBReturnRetained(__v) (__v)
+ 
+-    #define FMDBRelease(__v)
++    #define WFMDBRelease(__v)
+ 
+ // If OS_OBJECT_USE_OBJC=1, then the dispatch objects will be treated like ObjC objects
+ // and will participate in ARC.
+ // See the section on "Dispatch Queues and Automatic Reference Counting" in "Grand Central Dispatch (GCD) Reference" for details. 
+     #if OS_OBJECT_USE_OBJC
+-        #define FMDBDispatchQueueRelease(__v)
++        #define WFMDBDispatchQueueRelease(__v)
+     #else
+-        #define FMDBDispatchQueueRelease(__v) (dispatch_release(__v));
++        #define WFMDBDispatchQueueRelease(__v) (dispatch_release(__v));
+     #endif
+ #endif
+ 
+@@ -39,37 +39,37 @@ NS_ASSUME_NONNULL_BEGIN
+ #endif
+ 
+ 
+-typedef int(^FMDBExecuteStatementsCallbackBlock)(NSDictionary *resultsDictionary);
++typedef int(^WFMDBExecuteStatementsCallbackBlock)(NSDictionary *resultsDictionary);
+ 
+-typedef NS_ENUM(int, FMDBCheckpointMode) {
+-    FMDBCheckpointModePassive  = 0, // SQLITE_CHECKPOINT_PASSIVE,
+-    FMDBCheckpointModeFull     = 1, // SQLITE_CHECKPOINT_FULL,
+-    FMDBCheckpointModeRestart  = 2, // SQLITE_CHECKPOINT_RESTART,
+-    FMDBCheckpointModeTruncate = 3  // SQLITE_CHECKPOINT_TRUNCATE
++typedef NS_ENUM(int, WFMDBCheckpointMode) {
++    WFMDBCheckpointModePassive  = 0, // SQLITE_CHECKPOINT_PASSIVE,
++    WFMDBCheckpointModeFull     = 1, // SQLITE_CHECKPOINT_FULL,
++    WFMDBCheckpointModeRestart  = 2, // SQLITE_CHECKPOINT_RESTART,
++    WFMDBCheckpointModeTruncate = 3  // SQLITE_CHECKPOINT_TRUNCATE
+ };
+ 
+ /** A SQLite ([http://sqlite.org/](http://sqlite.org/)) Objective-C wrapper.
+  
+  ### Usage
+- The three main classes in FMDB are:
++ The three main classes in WFMDB are:
+ 
+- - `FMDatabase` - Represents a single SQLite database.  Used for executing SQL statements.
+- - `<FMResultSet>` - Represents the results of executing a query on an `FMDatabase`.
+- - `<FMDatabaseQueue>` - If you want to perform queries and updates on multiple threads, you'll want to use this class.
++ - `WFMDatabase` - Represents a single SQLite database.  Used for executing SQL statements.
++ - `<WFMResultSet>` - Represents the results of executing a query on an `WFMDatabase`.
++ - `<WFMDatabaseQueue>` - If you want to perform queries and updates on multiple threads, you'll want to use this class.
+ 
+  ### See also
+  
+- - `<FMDatabasePool>` - A pool of `FMDatabase` objects.
+- - `<FMStatement>` - A wrapper for `sqlite_stmt`.
++ - `<WFMDatabasePool>` - A pool of `WFMDatabase` objects.
++ - `<WFMStatement>` - A wrapper for `sqlite_stmt`.
+  
+  ### External links
+  
+- - [FMDB on GitHub](https://github.com/ccgus/fmdb) including introductory documentation
++ - [WFMDB on GitHub](https://github.com/ccgus/WFMdb) including introductory documentation
+  - [SQLite web site](http://sqlite.org/)
+- - [FMDB mailing list](http://groups.google.com/group/fmdb)
++ - [WFMDB mailing list](http://groups.google.com/group/WFMdb)
+  - [SQLite FAQ](http://www.sqlite.org/faq.html)
+  
+- @warning Do not instantiate a single `FMDatabase` object and use it across multiple threads. Instead, use `<FMDatabaseQueue>`.
++ @warning Do not instantiate a single `WFMDatabase` object and use it across multiple threads. Instead, use `<WFMDatabaseQueue>`.
+ 
+  */
+ 
+@@ -77,7 +77,7 @@ typedef NS_ENUM(int, FMDBCheckpointMode) {
+ #pragma clang diagnostic ignored "-Wobjc-interface-ivars"
+ 
+ 
+-@interface FMDatabase : NSObject
++@interface WFMDatabase : NSObject
+ 
+ ///-----------------
+ /// @name Properties
+@@ -107,111 +107,111 @@ typedef NS_ENUM(int, FMDBCheckpointMode) {
+ /// @name Initialization
+ ///---------------------
+ 
+-/** Create a `FMDatabase` object.
++/** Create a `WFMDatabase` object.
+  
+- An `FMDatabase` is created with a path to a SQLite database file.  This path can be one of these three:
++ An `WFMDatabase` is created with a path to a SQLite database file.  This path can be one of these three:
+ 
+  1. A file system path.  The file does not have to exist on disk.  If it does not exist, it is created for you.
+- 2. An empty string (`@""`).  An empty database is created at a temporary location.  This database is deleted with the `FMDatabase` connection is closed.
+- 3. `nil`.  An in-memory database is created.  This database will be destroyed with the `FMDatabase` connection is closed.
++ 2. An empty string (`@""`).  An empty database is created at a temporary location.  This database is deleted with the `WFMDatabase` connection is closed.
++ 3. `nil`.  An in-memory database is created.  This database will be destroyed with the `WFMDatabase` connection is closed.
+ 
+  For example, to create/open a database in your Mac OS X `tmp` folder:
+ 
+-    FMDatabase *db = [FMDatabase databaseWithPath:@"/tmp/tmp.db"];
++    WFMDatabase *db = [WFMDatabase databaseWithPath:@"/tmp/tmp.db"];
+ 
+  Or, in iOS, you might open a database in the app's `Documents` directory:
+ 
+     NSString *docsPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+     NSString *dbPath   = [docsPath stringByAppendingPathComponent:@"test.db"];
+-    FMDatabase *db     = [FMDatabase databaseWithPath:dbPath];
++    WFMDatabase *db     = [WFMDatabase databaseWithPath:dbPath];
+ 
+  (For more information on temporary and in-memory databases, read the sqlite documentation on the subject: [http://www.sqlite.org/inmemorydb.html](http://www.sqlite.org/inmemorydb.html))
+ 
+  @param inPath Path of database file
+ 
+- @return `FMDatabase` object if successful; `nil` if failure.
++ @return `WFMDatabase` object if successful; `nil` if failure.
+ 
+  */
+ 
+ + (instancetype)databaseWithPath:(NSString * _Nullable)inPath;
+ 
+-/** Create a `FMDatabase` object.
++/** Create a `WFMDatabase` object.
+  
+- An `FMDatabase` is created with a path to a SQLite database file.  This path can be one of these three:
++ An `WFMDatabase` is created with a path to a SQLite database file.  This path can be one of these three:
+  
+  1. A file system URL.  The file does not have to exist on disk.  If it does not exist, it is created for you.
+- 2. `nil`.  An in-memory database is created.  This database will be destroyed with the `FMDatabase` connection is closed.
++ 2. `nil`.  An in-memory database is created.  This database will be destroyed with the `WFMDatabase` connection is closed.
+  
+  For example, to create/open a database in your Mac OS X `tmp` folder:
+  
+-    FMDatabase *db = [FMDatabase databaseWithPath:@"/tmp/tmp.db"];
++    WFMDatabase *db = [WFMDatabase databaseWithPath:@"/tmp/tmp.db"];
+  
+  Or, in iOS, you might open a database in the app's `Documents` directory:
+  
+     NSString *docsPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+     NSString *dbPath   = [docsPath stringByAppendingPathComponent:@"test.db"];
+-    FMDatabase *db     = [FMDatabase databaseWithPath:dbPath];
++    WFMDatabase *db     = [WFMDatabase databaseWithPath:dbPath];
+  
+  (For more information on temporary and in-memory databases, read the sqlite documentation on the subject: [http://www.sqlite.org/inmemorydb.html](http://www.sqlite.org/inmemorydb.html))
+  
+  @param url The local file URL (not remote URL) of database file
+  
+- @return `FMDatabase` object if successful; `nil` if failure.
++ @return `WFMDatabase` object if successful; `nil` if failure.
+  
+  */
+ 
+ + (instancetype)databaseWithURL:(NSURL * _Nullable)url;
+ 
+-/** Initialize a `FMDatabase` object.
++/** Initialize a `WFMDatabase` object.
+  
+- An `FMDatabase` is created with a path to a SQLite database file.  This path can be one of these three:
++ An `WFMDatabase` is created with a path to a SQLite database file.  This path can be one of these three:
+ 
+  1. A file system path.  The file does not have to exist on disk.  If it does not exist, it is created for you.
+- 2. An empty string (`@""`).  An empty database is created at a temporary location.  This database is deleted with the `FMDatabase` connection is closed.
+- 3. `nil`.  An in-memory database is created.  This database will be destroyed with the `FMDatabase` connection is closed.
++ 2. An empty string (`@""`).  An empty database is created at a temporary location.  This database is deleted with the `WFMDatabase` connection is closed.
++ 3. `nil`.  An in-memory database is created.  This database will be destroyed with the `WFMDatabase` connection is closed.
+ 
+  For example, to create/open a database in your Mac OS X `tmp` folder:
+ 
+-    FMDatabase *db = [FMDatabase databaseWithPath:@"/tmp/tmp.db"];
++    WFMDatabase *db = [WFMDatabase databaseWithPath:@"/tmp/tmp.db"];
+ 
+  Or, in iOS, you might open a database in the app's `Documents` directory:
+ 
+     NSString *docsPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+     NSString *dbPath   = [docsPath stringByAppendingPathComponent:@"test.db"];
+-    FMDatabase *db     = [FMDatabase databaseWithPath:dbPath];
++    WFMDatabase *db     = [WFMDatabase databaseWithPath:dbPath];
+ 
+  (For more information on temporary and in-memory databases, read the sqlite documentation on the subject: [http://www.sqlite.org/inmemorydb.html](http://www.sqlite.org/inmemorydb.html))
+ 
+  @param path Path of database file.
+  
+- @return `FMDatabase` object if successful; `nil` if failure.
++ @return `WFMDatabase` object if successful; `nil` if failure.
+ 
+  */
+ 
+ - (instancetype)initWithPath:(NSString * _Nullable)path;
+ 
+-/** Initialize a `FMDatabase` object.
++/** Initialize a `WFMDatabase` object.
+  
+- An `FMDatabase` is created with a local file URL to a SQLite database file.  This path can be one of these three:
++ An `WFMDatabase` is created with a local file URL to a SQLite database file.  This path can be one of these three:
+  
+  1. A file system URL.  The file does not have to exist on disk.  If it does not exist, it is created for you.
+- 2. `nil`.  An in-memory database is created.  This database will be destroyed with the `FMDatabase` connection is closed.
++ 2. `nil`.  An in-memory database is created.  This database will be destroyed with the `WFMDatabase` connection is closed.
+  
+  For example, to create/open a database in your Mac OS X `tmp` folder:
+  
+- FMDatabase *db = [FMDatabase databaseWithPath:@"/tmp/tmp.db"];
++ WFMDatabase *db = [WFMDatabase databaseWithPath:@"/tmp/tmp.db"];
+  
+  Or, in iOS, you might open a database in the app's `Documents` directory:
+  
+  NSString *docsPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+  NSString *dbPath   = [docsPath stringByAppendingPathComponent:@"test.db"];
+- FMDatabase *db     = [FMDatabase databaseWithPath:dbPath];
++ WFMDatabase *db     = [WFMDatabase databaseWithPath:dbPath];
+  
+  (For more information on temporary and in-memory databases, read the sqlite documentation on the subject: [http://www.sqlite.org/inmemorydb.html](http://www.sqlite.org/inmemorydb.html))
+  
+  @param url The file `NSURL` of database file.
+  
+- @return `FMDatabase` object if successful; `nil` if failure.
++ @return `WFMDatabase` object if successful; `nil` if failure.
+  
+  */
+ 
+@@ -521,7 +521,7 @@ typedef NS_ENUM(int, FMDBCheckpointMode) {
+ 
+  */
+ 
+-- (BOOL)executeStatements:(NSString *)sql withResultBlock:(__attribute__((noescape)) FMDBExecuteStatementsCallbackBlock _Nullable)block;
++- (BOOL)executeStatements:(NSString *)sql withResultBlock:(__attribute__((noescape)) WFMDBExecuteStatementsCallbackBlock _Nullable)block;
+ 
+ /** Last insert rowid
+  
+@@ -556,9 +556,9 @@ typedef NS_ENUM(int, FMDBCheckpointMode) {
+ 
+ /** Execute select statement
+ 
+- Executing queries returns an `<FMResultSet>` object if successful, and `nil` upon failure.  Like executing updates, there is a variant that accepts an `NSError **` parameter.  Otherwise you should use the `<lastErrorMessage>` and `<lastErrorMessage>` methods to determine why a query failed.
++ Executing queries returns an `<WFMResultSet>` object if successful, and `nil` upon failure.  Like executing updates, there is a variant that accepts an `NSError **` parameter.  Otherwise you should use the `<lastErrorMessage>` and `<lastErrorMessage>` methods to determine why a query failed.
+  
+- In order to iterate through the results of your query, you use a `while()` loop.  You also need to "step" (via `<[FMResultSet next]>`) from one record to the other.
++ In order to iterate through the results of your query, you use a `while()` loop.  You also need to "step" (via `<[WFMResultSet next]>`) from one record to the other.
+  
+  This method employs [`sqlite3_bind`](http://sqlite.org/c3ref/bind_blob.html) for any optional value parameters. This  properly escapes any characters that need escape sequences (e.g. quotation marks), which eliminates simple SQL errors as well as protects against SQL injection attacks. This method natively handles `NSString`, `NSNumber`, `NSNull`, `NSDate`, and `NSData` objects. All other object types will be interpreted as text values using the object's `description` method.
+ 
+@@ -566,32 +566,32 @@ typedef NS_ENUM(int, FMDBCheckpointMode) {
+ 
+  @param ... Optional parameters to bind to `?` placeholders in the SQL statement. These should be Objective-C objects (e.g. `NSString`, `NSNumber`, etc.), not fundamental C data types (e.g. `int`, `char *`, etc.).
+ 
+- @return A `<FMResultSet>` for the result set upon success; `nil` upon failure. If failed, you can call `<lastError>`, `<lastErrorCode>`, or `<lastErrorMessage>` for diagnostic information regarding the failure.
++ @return A `<WFMResultSet>` for the result set upon success; `nil` upon failure. If failed, you can call `<lastError>`, `<lastErrorCode>`, or `<lastErrorMessage>` for diagnostic information regarding the failure.
+  
+- @see FMResultSet
+- @see [`FMResultSet next`](<[FMResultSet next]>)
++ @see WFMResultSet
++ @see [`WFMResultSet next`](<[WFMResultSet next]>)
+  @see [`sqlite3_bind`](http://sqlite.org/c3ref/bind_blob.html)
+  
+  @note You cannot use this method from Swift due to incompatibilities between Swift and Objective-C variadic implementations. Consider using `<executeQuery:values:>` instead.
+  */
+ 
+-- (FMResultSet * _Nullable)executeQuery:(NSString*)sql, ...;
++- (WFMResultSet * _Nullable)executeQuery:(NSString*)sql, ...;
+ 
+ /** Execute select statement
+ 
+- Executing queries returns an `<FMResultSet>` object if successful, and `nil` upon failure.  Like executing updates, there is a variant that accepts an `NSError **` parameter.  Otherwise you should use the `<lastErrorMessage>` and `<lastErrorMessage>` methods to determine why a query failed.
++ Executing queries returns an `<WFMResultSet>` object if successful, and `nil` upon failure.  Like executing updates, there is a variant that accepts an `NSError **` parameter.  Otherwise you should use the `<lastErrorMessage>` and `<lastErrorMessage>` methods to determine why a query failed.
+  
+- In order to iterate through the results of your query, you use a `while()` loop.  You also need to "step" (via `<[FMResultSet next]>`) from one record to the other.
++ In order to iterate through the results of your query, you use a `while()` loop.  You also need to "step" (via `<[WFMResultSet next]>`) from one record to the other.
+  
+  @param format The SQL to be performed, with `printf`-style escape sequences.
+ 
+  @param ... Optional parameters to bind to use in conjunction with the `printf`-style escape sequences in the SQL statement.
+ 
+- @return A `<FMResultSet>` for the result set upon success; `nil` upon failure. If failed, you can call `<lastError>`, `<lastErrorCode>`, or `<lastErrorMessage>` for diagnostic information regarding the failure.
++ @return A `<WFMResultSet>` for the result set upon success; `nil` upon failure. If failed, you can call `<lastError>`, `<lastErrorCode>`, or `<lastErrorMessage>` for diagnostic information regarding the failure.
+ 
+  @see executeQuery:
+- @see FMResultSet
+- @see [`FMResultSet next`](<[FMResultSet next]>)
++ @see WFMResultSet
++ @see [`WFMResultSet next`](<[WFMResultSet next]>)
+ 
+  @note This method does not technically perform a traditional printf-style replacement. What this method actually does is replace the printf-style percent sequences with a SQLite `?` placeholder, and then bind values to that placeholder. Thus the following command
+  
+@@ -605,38 +605,38 @@ typedef NS_ENUM(int, FMDBCheckpointMode) {
+  
+  */
+ 
+-- (FMResultSet * _Nullable)executeQueryWithFormat:(NSString*)format, ... NS_FORMAT_FUNCTION(1,2);
++- (WFMResultSet * _Nullable)executeQueryWithFormat:(NSString*)format, ... NS_FORMAT_FUNCTION(1,2);
+ 
+ /** Execute select statement
+ 
+- Executing queries returns an `<FMResultSet>` object if successful, and `nil` upon failure.  Like executing updates, there is a variant that accepts an `NSError **` parameter.  Otherwise you should use the `<lastErrorMessage>` and `<lastErrorMessage>` methods to determine why a query failed.
++ Executing queries returns an `<WFMResultSet>` object if successful, and `nil` upon failure.  Like executing updates, there is a variant that accepts an `NSError **` parameter.  Otherwise you should use the `<lastErrorMessage>` and `<lastErrorMessage>` methods to determine why a query failed.
+  
+- In order to iterate through the results of your query, you use a `while()` loop.  You also need to "step" (via `<[FMResultSet next]>`) from one record to the other.
++ In order to iterate through the results of your query, you use a `while()` loop.  You also need to "step" (via `<[WFMResultSet next]>`) from one record to the other.
+  
+  @param sql The SELECT statement to be performed, with optional `?` placeholders.
+ 
+  @param arguments A `NSArray` of objects to be used when binding values to the `?` placeholders in the SQL statement.
+ 
+- @return A `<FMResultSet>` for the result set upon success; `nil` upon failure. If failed, you can call `<lastError>`, `<lastErrorCode>`, or `<lastErrorMessage>` for diagnostic information regarding the failure.
++ @return A `<WFMResultSet>` for the result set upon success; `nil` upon failure. If failed, you can call `<lastError>`, `<lastErrorCode>`, or `<lastErrorMessage>` for diagnostic information regarding the failure.
+ 
+  @see -executeQuery:values:error:
+- @see FMResultSet
+- @see [`FMResultSet next`](<[FMResultSet next]>)
++ @see WFMResultSet
++ @see [`WFMResultSet next`](<[WFMResultSet next]>)
+  */
+ 
+-- (FMResultSet * _Nullable)executeQuery:(NSString *)sql withArgumentsInArray:(NSArray *)arguments;
++- (WFMResultSet * _Nullable)executeQuery:(NSString *)sql withArgumentsInArray:(NSArray *)arguments;
+ 
+ /** Execute select statement
+  
+- Executing queries returns an `<FMResultSet>` object if successful, and `nil` upon failure.  Like executing updates, there is a variant that accepts an `NSError **` parameter.  Otherwise you should use the `<lastErrorMessage>` and `<lastErrorMessage>` methods to determine why a query failed.
++ Executing queries returns an `<WFMResultSet>` object if successful, and `nil` upon failure.  Like executing updates, there is a variant that accepts an `NSError **` parameter.  Otherwise you should use the `<lastErrorMessage>` and `<lastErrorMessage>` methods to determine why a query failed.
+  
+- In order to iterate through the results of your query, you use a `while()` loop.  You also need to "step" (via `<[FMResultSet next]>`) from one record to the other.
++ In order to iterate through the results of your query, you use a `while()` loop.  You also need to "step" (via `<[WFMResultSet next]>`) from one record to the other.
+  
+  This is similar to `<executeQuery:withArgumentsInArray:>`, except that this also accepts a pointer to a `NSError` pointer, so that errors can be returned.
+  
+  In Swift, this throws errors, as if it were defined as follows:
+  
+- `func executeQuery(sql: String, values: [Any]?) throws  -> FMResultSet!`
++ `func executeQuery(sql: String, values: [Any]?) throws  -> WFMResultSet!`
+ 
+  @param sql The SELECT statement to be performed, with optional `?` placeholders.
+  
+@@ -644,38 +644,38 @@ typedef NS_ENUM(int, FMDBCheckpointMode) {
+ 
+  @param error A `NSError` object to receive any error object (if any).
+ 
+- @return A `<FMResultSet>` for the result set upon success; `nil` upon failure. If failed, you can call `<lastError>`, `<lastErrorCode>`, or `<lastErrorMessage>` for diagnostic information regarding the failure.
++ @return A `<WFMResultSet>` for the result set upon success; `nil` upon failure. If failed, you can call `<lastError>`, `<lastErrorCode>`, or `<lastErrorMessage>` for diagnostic information regarding the failure.
+  
+- @see FMResultSet
+- @see [`FMResultSet next`](<[FMResultSet next]>)
++ @see WFMResultSet
++ @see [`WFMResultSet next`](<[WFMResultSet next]>)
+  
+  @note When called from Swift, only use the first two parameters, `sql` and `values`. This but throws the error.
+ 
+  */
+ 
+-- (FMResultSet * _Nullable)executeQuery:(NSString *)sql values:(NSArray * _Nullable)values error:(NSError * _Nullable __autoreleasing *)error;
++- (WFMResultSet * _Nullable)executeQuery:(NSString *)sql values:(NSArray * _Nullable)values error:(NSError * _Nullable __autoreleasing *)error;
+ 
+ /** Execute select statement
+ 
+- Executing queries returns an `<FMResultSet>` object if successful, and `nil` upon failure.  Like executing updates, there is a variant that accepts an `NSError **` parameter.  Otherwise you should use the `<lastErrorMessage>` and `<lastErrorMessage>` methods to determine why a query failed.
++ Executing queries returns an `<WFMResultSet>` object if successful, and `nil` upon failure.  Like executing updates, there is a variant that accepts an `NSError **` parameter.  Otherwise you should use the `<lastErrorMessage>` and `<lastErrorMessage>` methods to determine why a query failed.
+  
+- In order to iterate through the results of your query, you use a `while()` loop.  You also need to "step" (via `<[FMResultSet next]>`) from one record to the other.
++ In order to iterate through the results of your query, you use a `while()` loop.  You also need to "step" (via `<[WFMResultSet next]>`) from one record to the other.
+  
+  @param sql The SELECT statement to be performed, with optional `?` placeholders.
+ 
+  @param arguments A `NSDictionary` of objects keyed by column names that will be used when binding values to the `?` placeholders in the SQL statement.
+ 
+- @return A `<FMResultSet>` for the result set upon success; `nil` upon failure. If failed, you can call `<lastError>`, `<lastErrorCode>`, or `<lastErrorMessage>` for diagnostic information regarding the failure.
++ @return A `<WFMResultSet>` for the result set upon success; `nil` upon failure. If failed, you can call `<lastError>`, `<lastErrorCode>`, or `<lastErrorMessage>` for diagnostic information regarding the failure.
+ 
+- @see FMResultSet
+- @see [`FMResultSet next`](<[FMResultSet next]>)
++ @see WFMResultSet
++ @see [`WFMResultSet next`](<[WFMResultSet next]>)
+  */
+ 
+-- (FMResultSet * _Nullable)executeQuery:(NSString *)sql withParameterDictionary:(NSDictionary * _Nullable)arguments;
++- (WFMResultSet * _Nullable)executeQuery:(NSString *)sql withParameterDictionary:(NSDictionary * _Nullable)arguments;
+ 
+ 
+ // Documentation forthcoming.
+-- (FMResultSet * _Nullable)executeQuery:(NSString *)sql withVAList:(va_list)args;
++- (WFMResultSet * _Nullable)executeQuery:(NSString *)sql withVAList:(va_list)args;
+ 
+ ///-------------------
+ /// @name Transactions
+@@ -692,7 +692,7 @@ typedef NS_ENUM(int, FMDBCheckpointMode) {
+  
+  @warning    Unlike SQLite's `BEGIN TRANSACTION`, this method currently performs
+              an exclusive transaction, not a deferred transaction. This behavior
+-             is likely to change in future versions of FMDB, whereby this method
++             is likely to change in future versions of WFMDB, whereby this method
+              will likely eventually adopt standard SQLite behavior and perform
+              deferred transactions. If you really need exclusive tranaction, it is
+              recommended that you use `beginExclusiveTransaction`, instead, not
+@@ -1041,7 +1041,7 @@ typedef NS_ENUM(int, FMDBCheckpointMode) {
+  @param error The NSError corresponding to the error, if any.
+  @return YES on success, otherwise NO.
+  */
+-- (BOOL)checkpoint:(FMDBCheckpointMode)checkpointMode error:(NSError * _Nullable *)error;
++- (BOOL)checkpoint:(WFMDBCheckpointMode)checkpointMode error:(NSError * _Nullable *)error;
+ 
+ /** Performs a WAL checkpoint
+  
+@@ -1050,7 +1050,7 @@ typedef NS_ENUM(int, FMDBCheckpointMode) {
+  @param error The NSError corresponding to the error, if any.
+  @return YES on success, otherwise NO.
+  */
+-- (BOOL)checkpoint:(FMDBCheckpointMode)checkpointMode name:(NSString * _Nullable)name error:(NSError * _Nullable *)error;
++- (BOOL)checkpoint:(WFMDBCheckpointMode)checkpointMode name:(NSString * _Nullable)name error:(NSError * _Nullable *)error;
+ 
+ /** Performs a WAL checkpoint
+  
+@@ -1061,7 +1061,7 @@ typedef NS_ENUM(int, FMDBCheckpointMode) {
+  @param checkpointCount If not NULL, then this is set to the total number of checkpointed frames in the log file (including any that were already checkpointed before the function was called) or to -1 if the checkpoint could not run due to an error or because the database is not in WAL mode.
+  @return YES on success, otherwise NO.
+  */
+-- (BOOL)checkpoint:(FMDBCheckpointMode)checkpointMode name:(NSString * _Nullable)name logFrameCount:(int * _Nullable)logFrameCount checkpointCount:(int * _Nullable)checkpointCount error:(NSError * _Nullable *)error;
++- (BOOL)checkpoint:(WFMDBCheckpointMode)checkpointMode name:(NSString * _Nullable)name logFrameCount:(int * _Nullable)logFrameCount checkpointCount:(int * _Nullable)checkpointCount error:(NSError * _Nullable *)error;
+ 
+ ///----------------------------
+ /// @name SQLite library status
+@@ -1086,9 +1086,9 @@ typedef NS_ENUM(int, FMDBCheckpointMode) {
+ + (NSString*)sqliteLibVersion;
+ 
+ 
+-+ (NSString*)FMDBUserVersion;
+++ (NSString*)WFMDBUserVersion;
+ 
+-+ (SInt32)FMDBVersion;
+++ (SInt32)WFMDBVersion;
+ 
+ 
+ ///------------------------
+@@ -1114,7 +1114,7 @@ typedef NS_ENUM(int, FMDBCheckpointMode) {
+         [self.db resultString:result context:context];
+     }];
+ 
+-    FMResultSet *rs = [db executeQuery:@"SELECT * FROM employees WHERE RemoveDiacritics(first_name) LIKE 'jose'"];
++    WFMResultSet *rs = [db executeQuery:@"SELECT * FROM employees WHERE RemoveDiacritics(first_name) LIKE 'jose'"];
+     NSAssert(rs, @"Error %@", [db lastErrorMessage]);
+  
+  @param name Name of function.
+@@ -1297,7 +1297,7 @@ typedef NS_ENUM(int, SqliteValueType) {
+  
+  Example:
+ 
+-    myDB.dateFormat = [FMDatabase storeableDateFormat:@"yyyy-MM-dd HH:mm:ss"];
++    myDB.dateFormat = [WFMDatabase storeableDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+ 
+  @param format A valid NSDateFormatter format string.
+  
+@@ -1309,7 +1309,7 @@ typedef NS_ENUM(int, SqliteValueType) {
+  @see stringFromDate:
+  @see storeableDateFormat:
+ 
+- @warning Note that `NSDateFormatter` is not thread-safe, so the formatter generated by this method should be assigned to only one FMDB instance and should not be used for other purposes.
++ @warning Note that `NSDateFormatter` is not thread-safe, so the formatter generated by this method should be assigned to only one WFMDB instance and should not be used for other purposes.
+ 
+  */
+ 
+@@ -1330,7 +1330,7 @@ typedef NS_ENUM(int, SqliteValueType) {
+ 
+ /** Set to a date formatter to use string dates with sqlite instead of the default UNIX timestamps.
+  
+- @param format Set to nil to use UNIX timestamps. Defaults to nil. Should be set using a formatter generated using FMDatabase::storeableDateFormat.
++ @param format Set to nil to use UNIX timestamps. Defaults to nil. Should be set using a formatter generated using WFMDatabase::storeableDateFormat.
+  
+  @see hasDateFormatter
+  @see setDateFormat:
+@@ -1338,7 +1338,7 @@ typedef NS_ENUM(int, SqliteValueType) {
+  @see stringFromDate:
+  @see storeableDateFormat:
+  
+- @warning Note there is no direct getter for the `NSDateFormatter`, and you should not use the formatter you pass to FMDB for other purposes, as `NSDateFormatter` is not thread-safe.
++ @warning Note there is no direct getter for the `NSDateFormatter`, and you should not use the formatter you pass to WFMDB for other purposes, as `NSDateFormatter` is not thread-safe.
+  */
+ 
+ - (void)setDateFormat:(NSDateFormatter * _Nullable)format;
+@@ -1378,16 +1378,16 @@ typedef NS_ENUM(int, SqliteValueType) {
+ 
+ /** Objective-C wrapper for `sqlite3_stmt`
+  
+- This is a wrapper for a SQLite `sqlite3_stmt`. Generally when using FMDB you will not need to interact directly with `FMStatement`, but rather with `<FMDatabase>` and `<FMResultSet>` only.
++ This is a wrapper for a SQLite `sqlite3_stmt`. Generally when using WFMDB you will not need to interact directly with `WFMStatement`, but rather with `<WFMDatabase>` and `<WFMResultSet>` only.
+  
+  ### See also
+  
+- - `<FMDatabase>`
+- - `<FMResultSet>`
++ - `<WFMDatabase>`
++ - `<WFMResultSet>`
+  - [`sqlite3_stmt`](http://www.sqlite.org/c3ref/stmt.html)
+  */
+ 
+-@interface FMStatement : NSObject {
++@interface WFMStatement : NSObject {
+     void *_statement;
+     NSString *_query;
+     long _useCount;
+diff --git a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabase.m b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabase.m
+similarity index 88%
+rename from node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabase.m
+rename to node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabase.m
+index 84d8d68..8ba3415 100644
+--- a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabase.m
++++ b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabase.m
+@@ -1,14 +1,14 @@
+-#import "FMDatabase.h"
++#import "WFMDatabase.h"
+ #import <unistd.h>
+ #import <objc/runtime.h>
+ 
+-#if FMDB_SQLITE_STANDALONE
++#if WFMDB_SQLITE_STANDALONE
+ #import <sqlite3/sqlite3.h>
+ #else
+ #import <sqlite3.h>
+ #endif
+ 
+-@interface FMDatabase () {
++@interface WFMDatabase () {
+     void*               _db;
+     BOOL                _isExecutingStatement;
+     NSTimeInterval      _startBusyRetryTime;
+@@ -21,14 +21,14 @@ @interface FMDatabase () {
+ 
+ NS_ASSUME_NONNULL_BEGIN
+ 
+-- (FMResultSet * _Nullable)executeQuery:(NSString *)sql withArgumentsInArray:(NSArray * _Nullable)arrayArgs orDictionary:(NSDictionary * _Nullable)dictionaryArgs orVAList:(va_list)args;
++- (WFMResultSet * _Nullable)executeQuery:(NSString *)sql withArgumentsInArray:(NSArray * _Nullable)arrayArgs orDictionary:(NSDictionary * _Nullable)dictionaryArgs orVAList:(va_list)args;
+ - (BOOL)executeUpdate:(NSString *)sql error:(NSError * _Nullable *)outErr withArgumentsInArray:(NSArray * _Nullable)arrayArgs orDictionary:(NSDictionary * _Nullable)dictionaryArgs orVAList:(va_list)args;
+ 
+ NS_ASSUME_NONNULL_END
+ 
+ @end
+ 
+-@implementation FMDatabase
++@implementation WFMDatabase
+ 
+ // Because these two properties have all of their accessor methods implemented,
+ // we have to synthesize them to get the corresponding ivars. The rest of the
+@@ -37,14 +37,14 @@ @implementation FMDatabase
+ @synthesize shouldCacheStatements = _shouldCacheStatements;
+ @synthesize maxBusyRetryTimeInterval = _maxBusyRetryTimeInterval;
+ 
+-#pragma mark FMDatabase instantiation and deallocation
++#pragma mark WFMDatabase instantiation and deallocation
+ 
+ + (instancetype)databaseWithPath:(NSString *)aPath {
+-    return FMDBReturnAutoreleased([[self alloc] initWithPath:aPath]);
++    return WFMDBReturnAutoreleased([[self alloc] initWithPath:aPath]);
+ }
+ 
+ + (instancetype)databaseWithURL:(NSURL *)url {
+-    return FMDBReturnAutoreleased([[self alloc] initWithURL:url]);
++    return WFMDBReturnAutoreleased([[self alloc] initWithURL:url]);
+ }
+ 
+ - (instancetype)init {
+@@ -83,11 +83,11 @@ - (void)finalize {
+ 
+ - (void)dealloc {
+     [self close];
+-    FMDBRelease(_openResultSets);
+-    FMDBRelease(_cachedStatements);
+-    FMDBRelease(_dateFormat);
+-    FMDBRelease(_databasePath);
+-    FMDBRelease(_openFunctions);
++    WFMDBRelease(_openResultSets);
++    WFMDBRelease(_cachedStatements);
++    WFMDBRelease(_dateFormat);
++    WFMDBRelease(_databasePath);
++    WFMDBRelease(_openFunctions);
+     
+ #if ! __has_feature(objc_arc)
+     [super dealloc];
+@@ -98,22 +98,22 @@ - (NSURL *)databaseURL {
+     return _databasePath ? [NSURL fileURLWithPath:_databasePath] : nil;
+ }
+ 
+-+ (NSString*)FMDBUserVersion {
+++ (NSString*)WFMDBUserVersion {
+     return @"2.7.5";
+ }
+ 
+ // returns 0x0240 for version 2.4.  This makes it super easy to do things like:
+-// /* need to make sure to do X with FMDB version 2.4 or later */
+-// if ([FMDatabase FMDBVersion] >= 0x0240) { … }
++// /* need to make sure to do X with WFMDB version 2.4 or later */
++// if ([WFMDatabase WFMDBVersion] >= 0x0240) { … }
+ 
+-+ (SInt32)FMDBVersion {
+++ (SInt32)WFMDBVersion {
+     
+     // we go through these hoops so that we only have to change the version number in a single spot.
+     static dispatch_once_t once;
+-    static SInt32 FMDBVersionVal = 0;
++    static SInt32 WFMDBVersionVal = 0;
+     
+     dispatch_once(&once, ^{
+-        NSString *prodVersion = [self FMDBUserVersion];
++        NSString *prodVersion = [self WFMDBUserVersion];
+         
+         if ([[prodVersion componentsSeparatedByString:@"."] count] < 3) {
+             prodVersion = [prodVersion stringByAppendingString:@".0"];
+@@ -122,11 +122,11 @@ + (SInt32)FMDBVersion {
+         NSString *junk = [prodVersion stringByReplacingOccurrencesOfString:@"." withString:@""];
+         
+         char *e = nil;
+-        FMDBVersionVal = (int) strtoul([junk UTF8String], &e, 16);
++        WFMDBVersionVal = (int) strtoul([junk UTF8String], &e, 16);
+         
+     });
+     
+-    return FMDBVersionVal;
++    return WFMDBVersionVal;
+ }
+ 
+ #pragma mark SQLite information
+@@ -278,8 +278,8 @@ - (BOOL)close {
+ //       C function causes problems; the rest don't. Anyway, ignoring the .m
+ //       files with appledoc will prevent this problem from occurring.
+ 
+-static int FMDBDatabaseBusyHandler(void *f, int count) {
+-    FMDatabase *self = (__bridge FMDatabase*)f;
++static int WFMDBDatabaseBusyHandler(void *f, int count) {
++    WFMDatabase *self = (__bridge WFMDatabase*)f;
+     
+     if (count == 0) {
+         self->_startBusyRetryTime = [NSDate timeIntervalSinceReferenceDate];
+@@ -309,7 +309,7 @@ - (void)setMaxBusyRetryTimeInterval:(NSTimeInterval)timeout {
+     }
+     
+     if (timeout > 0) {
+-        sqlite3_busy_handler(_db, &FMDBDatabaseBusyHandler, (__bridge void *)(self));
++        sqlite3_busy_handler(_db, &WFMDBDatabaseBusyHandler, (__bridge void *)(self));
+     }
+     else {
+         // turn it off otherwise
+@@ -323,18 +323,18 @@ - (NSTimeInterval)maxBusyRetryTimeInterval {
+ 
+ 
+ // we no longer make busyRetryTimeout public
+-// but for folks who don't bother noticing that the interface to FMDatabase changed,
++// but for folks who don't bother noticing that the interface to WFMDatabase changed,
+ // we'll still implement the method so they don't get suprise crashes
+ - (int)busyRetryTimeout {
+     NSLog(@"%s:%d", __FUNCTION__, __LINE__);
+-    NSLog(@"FMDB: busyRetryTimeout no longer works, please use maxBusyRetryTimeInterval");
++    NSLog(@"WFMDB: busyRetryTimeout no longer works, please use maxBusyRetryTimeInterval");
+     return -1;
+ }
+ 
+ - (void)setBusyRetryTimeout:(int)i {
+ #pragma unused(i)
+     NSLog(@"%s:%d", __FUNCTION__, __LINE__);
+-    NSLog(@"FMDB: setBusyRetryTimeout does nothing, please use setMaxBusyRetryTimeInterval:");
++    NSLog(@"WFMDB: setBusyRetryTimeout does nothing, please use setMaxBusyRetryTimeInterval:");
+ }
+ 
+ #pragma mark Result set functions
+@@ -346,9 +346,9 @@ - (BOOL)hasOpenResultSets {
+ - (void)closeOpenResultSets {
+     
+     //Copy the set so we don't get mutation errors
+-    NSSet *openSetCopy = FMDBReturnAutoreleased([_openResultSets copy]);
++    NSSet *openSetCopy = WFMDBReturnAutoreleased([_openResultSets copy]);
+     for (NSValue *rsInWrappedInATastyValueMeal in openSetCopy) {
+-        FMResultSet *rs = (FMResultSet *)[rsInWrappedInATastyValueMeal pointerValue];
++        WFMResultSet *rs = (WFMResultSet *)[rsInWrappedInATastyValueMeal pointerValue];
+         
+         [rs setParentDB:nil];
+         [rs close];
+@@ -357,7 +357,7 @@ - (void)closeOpenResultSets {
+     }
+ }
+ 
+-- (void)resultSetDidClose:(FMResultSet *)resultSet {
++- (void)resultSetDidClose:(WFMResultSet *)resultSet {
+     NSValue *setValue = [NSValue valueWithNonretainedObject:resultSet];
+     
+     [_openResultSets removeObject:setValue];
+@@ -368,7 +368,7 @@ - (void)resultSetDidClose:(FMResultSet *)resultSet {
+ - (void)clearCachedStatements {
+     
+     for (NSMutableSet *statements in [_cachedStatements objectEnumerator]) {
+-        for (FMStatement *statement in [statements allObjects]) {
++        for (WFMStatement *statement in [statements allObjects]) {
+             [statement close];
+         }
+     }
+@@ -376,11 +376,11 @@ - (void)clearCachedStatements {
+     [_cachedStatements removeAllObjects];
+ }
+ 
+-- (FMStatement*)cachedStatementForQuery:(NSString*)query {
++- (WFMStatement*)cachedStatementForQuery:(NSString*)query {
+     
+     NSMutableSet* statements = [_cachedStatements objectForKey:query];
+     
+-    return [[statements objectsPassingTest:^BOOL(FMStatement* statement, BOOL *stop) {
++    return [[statements objectsPassingTest:^BOOL(WFMStatement* statement, BOOL *stop) {
+         
+         *stop = ![statement inUse];
+         return *stop;
+@@ -389,10 +389,10 @@ - (FMStatement*)cachedStatementForQuery:(NSString*)query {
+ }
+ 
+ 
+-- (void)setCachedStatement:(FMStatement*)statement forQuery:(NSString*)query {
++- (void)setCachedStatement:(WFMStatement*)statement forQuery:(NSString*)query {
+     NSParameterAssert(query);
+     if (!query) {
+-        NSLog(@"API misuse, -[FMDatabase setCachedStatement:forQuery:] query must not be nil");
++        NSLog(@"API misuse, -[WFMDatabase setCachedStatement:forQuery:] query must not be nil");
+         return;
+     }
+     
+@@ -408,7 +408,7 @@ - (void)setCachedStatement:(FMStatement*)statement forQuery:(NSString*)query {
+     
+     [_cachedStatements setObject:statements forKey:query];
+     
+-    FMDBRelease(query);
++    WFMDBRelease(query);
+ }
+ 
+ #pragma mark Key routines
+@@ -464,10 +464,10 @@ - (BOOL)setKeyWithData:(NSData *)keyData {
+ 
+ + (NSDateFormatter *)storeableDateFormat:(NSString *)format {
+     
+-    NSDateFormatter *result = FMDBReturnAutoreleased([[NSDateFormatter alloc] init]);
++    NSDateFormatter *result = WFMDBReturnAutoreleased([[NSDateFormatter alloc] init]);
+     result.dateFormat = format;
+     result.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+-    result.locale = FMDBReturnAutoreleased([[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]);
++    result.locale = WFMDBReturnAutoreleased([[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]);
+     return result;
+ }
+ 
+@@ -477,8 +477,8 @@ - (BOOL)hasDateFormatter {
+ }
+ 
+ - (void)setDateFormat:(NSDateFormatter *)format {
+-    FMDBAutorelease(_dateFormat);
+-    _dateFormat = FMDBReturnRetained(format);
++    WFMDBAutorelease(_dateFormat);
++    _dateFormat = WFMDBReturnRetained(format);
+ }
+ 
+ - (NSDate *)dateFromString:(NSString *)s {
+@@ -497,7 +497,7 @@ - (BOOL)goodConnection {
+         return NO;
+     }
+     
+-    FMResultSet *rs = [self executeQuery:@"select name from sqlite_master where type='table'"];
++    WFMResultSet *rs = [self executeQuery:@"select name from sqlite_master where type='table'"];
+     
+     if (rs) {
+         [rs close];
+@@ -508,11 +508,11 @@ - (BOOL)goodConnection {
+ }
+ 
+ - (void)warnInUse {
+-    NSLog(@"The FMDatabase %@ is currently in use.", self);
++    NSLog(@"The WFMDatabase %@ is currently in use.", self);
+     
+ #ifndef NS_BLOCK_ASSERTIONS
+     if (_crashOnErrors) {
+-        NSAssert(false, @"The FMDatabase %@ is currently in use.", self);
++        NSAssert(false, @"The WFMDatabase %@ is currently in use.", self);
+         abort();
+     }
+ #endif
+@@ -522,11 +522,11 @@ - (BOOL)databaseExists {
+     
+     if (!_isOpen) {
+         
+-        NSLog(@"The FMDatabase %@ is not open.", self);
++        NSLog(@"The WFMDatabase %@ is not open.", self);
+         
+ #ifndef NS_BLOCK_ASSERTIONS
+         if (_crashOnErrors) {
+-            NSAssert(false, @"The FMDatabase %@ is not open.", self);
++            NSAssert(false, @"The WFMDatabase %@ is not open.", self);
+             abort();
+         }
+ #endif
+@@ -560,7 +560,7 @@ - (int)lastExtendedErrorCode {
+ - (NSError*)errorWithMessage:(NSString *)message {
+     NSDictionary* errorMessage = [NSDictionary dictionaryWithObject:message forKey:NSLocalizedDescriptionKey];
+     
+-    return [NSError errorWithDomain:@"FMDatabase" code:sqlite3_errcode(_db) userInfo:errorMessage];
++    return [NSError errorWithDomain:@"WFMDatabase" code:sqlite3_errcode(_db) userInfo:errorMessage];
+ }
+ 
+ - (NSError*)lastError {
+@@ -796,11 +796,11 @@ - (void)extractSQL:(NSString *)sql argumentsList:(va_list)args intoString:(NSMut
+ 
+ #pragma mark Execute queries
+ 
+-- (FMResultSet *)executeQuery:(NSString *)sql withParameterDictionary:(NSDictionary *)arguments {
++- (WFMResultSet *)executeQuery:(NSString *)sql withParameterDictionary:(NSDictionary *)arguments {
+     return [self executeQuery:sql withArgumentsInArray:nil orDictionary:arguments orVAList:nil];
+ }
+ 
+-- (FMResultSet *)executeQuery:(NSString *)sql withArgumentsInArray:(NSArray*)arrayArgs orDictionary:(NSDictionary *)dictionaryArgs orVAList:(va_list)args {
++- (WFMResultSet *)executeQuery:(NSString *)sql withArgumentsInArray:(NSArray*)arrayArgs orDictionary:(NSDictionary *)dictionaryArgs orVAList:(va_list)args {
+     
+     if (![self databaseExists]) {
+         return 0x00;
+@@ -815,8 +815,8 @@ - (FMResultSet *)executeQuery:(NSString *)sql withArgumentsInArray:(NSArray*)arr
+     
+     int rc                  = 0x00;
+     sqlite3_stmt *pStmt     = 0x00;
+-    FMStatement *statement  = 0x00;
+-    FMResultSet *rs         = 0x00;
++    WFMStatement *statement  = 0x00;
++    WFMResultSet *rs         = 0x00;
+     
+     if (_traceExecution && sql) {
+         NSLog(@"%@ executeQuery: %@", self, sql);
+@@ -869,7 +869,7 @@ - (FMResultSet *)executeQuery:(NSString *)sql withArgumentsInArray:(NSArray*)arr
+             // Get the index for the parameter name.
+             int namedIdx = sqlite3_bind_parameter_index(pStmt, [parameterName UTF8String]);
+             
+-            FMDBRelease(parameterName);
++            WFMDBRelease(parameterName);
+             
+             if (namedIdx > 0) {
+                 // Standard binding from here.
+@@ -919,10 +919,10 @@ - (FMResultSet *)executeQuery:(NSString *)sql withArgumentsInArray:(NSArray*)arr
+         return nil;
+     }
+     
+-    FMDBRetain(statement); // to balance the release below
++    WFMDBRetain(statement); // to balance the release below
+     
+     if (!statement) {
+-        statement = [[FMStatement alloc] init];
++        statement = [[WFMStatement alloc] init];
+         [statement setStatement:pStmt];
+         
+         if (_shouldCacheStatements && sql) {
+@@ -931,7 +931,7 @@ - (FMResultSet *)executeQuery:(NSString *)sql withArgumentsInArray:(NSArray*)arr
+     }
+     
+     // the statement gets closed in rs's dealloc or [rs close];
+-    rs = [FMResultSet resultSetWithStatement:statement usingParentDatabase:self];
++    rs = [WFMResultSet resultSetWithStatement:statement usingParentDatabase:self];
+     [rs setQuery:sql];
+     
+     NSValue *openResultSet = [NSValue valueWithNonretainedObject:rs];
+@@ -939,14 +939,14 @@ - (FMResultSet *)executeQuery:(NSString *)sql withArgumentsInArray:(NSArray*)arr
+     
+     [statement setUseCount:[statement useCount] + 1];
+     
+-    FMDBRelease(statement);
++    WFMDBRelease(statement);
+     
+     _isExecutingStatement = NO;
+     
+     return rs;
+ }
+ 
+-- (FMResultSet *)executeQuery:(NSString*)sql, ... {
++- (WFMResultSet *)executeQuery:(NSString*)sql, ... {
+     va_list args;
+     va_start(args, sql);
+     
+@@ -956,7 +956,7 @@ - (FMResultSet *)executeQuery:(NSString*)sql, ... {
+     return result;
+ }
+ 
+-- (FMResultSet *)executeQueryWithFormat:(NSString*)format, ... {
++- (WFMResultSet *)executeQueryWithFormat:(NSString*)format, ... {
+     va_list args;
+     va_start(args, format);
+     
+@@ -969,19 +969,19 @@ - (FMResultSet *)executeQueryWithFormat:(NSString*)format, ... {
+     return [self executeQuery:sql withArgumentsInArray:arguments];
+ }
+ 
+-- (FMResultSet *)executeQuery:(NSString *)sql withArgumentsInArray:(NSArray *)arguments {
++- (WFMResultSet *)executeQuery:(NSString *)sql withArgumentsInArray:(NSArray *)arguments {
+     return [self executeQuery:sql withArgumentsInArray:arguments orDictionary:nil orVAList:nil];
+ }
+ 
+-- (FMResultSet *)executeQuery:(NSString *)sql values:(NSArray *)values error:(NSError * __autoreleasing *)error {
+-    FMResultSet *rs = [self executeQuery:sql withArgumentsInArray:values orDictionary:nil orVAList:nil];
++- (WFMResultSet *)executeQuery:(NSString *)sql values:(NSArray *)values error:(NSError * __autoreleasing *)error {
++    WFMResultSet *rs = [self executeQuery:sql withArgumentsInArray:values orDictionary:nil orVAList:nil];
+     if (!rs && error) {
+         *error = [self lastError];
+     }
+     return rs;
+ }
+ 
+-- (FMResultSet *)executeQuery:(NSString*)sql withVAList:(va_list)args {
++- (WFMResultSet *)executeQuery:(NSString*)sql withVAList:(va_list)args {
+     return [self executeQuery:sql withArgumentsInArray:nil orDictionary:nil orVAList:args];
+ }
+ 
+@@ -1002,7 +1002,7 @@ - (BOOL)executeUpdate:(NSString*)sql error:(NSError**)outErr withArgumentsInArra
+     
+     int rc                   = 0x00;
+     sqlite3_stmt *pStmt      = 0x00;
+-    FMStatement *cachedStmt  = 0x00;
++    WFMStatement *cachedStmt  = 0x00;
+     
+     if (_traceExecution && sql) {
+         NSLog(@"%@ executeUpdate: %@", self, sql);
+@@ -1058,7 +1058,7 @@ - (BOOL)executeUpdate:(NSString*)sql error:(NSError**)outErr withArgumentsInArra
+             // Get the index for the parameter name.
+             int namedIdx = sqlite3_bind_parameter_index(pStmt, [parameterName UTF8String]);
+             
+-            FMDBRelease(parameterName);
++            WFMDBRelease(parameterName);
+             
+             if (namedIdx > 0) {
+                 // Standard binding from here.
+@@ -1177,13 +1177,13 @@ - (BOOL)executeUpdate:(NSString*)sql error:(NSError**)outErr withArgumentsInArra
+     }
+     
+     if (_shouldCacheStatements && !cachedStmt) {
+-        cachedStmt = [[FMStatement alloc] init];
++        cachedStmt = [[WFMStatement alloc] init];
+         
+         [cachedStmt setStatement:pStmt];
+         
+         [self setCachedStatement:cachedStmt forQuery:sql];
+         
+-        FMDBRelease(cachedStmt);
++        WFMDBRelease(cachedStmt);
+     }
+     
+     int closeErrorCode;
+@@ -1252,8 +1252,8 @@ - (BOOL)executeUpdateWithFormat:(NSString*)format, ... {
+ }
+ 
+ 
+-int FMDBExecuteBulkSQLCallback(void *theBlockAsVoid, int columns, char **values, char **names); // shhh clang.
+-int FMDBExecuteBulkSQLCallback(void *theBlockAsVoid, int columns, char **values, char **names) {
++int WFMDBExecuteBulkSQLCallback(void *theBlockAsVoid, int columns, char **values, char **names); // shhh clang.
++int WFMDBExecuteBulkSQLCallback(void *theBlockAsVoid, int columns, char **values, char **names) {
+     
+     if (!theBlockAsVoid) {
+         return SQLITE_OK;
+@@ -1277,12 +1277,12 @@ - (BOOL)executeStatements:(NSString *)sql {
+     return [self executeStatements:sql withResultBlock:nil];
+ }
+ 
+-- (BOOL)executeStatements:(NSString *)sql withResultBlock:(__attribute__((noescape)) FMDBExecuteStatementsCallbackBlock)block {
++- (BOOL)executeStatements:(NSString *)sql withResultBlock:(__attribute__((noescape)) WFMDBExecuteStatementsCallbackBlock)block {
+     
+     int rc;
+     char *errmsg = nil;
+     
+-    rc = sqlite3_exec([self sqliteHandle], [sql UTF8String], block ? FMDBExecuteBulkSQLCallback : nil, (__bridge void *)(block), &errmsg);
++    rc = sqlite3_exec([self sqliteHandle], [sql UTF8String], block ? WFMDBExecuteBulkSQLCallback : nil, (__bridge void *)(block), &errmsg);
+     
+     if (errmsg && [self logsErrors]) {
+         NSLog(@"Error inserting batch: %s", errmsg);
+@@ -1393,7 +1393,7 @@ - (BOOL)interrupt
+     return NO;
+ }
+ 
+-static NSString *FMDBEscapeSavePointName(NSString *savepointName) {
++static NSString *WFMDBEscapeSavePointName(NSString *savepointName) {
+     return [savepointName stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
+ }
+ 
+@@ -1401,11 +1401,11 @@ - (BOOL)startSavePointWithName:(NSString*)name error:(NSError**)outErr {
+ #if SQLITE_VERSION_NUMBER >= 3007000
+     NSParameterAssert(name);
+     
+-    NSString *sql = [NSString stringWithFormat:@"savepoint '%@';", FMDBEscapeSavePointName(name)];
++    NSString *sql = [NSString stringWithFormat:@"savepoint '%@';", WFMDBEscapeSavePointName(name)];
+     
+     return [self executeUpdate:sql error:outErr withArgumentsInArray:nil orDictionary:nil orVAList:nil];
+ #else
+-    NSString *errorMessage = NSLocalizedStringFromTable(@"Save point functions require SQLite 3.7", @"FMDB", nil);
++    NSString *errorMessage = NSLocalizedStringFromTable(@"Save point functions require SQLite 3.7", @"WFMDB", nil);
+     if (self.logsErrors) NSLog(@"%@", errorMessage);
+     return NO;
+ #endif
+@@ -1415,11 +1415,11 @@ - (BOOL)releaseSavePointWithName:(NSString*)name error:(NSError**)outErr {
+ #if SQLITE_VERSION_NUMBER >= 3007000
+     NSParameterAssert(name);
+     
+-    NSString *sql = [NSString stringWithFormat:@"release savepoint '%@';", FMDBEscapeSavePointName(name)];
++    NSString *sql = [NSString stringWithFormat:@"release savepoint '%@';", WFMDBEscapeSavePointName(name)];
+ 
+     return [self executeUpdate:sql error:outErr withArgumentsInArray:nil orDictionary:nil orVAList:nil];
+ #else
+-    NSString *errorMessage = NSLocalizedStringFromTable(@"Save point functions require SQLite 3.7", @"FMDB", nil);
++    NSString *errorMessage = NSLocalizedStringFromTable(@"Save point functions require SQLite 3.7", @"WFMDB", nil);
+     if (self.logsErrors) NSLog(@"%@", errorMessage);
+     return NO;
+ #endif
+@@ -1429,11 +1429,11 @@ - (BOOL)rollbackToSavePointWithName:(NSString*)name error:(NSError**)outErr {
+ #if SQLITE_VERSION_NUMBER >= 3007000
+     NSParameterAssert(name);
+     
+-    NSString *sql = [NSString stringWithFormat:@"rollback transaction to savepoint '%@';", FMDBEscapeSavePointName(name)];
++    NSString *sql = [NSString stringWithFormat:@"rollback transaction to savepoint '%@';", WFMDBEscapeSavePointName(name)];
+ 
+     return [self executeUpdate:sql error:outErr withArgumentsInArray:nil orDictionary:nil orVAList:nil];
+ #else
+-    NSString *errorMessage = NSLocalizedStringFromTable(@"Save point functions require SQLite 3.7", @"FMDB", nil);
++    NSString *errorMessage = NSLocalizedStringFromTable(@"Save point functions require SQLite 3.7", @"WFMDB", nil);
+     if (self.logsErrors) NSLog(@"%@", errorMessage);
+     return NO;
+ #endif
+@@ -1465,21 +1465,21 @@ - (NSError*)inSavePoint:(__attribute__((noescape)) void (^)(BOOL *rollback))bloc
+     
+     return err;
+ #else
+-    NSString *errorMessage = NSLocalizedStringFromTable(@"Save point functions require SQLite 3.7", @"FMDB", nil);
++    NSString *errorMessage = NSLocalizedStringFromTable(@"Save point functions require SQLite 3.7", @"WFMDB", nil);
+     if (self.logsErrors) NSLog(@"%@", errorMessage);
+-    return [NSError errorWithDomain:@"FMDatabase" code:0 userInfo:@{NSLocalizedDescriptionKey : errorMessage}];
++    return [NSError errorWithDomain:@"WFMDatabase" code:0 userInfo:@{NSLocalizedDescriptionKey : errorMessage}];
+ #endif
+ }
+ 
+-- (BOOL)checkpoint:(FMDBCheckpointMode)checkpointMode error:(NSError * __autoreleasing *)error {
++- (BOOL)checkpoint:(WFMDBCheckpointMode)checkpointMode error:(NSError * __autoreleasing *)error {
+     return [self checkpoint:checkpointMode name:nil logFrameCount:NULL checkpointCount:NULL error:error];
+ }
+ 
+-- (BOOL)checkpoint:(FMDBCheckpointMode)checkpointMode name:(NSString *)name error:(NSError * __autoreleasing *)error {
++- (BOOL)checkpoint:(WFMDBCheckpointMode)checkpointMode name:(NSString *)name error:(NSError * __autoreleasing *)error {
+     return [self checkpoint:checkpointMode name:name logFrameCount:NULL checkpointCount:NULL error:error];
+ }
+ 
+-- (BOOL)checkpoint:(FMDBCheckpointMode)checkpointMode name:(NSString *)name logFrameCount:(int *)logFrameCount checkpointCount:(int *)checkpointCount error:(NSError * __autoreleasing *)error
++- (BOOL)checkpoint:(WFMDBCheckpointMode)checkpointMode name:(NSString *)name logFrameCount:(int *)logFrameCount checkpointCount:(int *)checkpointCount error:(NSError * __autoreleasing *)error
+ {
+     const char* dbName = [name UTF8String];
+ #if SQLITE_VERSION_NUMBER >= 3007006
+@@ -1524,8 +1524,8 @@ - (void)setShouldCacheStatements:(BOOL)value {
+ 
+ #pragma mark Callback function
+ 
+-void FMDBBlockSQLiteCallBackFunction(sqlite3_context *context, int argc, sqlite3_value **argv); // -Wmissing-prototypes
+-void FMDBBlockSQLiteCallBackFunction(sqlite3_context *context, int argc, sqlite3_value **argv) {
++void WFMDBBlockSQLiteCallBackFunction(sqlite3_context *context, int argc, sqlite3_value **argv); // -Wmissing-prototypes
++void WFMDBBlockSQLiteCallBackFunction(sqlite3_context *context, int argc, sqlite3_value **argv) {
+ #if ! __has_feature(objc_arc)
+     void (^block)(sqlite3_context *context, int argc, sqlite3_value **argv) = (id)sqlite3_user_data(context);
+ #else
+@@ -1550,15 +1550,15 @@ - (void)makeFunctionNamed:(NSString *)name arguments:(int)arguments block:(void
+         _openFunctions = [NSMutableSet new];
+     }
+     
+-    id b = FMDBReturnAutoreleased([block copy]);
++    id b = WFMDBReturnAutoreleased([block copy]);
+     
+     [_openFunctions addObject:b];
+     
+     /* I tried adding custom functions to release the block when the connection is destroyed- but they seemed to never be called, so we use _openFunctions to store the values instead. */
+ #if ! __has_feature(objc_arc)
+-    sqlite3_create_function([self sqliteHandle], [name UTF8String], arguments, SQLITE_UTF8, (void*)b, &FMDBBlockSQLiteCallBackFunction, 0x00, 0x00);
++    sqlite3_create_function([self sqliteHandle], [name UTF8String], arguments, SQLITE_UTF8, (void*)b, &WFMDBBlockSQLiteCallBackFunction, 0x00, 0x00);
+ #else
+-    sqlite3_create_function([self sqliteHandle], [name UTF8String], arguments, SQLITE_UTF8, (__bridge void*)b, &FMDBBlockSQLiteCallBackFunction, 0x00, 0x00);
++    sqlite3_create_function([self sqliteHandle], [name UTF8String], arguments, SQLITE_UTF8, (__bridge void*)b, &WFMDBBlockSQLiteCallBackFunction, 0x00, 0x00);
+ #endif
+ }
+ 
+@@ -1633,7 +1633,7 @@ - (void)resultErrorTooBigInContext:(void *)context {
+ 
+ 
+ 
+-@implementation FMStatement
++@implementation WFMStatement
+ 
+ #if ! __has_feature(objc_arc)
+ - (void)finalize {
+@@ -1644,7 +1644,7 @@ - (void)finalize {
+ 
+ - (void)dealloc {
+     [self close];
+-    FMDBRelease(_query);
++    WFMDBRelease(_query);
+ #if ! __has_feature(objc_arc)
+     [super dealloc];
+ #endif
+diff --git a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabaseAdditions.h b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabaseAdditions.h
+similarity index 94%
+rename from node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabaseAdditions.h
+rename to node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabaseAdditions.h
+index 6e8c473..54b2fb9 100644
+--- a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabaseAdditions.h
++++ b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabaseAdditions.h
+@@ -1,5 +1,5 @@
+ //
+-//  FMDatabaseAdditions.h
++//  WFMDatabaseAdditions.h
+ //  fmdb
+ //
+ //  Created by August Mueller on 10/30/05.
+@@ -7,18 +7,18 @@
+ //
+ 
+ #import <Foundation/Foundation.h>
+-#import "FMDatabase.h"
++#import "WFMDatabase.h"
+ 
+ NS_ASSUME_NONNULL_BEGIN
+ 
+-/** Category of additions for `<FMDatabase>` class.
++/** Category of additions for `<WFMDatabase>` class.
+  
+  ### See also
+ 
+- - `<FMDatabase>`
++ - `<WFMDatabase>`
+  */
+ 
+-@interface FMDatabase (FMDatabaseAdditions)
++@interface WFMDatabase (WFMDatabaseAdditions)
+ 
+ ///----------------------------------------
+ /// @name Return results of SQL to variable
+@@ -137,12 +137,12 @@ NS_ASSUME_NONNULL_BEGIN
+  - `rootpage` - The page number of the root b-tree page for tables and indices
+  - `sql` - The SQL that created the entity
+ 
+- @return `FMResultSet` of schema; `nil` on error.
++ @return `WFMResultSet` of schema; `nil` on error.
+  
+  @see [SQLite File Format](http://www.sqlite.org/fileformat.html)
+  */
+ 
+-- (FMResultSet * _Nullable)getSchema;
++- (WFMResultSet * _Nullable)getSchema;
+ 
+ /** The schema of the database.
+ 
+@@ -161,12 +161,12 @@ NS_ASSUME_NONNULL_BEGIN
+ 
+  @param tableName The name of the table for whom the schema will be returned.
+  
+- @return `FMResultSet` of schema; `nil` on error.
++ @return `WFMResultSet` of schema; `nil` on error.
+  
+  @see [table_info](http://www.sqlite.org/pragma.html#pragma_table_info)
+  */
+ 
+-- (FMResultSet * _Nullable)getTableSchema:(NSString*)tableName;
++- (WFMResultSet * _Nullable)getTableSchema:(NSString*)tableName;
+ 
+ /** Test to see if particular column exists for particular table in database
+  
+diff --git a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabaseAdditions.m b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabaseAdditions.m
+similarity index 77%
+rename from node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabaseAdditions.m
+rename to node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabaseAdditions.m
+index 83f6a3b..1283f47 100644
+--- a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabaseAdditions.m
++++ b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabaseAdditions.m
+@@ -1,31 +1,31 @@
+ //
+-//  FMDatabaseAdditions.m
++//  WFMDatabaseAdditions.m
+ //  fmdb
+ //
+ //  Created by August Mueller on 10/30/05.
+ //  Copyright 2005 Flying Meat Inc.. All rights reserved.
+ //
+ 
+-#import "FMDatabase.h"
+-#import "FMDatabaseAdditions.h"
++#import "WFMDatabase.h"
++#import "WFMDatabaseAdditions.h"
+ #import "TargetConditionals.h"
+ 
+-#if FMDB_SQLITE_STANDALONE
++#if WFMDB_SQLITE_STANDALONE
+ #import <sqlite3/sqlite3.h>
+ #else
+ #import <sqlite3.h>
+ #endif
+ 
+-@interface FMDatabase (PrivateStuff)
+-- (FMResultSet *)executeQuery:(NSString *)sql withArgumentsInArray:(NSArray * _Nullable)arrayArgs orDictionary:(NSDictionary * _Nullable)dictionaryArgs orVAList:(va_list)args;
++@interface WFMDatabase (PrivateStuff)
++- (WFMResultSet *)executeQuery:(NSString *)sql withArgumentsInArray:(NSArray * _Nullable)arrayArgs orDictionary:(NSDictionary * _Nullable)dictionaryArgs orVAList:(va_list)args;
+ @end
+ 
+-@implementation FMDatabase (FMDatabaseAdditions)
++@implementation WFMDatabase (WFMDatabaseAdditions)
+ 
+ #define RETURN_RESULT_FOR_QUERY_WITH_SELECTOR(type, sel)             \
+ va_list args;                                                        \
+ va_start(args, query);                                               \
+-FMResultSet *resultSet = [self executeQuery:query withArgumentsInArray:0x00 orDictionary:0x00 orVAList:args];   \
++WFMResultSet *resultSet = [self executeQuery:query withArgumentsInArray:0x00 orDictionary:0x00 orVAList:args];   \
+ va_end(args);                                                        \
+ if (![resultSet next]) { return (type)0; }                           \
+ type ret = [resultSet sel:0];                                        \
+@@ -67,7 +67,7 @@ - (BOOL)tableExists:(NSString*)tableName {
+     
+     tableName = [tableName lowercaseString];
+     
+-    FMResultSet *rs = [self executeQuery:@"select [sql] from sqlite_master where [type] = 'table' and lower(name) = ?", tableName];
++    WFMResultSet *rs = [self executeQuery:@"select [sql] from sqlite_master where [type] = 'table' and lower(name) = ?", tableName];
+     
+     //if at least one next exists, table exists
+     BOOL returnBool = [rs next];
+@@ -82,10 +82,10 @@ - (BOOL)tableExists:(NSString*)tableName {
+  get table with list of tables: result colums: type[STRING], name[STRING],tbl_name[STRING],rootpage[INTEGER],sql[STRING]
+  check if table exist in database  (patch from OZLB)
+ */
+-- (FMResultSet * _Nullable)getSchema {
++- (WFMResultSet * _Nullable)getSchema {
+     
+     //result colums: type[STRING], name[STRING],tbl_name[STRING],rootpage[INTEGER],sql[STRING]
+-    FMResultSet *rs = [self executeQuery:@"SELECT type, name, tbl_name, rootpage, sql FROM (SELECT * FROM sqlite_master UNION ALL SELECT * FROM sqlite_temp_master) WHERE type != 'meta' AND name NOT LIKE 'sqlite_%' ORDER BY tbl_name, type DESC, name"];
++    WFMResultSet *rs = [self executeQuery:@"SELECT type, name, tbl_name, rootpage, sql FROM (SELECT * FROM sqlite_master UNION ALL SELECT * FROM sqlite_temp_master) WHERE type != 'meta' AND name NOT LIKE 'sqlite_%' ORDER BY tbl_name, type DESC, name"];
+     
+     return rs;
+ }
+@@ -93,10 +93,10 @@ - (FMResultSet * _Nullable)getSchema {
+ /* 
+  get table schema: result colums: cid[INTEGER], name,type [STRING], notnull[INTEGER], dflt_value[],pk[INTEGER]
+ */
+-- (FMResultSet * _Nullable)getTableSchema:(NSString*)tableName {
++- (WFMResultSet * _Nullable)getTableSchema:(NSString*)tableName {
+     
+     //result colums: cid[INTEGER], name,type [STRING], notnull[INTEGER], dflt_value[],pk[INTEGER]
+-    FMResultSet *rs = [self executeQuery:[NSString stringWithFormat: @"pragma table_info('%@')", tableName]];
++    WFMResultSet *rs = [self executeQuery:[NSString stringWithFormat: @"pragma table_info('%@')", tableName]];
+     
+     return rs;
+ }
+@@ -108,7 +108,7 @@ - (BOOL)columnExists:(NSString*)columnName inTableWithName:(NSString*)tableName
+     tableName  = [tableName lowercaseString];
+     columnName = [columnName lowercaseString];
+     
+-    FMResultSet *rs = [self getTableSchema:tableName];
++    WFMResultSet *rs = [self getTableSchema:tableName];
+     
+     //check if column is present in table schema
+     while ([rs next]) {
+@@ -118,7 +118,7 @@ - (BOOL)columnExists:(NSString*)columnName inTableWithName:(NSString*)tableName
+         }
+     }
+     
+-    //If this is not done FMDatabase instance stays out of pool
++    //If this is not done WFMDatabase instance stays out of pool
+     [rs close];
+     
+     return returnBool;
+@@ -130,7 +130,7 @@ - (uint32_t)applicationID {
+ #if SQLITE_VERSION_NUMBER >= 3007017
+     uint32_t r = 0;
+     
+-    FMResultSet *rs = [self executeQuery:@"pragma application_id"];
++    WFMResultSet *rs = [self executeQuery:@"pragma application_id"];
+     
+     if ([rs next]) {
+         r = (uint32_t)[rs longLongIntForColumnIndex:0];
+@@ -140,7 +140,7 @@ - (uint32_t)applicationID {
+     
+     return r;
+ #else
+-    NSString *errorMessage = NSLocalizedStringFromTable(@"Application ID functions require SQLite 3.7.17", @"FMDB", nil);
++    NSString *errorMessage = NSLocalizedStringFromTable(@"Application ID functions require SQLite 3.7.17", @"WFMDB", nil);
+     if (self.logsErrors) NSLog(@"%@", errorMessage);
+     return 0;
+ #endif
+@@ -149,11 +149,11 @@ - (uint32_t)applicationID {
+ - (void)setApplicationID:(uint32_t)appID {
+ #if SQLITE_VERSION_NUMBER >= 3007017
+     NSString *query = [NSString stringWithFormat:@"pragma application_id=%d", appID];
+-    FMResultSet *rs = [self executeQuery:query];
++    WFMResultSet *rs = [self executeQuery:query];
+     [rs next];
+     [rs close];
+ #else
+-    NSString *errorMessage = NSLocalizedStringFromTable(@"Application ID functions require SQLite 3.7.17", @"FMDB", nil);
++    NSString *errorMessage = NSLocalizedStringFromTable(@"Application ID functions require SQLite 3.7.17", @"WFMDB", nil);
+     if (self.logsErrors) NSLog(@"%@", errorMessage);
+ #endif
+ }
+@@ -172,7 +172,7 @@ - (NSString*)applicationIDString {
+     
+     return s;
+ #else
+-    NSString *errorMessage = NSLocalizedStringFromTable(@"Application ID functions require SQLite 3.7.17", @"FMDB", nil);
++    NSString *errorMessage = NSLocalizedStringFromTable(@"Application ID functions require SQLite 3.7.17", @"WFMDB", nil);
+     if (self.logsErrors) NSLog(@"%@", errorMessage);
+     return nil;
+ #endif
+@@ -186,7 +186,7 @@ - (void)setApplicationIDString:(NSString*)s {
+     
+     [self setApplicationID:NSHFSTypeCodeFromFileType([NSString stringWithFormat:@"'%@'", s])];
+ #else
+-    NSString *errorMessage = NSLocalizedStringFromTable(@"Application ID functions require SQLite 3.7.17", @"FMDB", nil);
++    NSString *errorMessage = NSLocalizedStringFromTable(@"Application ID functions require SQLite 3.7.17", @"WFMDB", nil);
+     if (self.logsErrors) NSLog(@"%@", errorMessage);
+ #endif
+ }
+@@ -196,7 +196,7 @@ - (void)setApplicationIDString:(NSString*)s {
+ - (uint32_t)userVersion {
+     uint32_t r = 0;
+     
+-    FMResultSet *rs = [self executeQuery:@"pragma user_version"];
++    WFMResultSet *rs = [self executeQuery:@"pragma user_version"];
+     
+     if ([rs next]) {
+         r = (uint32_t)[rs longLongIntForColumnIndex:0];
+@@ -208,7 +208,7 @@ - (uint32_t)userVersion {
+ 
+ - (void)setUserVersion:(uint32_t)version {
+     NSString *query = [NSString stringWithFormat:@"pragma user_version = %d", version];
+-    FMResultSet *rs = [self executeQuery:query];
++    WFMResultSet *rs = [self executeQuery:query];
+     [rs next];
+     [rs close];
+ }
+diff --git a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabasePool.h b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabasePool.h
+old mode 100755
+new mode 100644
+similarity index 69%
+rename from node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabasePool.h
+rename to node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabasePool.h
+index 4c472be..5386c76
+--- a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabasePool.h
++++ b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabasePool.h
+@@ -1,5 +1,5 @@
+ //
+-//  FMDatabasePool.h
++//  WFMDatabasePool.h
+ //  fmdb
+ //
+ //  Created by August Mueller on 6/22/11.
+@@ -10,27 +10,27 @@
+ 
+ NS_ASSUME_NONNULL_BEGIN
+ 
+-@class FMDatabase;
++@class WFMDatabase;
+ 
+-/** Pool of `<FMDatabase>` objects.
++/** Pool of `<WFMDatabase>` objects.
+ 
+  ### See also
+  
+- - `<FMDatabaseQueue>`
+- - `<FMDatabase>`
++ - `<WFMDatabaseQueue>`
++ - `<WFMDatabase>`
+ 
+- @warning Before using `FMDatabasePool`, please consider using `<FMDatabaseQueue>` instead.
++ @warning Before using `WFMDatabasePool`, please consider using `<WFMDatabaseQueue>` instead.
+ 
+- If you really really really know what you're doing and `FMDatabasePool` is what
++ If you really really really know what you're doing and `WFMDatabasePool` is what
+  you really really need (ie, you're using a read only database), OK you can use
+  it.  But just be careful not to deadlock!
+ 
+  For an example on deadlocking, search for:
+- `ONLY_USE_THE_POOL_IF_YOU_ARE_DOING_READS_OTHERWISE_YOULL_DEADLOCK_USE_FMDATABASEQUEUE_INSTEAD`
++ `ONLY_USE_THE_POOL_IF_YOU_ARE_DOING_READS_OTHERWISE_YOULL_DEADLOCK_USE_WFMDATABASEQUEUE_INSTEAD`
+  in the main.m file.
+  */
+ 
+-@interface FMDatabasePool : NSObject
++@interface WFMDatabasePool : NSObject
+ 
+ /** Database path */
+ 
+@@ -61,7 +61,7 @@ NS_ASSUME_NONNULL_BEGIN
+  
+  @param aPath The file path of the database.
+  
+- @return The `FMDatabasePool` object. `nil` on error.
++ @return The `WFMDatabasePool` object. `nil` on error.
+  */
+ 
+ + (instancetype)databasePoolWithPath:(NSString * _Nullable)aPath;
+@@ -70,7 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
+  
+  @param url The file `NSURL` of the database.
+  
+- @return The `FMDatabasePool` object. `nil` on error.
++ @return The `WFMDatabasePool` object. `nil` on error.
+  */
+ 
+ + (instancetype)databasePoolWithURL:(NSURL * _Nullable)url;
+@@ -80,7 +80,7 @@ NS_ASSUME_NONNULL_BEGIN
+  @param aPath The file path of the database.
+  @param openFlags Flags passed to the openWithFlags method of the database.
+  
+- @return The `FMDatabasePool` object. `nil` on error.
++ @return The `WFMDatabasePool` object. `nil` on error.
+  */
+ 
+ + (instancetype)databasePoolWithPath:(NSString * _Nullable)aPath flags:(int)openFlags;
+@@ -90,7 +90,7 @@ NS_ASSUME_NONNULL_BEGIN
+  @param url The file `NSURL` of the database.
+  @param openFlags Flags passed to the openWithFlags method of the database.
+  
+- @return The `FMDatabasePool` object. `nil` on error.
++ @return The `WFMDatabasePool` object. `nil` on error.
+  */
+ 
+ + (instancetype)databasePoolWithURL:(NSURL * _Nullable)url flags:(int)openFlags;
+@@ -99,7 +99,7 @@ NS_ASSUME_NONNULL_BEGIN
+  
+  @param aPath The file path of the database.
+  
+- @return The `FMDatabasePool` object. `nil` on error.
++ @return The `WFMDatabasePool` object. `nil` on error.
+  */
+ 
+ - (instancetype)initWithPath:(NSString * _Nullable)aPath;
+@@ -108,7 +108,7 @@ NS_ASSUME_NONNULL_BEGIN
+  
+  @param url The file `NSURL of the database.
+  
+- @return The `FMDatabasePool` object. `nil` on error.
++ @return The `WFMDatabasePool` object. `nil` on error.
+  */
+ 
+ - (instancetype)initWithURL:(NSURL * _Nullable)url;
+@@ -118,7 +118,7 @@ NS_ASSUME_NONNULL_BEGIN
+  @param aPath The file path of the database.
+  @param openFlags Flags passed to the openWithFlags method of the database
+  
+- @return The `FMDatabasePool` object. `nil` on error.
++ @return The `WFMDatabasePool` object. `nil` on error.
+  */
+ 
+ - (instancetype)initWithPath:(NSString * _Nullable)aPath flags:(int)openFlags;
+@@ -128,7 +128,7 @@ NS_ASSUME_NONNULL_BEGIN
+  @param url The file `NSURL` of the database.
+  @param openFlags Flags passed to the openWithFlags method of the database
+  
+- @return The `FMDatabasePool` object. `nil` on error.
++ @return The `WFMDatabasePool` object. `nil` on error.
+  */
+ 
+ - (instancetype)initWithURL:(NSURL * _Nullable)url flags:(int)openFlags;
+@@ -139,7 +139,7 @@ NS_ASSUME_NONNULL_BEGIN
+  @param openFlags Flags passed to the openWithFlags method of the database
+  @param vfsName The name of a custom virtual file system
+  
+- @return The `FMDatabasePool` object. `nil` on error.
++ @return The `WFMDatabasePool` object. `nil` on error.
+  */
+ 
+ - (instancetype)initWithPath:(NSString * _Nullable)aPath flags:(int)openFlags vfs:(NSString * _Nullable)vfsName;
+@@ -150,16 +150,16 @@ NS_ASSUME_NONNULL_BEGIN
+  @param openFlags Flags passed to the openWithFlags method of the database
+  @param vfsName The name of a custom virtual file system
+  
+- @return The `FMDatabasePool` object. `nil` on error.
++ @return The `WFMDatabasePool` object. `nil` on error.
+  */
+ 
+ - (instancetype)initWithURL:(NSURL * _Nullable)url flags:(int)openFlags vfs:(NSString * _Nullable)vfsName;
+ 
+-/** Returns the Class of 'FMDatabase' subclass, that will be used to instantiate database object.
++/** Returns the Class of 'WFMDatabase' subclass, that will be used to instantiate database object.
+ 
+- Subclasses can override this method to return specified Class of 'FMDatabase' subclass.
++ Subclasses can override this method to return specified Class of 'WFMDatabase' subclass.
+ 
+- @return The Class of 'FMDatabase' subclass, that will be used to instantiate database object.
++ @return The Class of 'WFMDatabase' subclass, that will be used to instantiate database object.
+  */
+ 
+ + (Class)databaseClass;
+@@ -193,87 +193,87 @@ NS_ASSUME_NONNULL_BEGIN
+ 
+ /** Synchronously perform database operations in pool.
+ 
+- @param block The code to be run on the `FMDatabasePool` pool.
++ @param block The code to be run on the `WFMDatabasePool` pool.
+  */
+ 
+-- (void)inDatabase:(__attribute__((noescape)) void (^)(FMDatabase *db))block;
++- (void)inDatabase:(__attribute__((noescape)) void (^)(WFMDatabase *db))block;
+ 
+ /** Synchronously perform database operations in pool using transaction.
+  
+- @param block The code to be run on the `FMDatabasePool` pool.
++ @param block The code to be run on the `WFMDatabasePool` pool.
+  
+  @warning   Unlike SQLite's `BEGIN TRANSACTION`, this method currently performs
+             an exclusive transaction, not a deferred transaction. This behavior
+-            is likely to change in future versions of FMDB, whereby this method
++            is likely to change in future versions of WFMDB, whereby this method
+             will likely eventually adopt standard SQLite behavior and perform
+             deferred transactions. If you really need exclusive tranaction, it is
+             recommended that you use `inExclusiveTransaction`, instead, not only
+             to make your intent explicit, but also to future-proof your code.
+   */
+ 
+-- (void)inTransaction:(__attribute__((noescape)) void (^)(FMDatabase *db, BOOL *rollback))block;
++- (void)inTransaction:(__attribute__((noescape)) void (^)(WFMDatabase *db, BOOL *rollback))block;
+ 
+ /** Synchronously perform database operations in pool using exclusive transaction.
+  
+- @param block The code to be run on the `FMDatabasePool` pool.
++ @param block The code to be run on the `WFMDatabasePool` pool.
+  */
+ 
+-- (void)inExclusiveTransaction:(__attribute__((noescape)) void (^)(FMDatabase *db, BOOL *rollback))block;
++- (void)inExclusiveTransaction:(__attribute__((noescape)) void (^)(WFMDatabase *db, BOOL *rollback))block;
+ 
+ /** Synchronously perform database operations in pool using deferred transaction.
+ 
+- @param block The code to be run on the `FMDatabasePool` pool.
++ @param block The code to be run on the `WFMDatabasePool` pool.
+  */
+ 
+-- (void)inDeferredTransaction:(__attribute__((noescape)) void (^)(FMDatabase *db, BOOL *rollback))block;
++- (void)inDeferredTransaction:(__attribute__((noescape)) void (^)(WFMDatabase *db, BOOL *rollback))block;
+ 
+ /** Synchronously perform database operations on queue, using immediate transactions.
+ 
+- @param block The code to be run on the queue of `FMDatabaseQueue`
++ @param block The code to be run on the queue of `WFMDatabaseQueue`
+  */
+ 
+-- (void)inImmediateTransaction:(__attribute__((noescape)) void (^)(FMDatabase *db, BOOL *rollback))block;
++- (void)inImmediateTransaction:(__attribute__((noescape)) void (^)(WFMDatabase *db, BOOL *rollback))block;
+ 
+ /** Synchronously perform database operations in pool using save point.
+ 
+- @param block The code to be run on the `FMDatabasePool` pool.
++ @param block The code to be run on the `WFMDatabasePool` pool.
+  
+  @return `NSError` object if error; `nil` if successful.
+ 
+- @warning You can not nest these, since calling it will pull another database out of the pool and you'll get a deadlock. If you need to nest, use `<[FMDatabase startSavePointWithName:error:]>` instead.
++ @warning You can not nest these, since calling it will pull another database out of the pool and you'll get a deadlock. If you need to nest, use `<[WFMDatabase startSavePointWithName:error:]>` instead.
+ */
+ 
+-- (NSError * _Nullable)inSavePoint:(__attribute__((noescape)) void (^)(FMDatabase *db, BOOL *rollback))block;
++- (NSError * _Nullable)inSavePoint:(__attribute__((noescape)) void (^)(WFMDatabase *db, BOOL *rollback))block;
+ 
+ @end
+ 
+ 
+-/** FMDatabasePool delegate category
++/** WFMDatabasePool delegate category
+  
+- This is a category that defines the protocol for the FMDatabasePool delegate
++ This is a category that defines the protocol for the WFMDatabasePool delegate
+  */
+ 
+-@interface NSObject (FMDatabasePoolDelegate)
++@interface NSObject (WFMDatabasePoolDelegate)
+ 
+ /** Asks the delegate whether database should be added to the pool. 
+  
+- @param pool     The `FMDatabasePool` object.
+- @param database The `FMDatabase` object.
++ @param pool     The `WFMDatabasePool` object.
++ @param database The `WFMDatabase` object.
+  
+  @return `YES` if it should add database to pool; `NO` if not.
+  
+  */
+ 
+-- (BOOL)databasePool:(FMDatabasePool*)pool shouldAddDatabaseToPool:(FMDatabase*)database;
++- (BOOL)databasePool:(WFMDatabasePool*)pool shouldAddDatabaseToPool:(WFMDatabase*)database;
+ 
+ /** Tells the delegate that database was added to the pool.
+  
+- @param pool     The `FMDatabasePool` object.
+- @param database The `FMDatabase` object.
++ @param pool     The `WFMDatabasePool` object.
++ @param database The `WFMDatabase` object.
+ 
+  */
+ 
+-- (void)databasePool:(FMDatabasePool*)pool didAddDatabase:(FMDatabase*)database;
++- (void)databasePool:(WFMDatabasePool*)pool didAddDatabase:(WFMDatabase*)database;
+ 
+ @end
+ 
+diff --git a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabasePool.m b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabasePool.m
+old mode 100755
+new mode 100644
+similarity index 74%
+rename from node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabasePool.m
+rename to node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabasePool.m
+index d5af139..26c0b0c
+--- a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabasePool.m
++++ b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabasePool.m
+@@ -1,40 +1,40 @@
+ //
+-//  FMDatabasePool.m
++//  WFMDatabasePool.m
+ //  fmdb
+ //
+ //  Created by August Mueller on 6/22/11.
+ //  Copyright 2011 Flying Meat Inc. All rights reserved.
+ //
+ 
+-#if FMDB_SQLITE_STANDALONE
++#if WFMDB_SQLITE_STANDALONE
+ #import <sqlite3/sqlite3.h>
+ #else
+ #import <sqlite3.h>
+ #endif
+ 
+-#import "FMDatabasePool.h"
+-#import "FMDatabase.h"
++#import "WFMDatabasePool.h"
++#import "WFMDatabase.h"
+ 
+-typedef NS_ENUM(NSInteger, FMDBTransaction) {
+-    FMDBTransactionExclusive,
+-    FMDBTransactionDeferred,
+-    FMDBTransactionImmediate,
++typedef NS_ENUM(NSInteger, WFMDBTransaction) {
++    WFMDBTransactionExclusive,
++    WFMDBTransactionDeferred,
++    WFMDBTransactionImmediate,
+ };
+ 
+-@interface FMDatabasePool () {
++@interface WFMDatabasePool () {
+     dispatch_queue_t    _lockQueue;
+     
+     NSMutableArray      *_databaseInPool;
+     NSMutableArray      *_databaseOutPool;
+ }
+ 
+-- (void)pushDatabaseBackInPool:(FMDatabase*)db;
+-- (FMDatabase*)db;
++- (void)pushDatabaseBackInPool:(WFMDatabase*)db;
++- (WFMDatabase*)db;
+ 
+ @end
+ 
+ 
+-@implementation FMDatabasePool
++@implementation WFMDatabasePool
+ @synthesize path=_path;
+ @synthesize delegate=_delegate;
+ @synthesize maximumNumberOfDatabasesToCreate=_maximumNumberOfDatabasesToCreate;
+@@ -42,19 +42,19 @@ @implementation FMDatabasePool
+ 
+ 
+ + (instancetype)databasePoolWithPath:(NSString *)aPath {
+-    return FMDBReturnAutoreleased([[self alloc] initWithPath:aPath]);
++    return WFMDBReturnAutoreleased([[self alloc] initWithPath:aPath]);
+ }
+ 
+ + (instancetype)databasePoolWithURL:(NSURL *)url {
+-    return FMDBReturnAutoreleased([[self alloc] initWithPath:url.path]);
++    return WFMDBReturnAutoreleased([[self alloc] initWithPath:url.path]);
+ }
+ 
+ + (instancetype)databasePoolWithPath:(NSString *)aPath flags:(int)openFlags {
+-    return FMDBReturnAutoreleased([[self alloc] initWithPath:aPath flags:openFlags]);
++    return WFMDBReturnAutoreleased([[self alloc] initWithPath:aPath flags:openFlags]);
+ }
+ 
+ + (instancetype)databasePoolWithURL:(NSURL *)url flags:(int)openFlags {
+-    return FMDBReturnAutoreleased([[self alloc] initWithPath:url.path flags:openFlags]);
++    return WFMDBReturnAutoreleased([[self alloc] initWithPath:url.path flags:openFlags]);
+ }
+ 
+ - (instancetype)initWithURL:(NSURL *)url flags:(int)openFlags vfs:(NSString *)vfsName {
+@@ -68,8 +68,8 @@ - (instancetype)initWithPath:(NSString*)aPath flags:(int)openFlags vfs:(NSString
+     if (self != nil) {
+         _path               = [aPath copy];
+         _lockQueue          = dispatch_queue_create([[NSString stringWithFormat:@"fmdb.%@", self] UTF8String], NULL);
+-        _databaseInPool     = FMDBReturnRetained([NSMutableArray array]);
+-        _databaseOutPool    = FMDBReturnRetained([NSMutableArray array]);
++        _databaseInPool     = WFMDBReturnRetained([NSMutableArray array]);
++        _databaseOutPool    = WFMDBReturnRetained([NSMutableArray array]);
+         _openFlags          = openFlags;
+         _vfsName            = [vfsName copy];
+     }
+@@ -99,19 +99,19 @@ - (instancetype)init {
+ }
+ 
+ + (Class)databaseClass {
+-    return [FMDatabase class];
++    return [WFMDatabase class];
+ }
+ 
+ - (void)dealloc {
+     
+     _delegate = 0x00;
+-    FMDBRelease(_path);
+-    FMDBRelease(_databaseInPool);
+-    FMDBRelease(_databaseOutPool);
+-    FMDBRelease(_vfsName);
++    WFMDBRelease(_path);
++    WFMDBRelease(_databaseInPool);
++    WFMDBRelease(_databaseOutPool);
++    WFMDBRelease(_vfsName);
+     
+     if (_lockQueue) {
+-        FMDBDispatchQueueRelease(_lockQueue);
++        WFMDBDispatchQueueRelease(_lockQueue);
+         _lockQueue = 0x00;
+     }
+ #if ! __has_feature(objc_arc)
+@@ -124,7 +124,7 @@ - (void)executeLocked:(void (^)(void))aBlock {
+     dispatch_sync(_lockQueue, aBlock);
+ }
+ 
+-- (void)pushDatabaseBackInPool:(FMDatabase*)db {
++- (void)pushDatabaseBackInPool:(WFMDatabase*)db {
+     
+     if (!db) { // db can be null if we set an upper bound on the # of databases to create.
+         return;
+@@ -133,7 +133,7 @@ - (void)pushDatabaseBackInPool:(FMDatabase*)db {
+     [self executeLocked:^() {
+         
+         if ([self->_databaseInPool containsObject:db]) {
+-            [[NSException exceptionWithName:@"Database already in pool" reason:@"The FMDatabase being put back into the pool is already present in the pool" userInfo:nil] raise];
++            [[NSException exceptionWithName:@"Database already in pool" reason:@"The WFMDatabase being put back into the pool is already present in the pool" userInfo:nil] raise];
+         }
+         
+         [self->_databaseInPool addObject:db];
+@@ -142,9 +142,9 @@ - (void)pushDatabaseBackInPool:(FMDatabase*)db {
+     }];
+ }
+ 
+-- (FMDatabase*)db {
++- (WFMDatabase*)db {
+     
+-    __block FMDatabase *db;
++    __block WFMDatabase *db;
+     
+     
+     [self executeLocked:^() {
+@@ -241,29 +241,29 @@ - (void)releaseAllDatabases {
+     }];
+ }
+ 
+-- (void)inDatabase:(__attribute__((noescape)) void (^)(FMDatabase *db))block {
++- (void)inDatabase:(__attribute__((noescape)) void (^)(WFMDatabase *db))block {
+     
+-    FMDatabase *db = [self db];
++    WFMDatabase *db = [self db];
+     
+     block(db);
+     
+     [self pushDatabaseBackInPool:db];
+ }
+ 
+-- (void)beginTransaction:(FMDBTransaction)transaction withBlock:(void (^)(FMDatabase *db, BOOL *rollback))block {
++- (void)beginTransaction:(WFMDBTransaction)transaction withBlock:(void (^)(WFMDatabase *db, BOOL *rollback))block {
+     
+     BOOL shouldRollback = NO;
+     
+-    FMDatabase *db = [self db];
++    WFMDatabase *db = [self db];
+     
+     switch (transaction) {
+-        case FMDBTransactionExclusive:
++        case WFMDBTransactionExclusive:
+             [db beginTransaction];
+             break;
+-        case FMDBTransactionDeferred:
++        case WFMDBTransactionDeferred:
+             [db beginDeferredTransaction];
+             break;
+-        case FMDBTransactionImmediate:
++        case WFMDBTransactionImmediate:
+             [db beginImmediateTransaction];
+             break;
+     }
+@@ -281,23 +281,23 @@ - (void)beginTransaction:(FMDBTransaction)transaction withBlock:(void (^)(FMData
+     [self pushDatabaseBackInPool:db];
+ }
+ 
+-- (void)inTransaction:(__attribute__((noescape)) void (^)(FMDatabase *db, BOOL *rollback))block {
+-    [self beginTransaction:FMDBTransactionExclusive withBlock:block];
++- (void)inTransaction:(__attribute__((noescape)) void (^)(WFMDatabase *db, BOOL *rollback))block {
++    [self beginTransaction:WFMDBTransactionExclusive withBlock:block];
+ }
+ 
+-- (void)inDeferredTransaction:(__attribute__((noescape)) void (^)(FMDatabase *db, BOOL *rollback))block {
+-    [self beginTransaction:FMDBTransactionDeferred withBlock:block];
++- (void)inDeferredTransaction:(__attribute__((noescape)) void (^)(WFMDatabase *db, BOOL *rollback))block {
++    [self beginTransaction:WFMDBTransactionDeferred withBlock:block];
+ }
+ 
+-- (void)inExclusiveTransaction:(__attribute__((noescape)) void (^)(FMDatabase *db, BOOL *rollback))block {
+-    [self beginTransaction:FMDBTransactionExclusive withBlock:block];
++- (void)inExclusiveTransaction:(__attribute__((noescape)) void (^)(WFMDatabase *db, BOOL *rollback))block {
++    [self beginTransaction:WFMDBTransactionExclusive withBlock:block];
+ }
+ 
+-- (void)inImmediateTransaction:(__attribute__((noescape)) void (^)(FMDatabase *db, BOOL *rollback))block {
+-    [self beginTransaction:FMDBTransactionImmediate withBlock:block];
++- (void)inImmediateTransaction:(__attribute__((noescape)) void (^)(WFMDatabase *db, BOOL *rollback))block {
++    [self beginTransaction:WFMDBTransactionImmediate withBlock:block];
+ }
+ 
+-- (NSError*)inSavePoint:(__attribute__((noescape)) void (^)(FMDatabase *db, BOOL *rollback))block {
++- (NSError*)inSavePoint:(__attribute__((noescape)) void (^)(WFMDatabase *db, BOOL *rollback))block {
+ #if SQLITE_VERSION_NUMBER >= 3007000
+     static unsigned long savePointIdx = 0;
+     
+@@ -305,7 +305,7 @@ - (NSError*)inSavePoint:(__attribute__((noescape)) void (^)(FMDatabase *db, BOOL
+     
+     BOOL shouldRollback = NO;
+     
+-    FMDatabase *db = [self db];
++    WFMDatabase *db = [self db];
+     
+     NSError *err = 0x00;
+     
+@@ -326,9 +326,9 @@ - (NSError*)inSavePoint:(__attribute__((noescape)) void (^)(FMDatabase *db, BOOL
+     
+     return err;
+ #else
+-    NSString *errorMessage = NSLocalizedStringFromTable(@"Save point functions require SQLite 3.7", @"FMDB", nil);
++    NSString *errorMessage = NSLocalizedStringFromTable(@"Save point functions require SQLite 3.7", @"WFMDB", nil);
+     if (self.logsErrors) NSLog(@"%@", errorMessage);
+-    return [NSError errorWithDomain:@"FMDatabase" code:0 userInfo:@{NSLocalizedDescriptionKey : errorMessage}];
++    return [NSError errorWithDomain:@"WFMDatabase" code:0 userInfo:@{NSLocalizedDescriptionKey : errorMessage}];
+ #endif
+ }
+ 
+diff --git a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabaseQueue.h b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabaseQueue.h
+old mode 100755
+new mode 100644
+similarity index 67%
+rename from node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabaseQueue.h
+rename to node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabaseQueue.h
+index 27f4012..5b932d4
+--- a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabaseQueue.h
++++ b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabaseQueue.h
+@@ -1,5 +1,5 @@
+ //
+-//  FMDatabaseQueue.h
++//  WFMDatabaseQueue.h
+ //  fmdb
+ //
+ //  Created by August Mueller on 6/22/11.
+@@ -7,28 +7,28 @@
+ //
+ 
+ #import <Foundation/Foundation.h>
+-#import "FMDatabase.h"
++#import "WFMDatabase.h"
+ 
+ NS_ASSUME_NONNULL_BEGIN
+ 
+-/** To perform queries and updates on multiple threads, you'll want to use `FMDatabaseQueue`.
++/** To perform queries and updates on multiple threads, you'll want to use `WFMDatabaseQueue`.
+ 
+- Using a single instance of `<FMDatabase>` from multiple threads at once is a bad idea.  It has always been OK to make a `<FMDatabase>` object *per thread*.  Just don't share a single instance across threads, and definitely not across multiple threads at the same time.
++ Using a single instance of `<WFMDatabase>` from multiple threads at once is a bad idea.  It has always been OK to make a `<WFMDatabase>` object *per thread*.  Just don't share a single instance across threads, and definitely not across multiple threads at the same time.
+ 
+- Instead, use `FMDatabaseQueue`. Here's how to use it:
++ Instead, use `WFMDatabaseQueue`. Here's how to use it:
+ 
+  First, make your queue.
+ 
+-    FMDatabaseQueue *queue = [FMDatabaseQueue databaseQueueWithPath:aPath];
++    WFMDatabaseQueue *queue = [WFMDatabaseQueue databaseQueueWithPath:aPath];
+ 
+  Then use it like so:
+ 
+-    [queue inDatabase:^(FMDatabase *db) {
++    [queue inDatabase:^(WFMDatabase *db) {
+         [db executeUpdate:@"INSERT INTO myTable VALUES (?)", [NSNumber numberWithInt:1]];
+         [db executeUpdate:@"INSERT INTO myTable VALUES (?)", [NSNumber numberWithInt:2]];
+         [db executeUpdate:@"INSERT INTO myTable VALUES (?)", [NSNumber numberWithInt:3]];
+ 
+-        FMResultSet *rs = [db executeQuery:@"select * from foo"];
++        WFMResultSet *rs = [db executeQuery:@"select * from foo"];
+         while ([rs next]) {
+             //…
+         }
+@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
+ 
+  An easy way to wrap things up in a transaction can be done like this:
+ 
+-    [queue inTransaction:^(FMDatabase *db, BOOL *rollback) {
++    [queue inTransaction:^(WFMDatabase *db, BOOL *rollback) {
+         [db executeUpdate:@"INSERT INTO myTable VALUES (?)", [NSNumber numberWithInt:1]];
+         [db executeUpdate:@"INSERT INTO myTable VALUES (?)", [NSNumber numberWithInt:2]];
+         [db executeUpdate:@"INSERT INTO myTable VALUES (?)", [NSNumber numberWithInt:3]];
+@@ -49,19 +49,19 @@ NS_ASSUME_NONNULL_BEGIN
+         [db executeUpdate:@"INSERT INTO myTable VALUES (?)", [NSNumber numberWithInt:4]];
+     }];
+ 
+- `FMDatabaseQueue` will run the blocks on a serialized queue (hence the name of the class).  So if you call `FMDatabaseQueue`'s methods from multiple threads at the same time, they will be executed in the order they are received.  This way queries and updates won't step on each other's toes, and every one is happy.
++ `WFMDatabaseQueue` will run the blocks on a serialized queue (hence the name of the class).  So if you call `WFMDatabaseQueue`'s methods from multiple threads at the same time, they will be executed in the order they are received.  This way queries and updates won't step on each other's toes, and every one is happy.
+ 
+  ### See also
+ 
+- - `<FMDatabase>`
++ - `<WFMDatabase>`
+ 
+- @warning Do not instantiate a single `<FMDatabase>` object and use it across multiple threads. Use `FMDatabaseQueue` instead.
++ @warning Do not instantiate a single `<WFMDatabase>` object and use it across multiple threads. Use `WFMDatabaseQueue` instead.
+  
+- @warning The calls to `FMDatabaseQueue`'s methods are blocking.  So even though you are passing along blocks, they will **not** be run on another thread.
++ @warning The calls to `WFMDatabaseQueue`'s methods are blocking.  So even though you are passing along blocks, they will **not** be run on another thread.
+ 
+  */
+ 
+-@interface FMDatabaseQueue : NSObject
++@interface WFMDatabaseQueue : NSObject
+ /** Path of database */
+ 
+ @property (atomic, retain, nullable) NSString *path;
+@@ -82,7 +82,7 @@ NS_ASSUME_NONNULL_BEGIN
+  
+  @param aPath The file path of the database.
+  
+- @return The `FMDatabaseQueue` object. `nil` on error.
++ @return The `WFMDatabaseQueue` object. `nil` on error.
+  */
+ 
+ + (nullable instancetype)databaseQueueWithPath:(NSString * _Nullable)aPath;
+@@ -91,7 +91,7 @@ NS_ASSUME_NONNULL_BEGIN
+  
+  @param url The file `NSURL` of the database.
+  
+- @return The `FMDatabaseQueue` object. `nil` on error.
++ @return The `WFMDatabaseQueue` object. `nil` on error.
+  */
+ 
+ + (nullable instancetype)databaseQueueWithURL:(NSURL * _Nullable)url;
+@@ -101,7 +101,7 @@ NS_ASSUME_NONNULL_BEGIN
+  @param aPath The file path of the database.
+  @param openFlags Flags passed to the openWithFlags method of the database.
+  
+- @return The `FMDatabaseQueue` object. `nil` on error.
++ @return The `WFMDatabaseQueue` object. `nil` on error.
+  */
+ + (nullable instancetype)databaseQueueWithPath:(NSString * _Nullable)aPath flags:(int)openFlags;
+ 
+@@ -110,7 +110,7 @@ NS_ASSUME_NONNULL_BEGIN
+  @param url The file `NSURL` of the database.
+  @param openFlags Flags passed to the openWithFlags method of the database.
+  
+- @return The `FMDatabaseQueue` object. `nil` on error.
++ @return The `WFMDatabaseQueue` object. `nil` on error.
+  */
+ + (nullable instancetype)databaseQueueWithURL:(NSURL * _Nullable)url flags:(int)openFlags;
+ 
+@@ -118,7 +118,7 @@ NS_ASSUME_NONNULL_BEGIN
+  
+  @param aPath The file path of the database.
+  
+- @return The `FMDatabaseQueue` object. `nil` on error.
++ @return The `WFMDatabaseQueue` object. `nil` on error.
+  */
+ 
+ - (nullable instancetype)initWithPath:(NSString * _Nullable)aPath;
+@@ -127,7 +127,7 @@ NS_ASSUME_NONNULL_BEGIN
+  
+  @param url The file `NSURL of the database.
+  
+- @return The `FMDatabaseQueue` object. `nil` on error.
++ @return The `WFMDatabaseQueue` object. `nil` on error.
+  */
+ 
+ - (nullable instancetype)initWithURL:(NSURL * _Nullable)url;
+@@ -137,7 +137,7 @@ NS_ASSUME_NONNULL_BEGIN
+  @param aPath The file path of the database.
+  @param openFlags Flags passed to the openWithFlags method of the database.
+  
+- @return The `FMDatabaseQueue` object. `nil` on error.
++ @return The `WFMDatabaseQueue` object. `nil` on error.
+  */
+ 
+ - (nullable instancetype)initWithPath:(NSString * _Nullable)aPath flags:(int)openFlags;
+@@ -147,7 +147,7 @@ NS_ASSUME_NONNULL_BEGIN
+  @param url The file path of the database.
+  @param openFlags Flags passed to the openWithFlags method of the database.
+  
+- @return The `FMDatabaseQueue` object. `nil` on error.
++ @return The `WFMDatabaseQueue` object. `nil` on error.
+  */
+ 
+ - (nullable instancetype)initWithURL:(NSURL * _Nullable)url flags:(int)openFlags;
+@@ -158,7 +158,7 @@ NS_ASSUME_NONNULL_BEGIN
+  @param openFlags Flags passed to the openWithFlags method of the database
+  @param vfsName The name of a custom virtual file system
+  
+- @return The `FMDatabaseQueue` object. `nil` on error.
++ @return The `WFMDatabaseQueue` object. `nil` on error.
+  */
+ 
+ - (nullable instancetype)initWithPath:(NSString * _Nullable)aPath flags:(int)openFlags vfs:(NSString * _Nullable)vfsName;
+@@ -169,16 +169,16 @@ NS_ASSUME_NONNULL_BEGIN
+  @param openFlags Flags passed to the openWithFlags method of the database
+  @param vfsName The name of a custom virtual file system
+  
+- @return The `FMDatabaseQueue` object. `nil` on error.
++ @return The `WFMDatabaseQueue` object. `nil` on error.
+  */
+ 
+ - (nullable instancetype)initWithURL:(NSURL * _Nullable)url flags:(int)openFlags vfs:(NSString * _Nullable)vfsName;
+ 
+-/** Returns the Class of 'FMDatabase' subclass, that will be used to instantiate database object.
++/** Returns the Class of 'WFMDatabase' subclass, that will be used to instantiate database object.
+  
+- Subclasses can override this method to return specified Class of 'FMDatabase' subclass.
++ Subclasses can override this method to return specified Class of 'WFMDatabase' subclass.
+  
+- @return The Class of 'FMDatabase' subclass, that will be used to instantiate database object.
++ @return The Class of 'WFMDatabase' subclass, that will be used to instantiate database object.
+  */
+ 
+ + (Class)databaseClass;
+@@ -197,18 +197,18 @@ NS_ASSUME_NONNULL_BEGIN
+ 
+ /** Synchronously perform database operations on queue.
+  
+- @param block The code to be run on the queue of `FMDatabaseQueue`
++ @param block The code to be run on the queue of `WFMDatabaseQueue`
+  */
+ 
+-- (void)inDatabase:(__attribute__((noescape)) void (^)(FMDatabase *db))block;
++- (void)inDatabase:(__attribute__((noescape)) void (^)(WFMDatabase *db))block;
+ 
+ /** Synchronously perform database operations on queue, using transactions.
+ 
+- @param block The code to be run on the queue of `FMDatabaseQueue`
++ @param block The code to be run on the queue of `WFMDatabaseQueue`
+  
+  @warning    Unlike SQLite's `BEGIN TRANSACTION`, this method currently performs
+              an exclusive transaction, not a deferred transaction. This behavior
+-             is likely to change in future versions of FMDB, whereby this method
++             is likely to change in future versions of WFMDB, whereby this method
+              will likely eventually adopt standard SQLite behavior and perform
+              deferred transactions. If you really need exclusive tranaction, it is
+              recommended that you use `inExclusiveTransaction`, instead, not only
+@@ -216,28 +216,28 @@ NS_ASSUME_NONNULL_BEGIN
+ 
+  */
+ 
+-- (void)inTransaction:(__attribute__((noescape)) void (^)(FMDatabase *db, BOOL *rollback))block;
++- (void)inTransaction:(__attribute__((noescape)) void (^)(WFMDatabase *db, BOOL *rollback))block;
+ 
+ /** Synchronously perform database operations on queue, using deferred transactions.
+  
+- @param block The code to be run on the queue of `FMDatabaseQueue`
++ @param block The code to be run on the queue of `WFMDatabaseQueue`
+  */
+ 
+-- (void)inDeferredTransaction:(__attribute__((noescape)) void (^)(FMDatabase *db, BOOL *rollback))block;
++- (void)inDeferredTransaction:(__attribute__((noescape)) void (^)(WFMDatabase *db, BOOL *rollback))block;
+ 
+ /** Synchronously perform database operations on queue, using exclusive transactions.
+  
+- @param block The code to be run on the queue of `FMDatabaseQueue`
++ @param block The code to be run on the queue of `WFMDatabaseQueue`
+  */
+ 
+-- (void)inExclusiveTransaction:(__attribute__((noescape)) void (^)(FMDatabase *db, BOOL *rollback))block;
++- (void)inExclusiveTransaction:(__attribute__((noescape)) void (^)(WFMDatabase *db, BOOL *rollback))block;
+ 
+ /** Synchronously perform database operations on queue, using immediate transactions.
+ 
+- @param block The code to be run on the queue of `FMDatabaseQueue`
++ @param block The code to be run on the queue of `WFMDatabaseQueue`
+  */
+ 
+-- (void)inImmediateTransaction:(__attribute__((noescape)) void (^)(FMDatabase *db, BOOL *rollback))block;
++- (void)inImmediateTransaction:(__attribute__((noescape)) void (^)(WFMDatabase *db, BOOL *rollback))block;
+ 
+ ///-----------------------------------------------
+ /// @name Dispatching database operations to queue
+@@ -245,12 +245,12 @@ NS_ASSUME_NONNULL_BEGIN
+ 
+ /** Synchronously perform database operations using save point.
+ 
+- @param block The code to be run on the queue of `FMDatabaseQueue`
++ @param block The code to be run on the queue of `WFMDatabaseQueue`
+  */
+ 
+ // NOTE: you can not nest these, since calling it will pull another database out of the pool and you'll get a deadlock.
+-// If you need to nest, use FMDatabase's startSavePointWithName:error: instead.
+-- (NSError * _Nullable)inSavePoint:(__attribute__((noescape)) void (^)(FMDatabase *db, BOOL *rollback))block;
++// If you need to nest, use WFMDatabase's startSavePointWithName:error: instead.
++- (NSError * _Nullable)inSavePoint:(__attribute__((noescape)) void (^)(WFMDatabase *db, BOOL *rollback))block;
+ 
+ ///-----------------
+ /// @name Checkpoint
+@@ -262,7 +262,7 @@ NS_ASSUME_NONNULL_BEGIN
+  @param error The NSError corresponding to the error, if any.
+  @return YES on success, otherwise NO.
+  */
+-- (BOOL)checkpoint:(FMDBCheckpointMode)checkpointMode error:(NSError * _Nullable *)error;
++- (BOOL)checkpoint:(WFMDBCheckpointMode)checkpointMode error:(NSError * _Nullable *)error;
+ 
+ /** Performs a WAL checkpoint
+  
+@@ -271,7 +271,7 @@ NS_ASSUME_NONNULL_BEGIN
+  @param error The NSError corresponding to the error, if any.
+  @return YES on success, otherwise NO.
+  */
+-- (BOOL)checkpoint:(FMDBCheckpointMode)checkpointMode name:(NSString * _Nullable)name error:(NSError * _Nullable *)error;
++- (BOOL)checkpoint:(WFMDBCheckpointMode)checkpointMode name:(NSString * _Nullable)name error:(NSError * _Nullable *)error;
+ 
+ /** Performs a WAL checkpoint
+  
+@@ -282,7 +282,7 @@ NS_ASSUME_NONNULL_BEGIN
+  @param checkpointCount If not NULL, then this is set to the total number of checkpointed frames in the log file (including any that were already checkpointed before the function was called) or to -1 if the checkpoint could not run due to an error or because the database is not in WAL mode.
+  @return YES on success, otherwise NO.
+  */
+-- (BOOL)checkpoint:(FMDBCheckpointMode)checkpointMode name:(NSString * _Nullable)name logFrameCount:(int * _Nullable)logFrameCount checkpointCount:(int * _Nullable)checkpointCount error:(NSError * _Nullable *)error;
++- (BOOL)checkpoint:(WFMDBCheckpointMode)checkpointMode name:(NSString * _Nullable)name logFrameCount:(int * _Nullable)logFrameCount checkpointCount:(int * _Nullable)checkpointCount error:(NSError * _Nullable *)error;
+ 
+ @end
+ 
+diff --git a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabaseQueue.m b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabaseQueue.m
+old mode 100755
+new mode 100644
+similarity index 64%
+rename from node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabaseQueue.m
+rename to node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabaseQueue.m
+index a8fd915..cc0a5be
+--- a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMDatabaseQueue.m
++++ b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMDatabaseQueue.m
+@@ -1,53 +1,53 @@
+ //
+-//  FMDatabaseQueue.m
++//  WFMDatabaseQueue.m
+ //  fmdb
+ //
+ //  Created by August Mueller on 6/22/11.
+ //  Copyright 2011 Flying Meat Inc. All rights reserved.
+ //
+ 
+-#import "FMDatabaseQueue.h"
+-#import "FMDatabase.h"
++#import "WFMDatabaseQueue.h"
++#import "WFMDatabase.h"
+ 
+-#if FMDB_SQLITE_STANDALONE
++#if WFMDB_SQLITE_STANDALONE
+ #import <sqlite3/sqlite3.h>
+ #else
+ #import <sqlite3.h>
+ #endif
+ 
+-typedef NS_ENUM(NSInteger, FMDBTransaction) {
+-    FMDBTransactionExclusive,
+-    FMDBTransactionDeferred,
+-    FMDBTransactionImmediate,
++typedef NS_ENUM(NSInteger, WFMDBTransaction) {
++    WFMDBTransactionExclusive,
++    WFMDBTransactionDeferred,
++    WFMDBTransactionImmediate,
+ };
+ 
+ /*
+  
+  Note: we call [self retain]; before using dispatch_sync, just incase 
+- FMDatabaseQueue is released on another thread and we're in the middle of doing
++ WFMDatabaseQueue is released on another thread and we're in the middle of doing
+  something in dispatch_sync
+  
+  */
+ 
+ /*
+- * A key used to associate the FMDatabaseQueue object with the dispatch_queue_t it uses.
++ * A key used to associate the WFMDatabaseQueue object with the dispatch_queue_t it uses.
+  * This in turn is used for deadlock detection by seeing if inDatabase: is called on
+  * the queue's dispatch queue, which should not happen and causes a deadlock.
+  */
+ static const void * const kDispatchQueueSpecificKey = &kDispatchQueueSpecificKey;
+ 
+-@interface FMDatabaseQueue () {
++@interface WFMDatabaseQueue () {
+     dispatch_queue_t    _queue;
+-    FMDatabase          *_db;
++    WFMDatabase          *_db;
+ }
+ @end
+ 
+-@implementation FMDatabaseQueue
++@implementation WFMDatabaseQueue
+ 
+ + (instancetype)databaseQueueWithPath:(NSString *)aPath {
+-    FMDatabaseQueue *q = [[self alloc] initWithPath:aPath];
++    WFMDatabaseQueue *q = [[self alloc] initWithPath:aPath];
+     
+-    FMDBAutorelease(q);
++    WFMDBAutorelease(q);
+     
+     return q;
+ }
+@@ -57,9 +57,9 @@ + (instancetype)databaseQueueWithURL:(NSURL *)url {
+ }
+ 
+ + (instancetype)databaseQueueWithPath:(NSString *)aPath flags:(int)openFlags {
+-    FMDatabaseQueue *q = [[self alloc] initWithPath:aPath flags:openFlags];
++    WFMDatabaseQueue *q = [[self alloc] initWithPath:aPath flags:openFlags];
+     
+-    FMDBAutorelease(q);
++    WFMDBAutorelease(q);
+     
+     return q;
+ }
+@@ -69,7 +69,7 @@ + (instancetype)databaseQueueWithURL:(NSURL *)url flags:(int)openFlags {
+ }
+ 
+ + (Class)databaseClass {
+-    return [FMDatabase class];
++    return [WFMDatabase class];
+ }
+ 
+ - (instancetype)initWithURL:(NSURL *)url flags:(int)openFlags vfs:(NSString *)vfsName {
+@@ -82,7 +82,7 @@ - (instancetype)initWithPath:(NSString*)aPath flags:(int)openFlags vfs:(NSString
+     if (self != nil) {
+         
+         _db = [[[self class] databaseClass] databaseWithPath:aPath];
+-        FMDBRetain(_db);
++        WFMDBRetain(_db);
+         
+ #if SQLITE_VERSION_NUMBER >= 3005000
+         BOOL success = [_db openWithFlags:openFlags vfs:vfsName];
+@@ -91,11 +91,11 @@ - (instancetype)initWithPath:(NSString*)aPath flags:(int)openFlags vfs:(NSString
+ #endif
+         if (!success) {
+             NSLog(@"Could not create database queue for path %@", aPath);
+-            FMDBRelease(self);
++            WFMDBRelease(self);
+             return 0x00;
+         }
+         
+-        _path = FMDBReturnRetained(aPath);
++        _path = WFMDBReturnRetained(aPath);
+         
+         _queue = dispatch_queue_create([[NSString stringWithFormat:@"fmdb.%@", self] UTF8String], NULL);
+         dispatch_queue_set_specific(_queue, kDispatchQueueSpecificKey, (__bridge void *)self, NULL);
+@@ -128,12 +128,12 @@ - (instancetype)init {
+ }
+ 
+ - (void)dealloc {
+-    FMDBRelease(_db);
+-    FMDBRelease(_path);
+-    FMDBRelease(_vfsName);
++    WFMDBRelease(_db);
++    WFMDBRelease(_path);
++    WFMDBRelease(_vfsName);
+     
+     if (_queue) {
+-        FMDBDispatchQueueRelease(_queue);
++        WFMDBDispatchQueueRelease(_queue);
+         _queue = 0x00;
+     }
+ #if ! __has_feature(objc_arc)
+@@ -142,23 +142,23 @@ - (void)dealloc {
+ }
+ 
+ - (void)close {
+-    FMDBRetain(self);
++    WFMDBRetain(self);
+     dispatch_sync(_queue, ^() {
+         [self->_db close];
+-        FMDBRelease(_db);
++        WFMDBRelease(_db);
+         self->_db = 0x00;
+     });
+-    FMDBRelease(self);
++    WFMDBRelease(self);
+ }
+ 
+ - (void)interrupt {
+     [[self database] interrupt];
+ }
+ 
+-- (FMDatabase*)database {
++- (WFMDatabase*)database {
+     if (![_db isOpen]) {
+         if (!_db) {
+-           _db = FMDBReturnRetained([[[self class] databaseClass] databaseWithPath:_path]);
++           _db = WFMDBReturnRetained([[[self class] databaseClass] databaseWithPath:_path]);
+         }
+         
+ #if SQLITE_VERSION_NUMBER >= 3005000
+@@ -167,8 +167,8 @@ - (FMDatabase*)database {
+         BOOL success = [_db open];
+ #endif
+         if (!success) {
+-            NSLog(@"FMDatabaseQueue could not reopen database for path %@", _path);
+-            FMDBRelease(_db);
++            NSLog(@"WFMDatabaseQueue could not reopen database for path %@", _path);
++            WFMDBRelease(_db);
+             _db  = 0x00;
+             return 0x00;
+         }
+@@ -177,52 +177,52 @@ - (FMDatabase*)database {
+     return _db;
+ }
+ 
+-- (void)inDatabase:(__attribute__((noescape)) void (^)(FMDatabase *db))block {
++- (void)inDatabase:(__attribute__((noescape)) void (^)(WFMDatabase *db))block {
+ #ifndef NDEBUG
+     /* Get the currently executing queue (which should probably be nil, but in theory could be another DB queue
+      * and then check it against self to make sure we're not about to deadlock. */
+-    FMDatabaseQueue *currentSyncQueue = (__bridge id)dispatch_get_specific(kDispatchQueueSpecificKey);
++    WFMDatabaseQueue *currentSyncQueue = (__bridge id)dispatch_get_specific(kDispatchQueueSpecificKey);
+     assert(currentSyncQueue != self && "inDatabase: was called reentrantly on the same queue, which would lead to a deadlock");
+ #endif
+     
+-    FMDBRetain(self);
++    WFMDBRetain(self);
+     
+     dispatch_sync(_queue, ^() {
+         
+-        FMDatabase *db = [self database];
++        WFMDatabase *db = [self database];
+         
+         block(db);
+         
+         if ([db hasOpenResultSets]) {
+-            NSLog(@"Warning: there is at least one open result set around after performing [FMDatabaseQueue inDatabase:]");
++            NSLog(@"Warning: there is at least one open result set around after performing [WFMDatabaseQueue inDatabase:]");
+             
+ #if defined(DEBUG) && DEBUG
+-            NSSet *openSetCopy = FMDBReturnAutoreleased([[db valueForKey:@"_openResultSets"] copy]);
++            NSSet *openSetCopy = WFMDBReturnAutoreleased([[db valueForKey:@"_openResultSets"] copy]);
+             for (NSValue *rsInWrappedInATastyValueMeal in openSetCopy) {
+-                FMResultSet *rs = (FMResultSet *)[rsInWrappedInATastyValueMeal pointerValue];
++                WFMResultSet *rs = (WFMResultSet *)[rsInWrappedInATastyValueMeal pointerValue];
+                 NSLog(@"query: '%@'", [rs query]);
+             }
+ #endif
+         }
+     });
+     
+-    FMDBRelease(self);
++    WFMDBRelease(self);
+ }
+ 
+-- (void)beginTransaction:(FMDBTransaction)transaction withBlock:(void (^)(FMDatabase *db, BOOL *rollback))block {
+-    FMDBRetain(self);
++- (void)beginTransaction:(WFMDBTransaction)transaction withBlock:(void (^)(WFMDatabase *db, BOOL *rollback))block {
++    WFMDBRetain(self);
+     dispatch_sync(_queue, ^() { 
+         
+         BOOL shouldRollback = NO;
+ 
+         switch (transaction) {
+-            case FMDBTransactionExclusive:
++            case WFMDBTransactionExclusive:
+                 [[self database] beginTransaction];
+                 break;
+-            case FMDBTransactionDeferred:
++            case WFMDBTransactionDeferred:
+                 [[self database] beginDeferredTransaction];
+                 break;
+-            case FMDBTransactionImmediate:
++            case WFMDBTransactionImmediate:
+                 [[self database] beginImmediateTransaction];
+                 break;
+         }
+@@ -237,30 +237,30 @@ - (void)beginTransaction:(FMDBTransaction)transaction withBlock:(void (^)(FMData
+         }
+     });
+     
+-    FMDBRelease(self);
++    WFMDBRelease(self);
+ }
+ 
+-- (void)inTransaction:(__attribute__((noescape)) void (^)(FMDatabase *db, BOOL *rollback))block {
+-    [self beginTransaction:FMDBTransactionExclusive withBlock:block];
++- (void)inTransaction:(__attribute__((noescape)) void (^)(WFMDatabase *db, BOOL *rollback))block {
++    [self beginTransaction:WFMDBTransactionExclusive withBlock:block];
+ }
+ 
+-- (void)inDeferredTransaction:(__attribute__((noescape)) void (^)(FMDatabase *db, BOOL *rollback))block {
+-    [self beginTransaction:FMDBTransactionDeferred withBlock:block];
++- (void)inDeferredTransaction:(__attribute__((noescape)) void (^)(WFMDatabase *db, BOOL *rollback))block {
++    [self beginTransaction:WFMDBTransactionDeferred withBlock:block];
+ }
+ 
+-- (void)inExclusiveTransaction:(__attribute__((noescape)) void (^)(FMDatabase *db, BOOL *rollback))block {
+-    [self beginTransaction:FMDBTransactionExclusive withBlock:block];
++- (void)inExclusiveTransaction:(__attribute__((noescape)) void (^)(WFMDatabase *db, BOOL *rollback))block {
++    [self beginTransaction:WFMDBTransactionExclusive withBlock:block];
+ }
+ 
+-- (void)inImmediateTransaction:(__attribute__((noescape)) void (^)(FMDatabase * _Nonnull, BOOL * _Nonnull))block {
+-    [self beginTransaction:FMDBTransactionImmediate withBlock:block];
++- (void)inImmediateTransaction:(__attribute__((noescape)) void (^)(WFMDatabase * _Nonnull, BOOL * _Nonnull))block {
++    [self beginTransaction:WFMDBTransactionImmediate withBlock:block];
+ }
+ 
+-- (NSError*)inSavePoint:(__attribute__((noescape)) void (^)(FMDatabase *db, BOOL *rollback))block {
++- (NSError*)inSavePoint:(__attribute__((noescape)) void (^)(WFMDatabase *db, BOOL *rollback))block {
+ #if SQLITE_VERSION_NUMBER >= 3007000
+     static unsigned long savePointIdx = 0;
+     __block NSError *err = 0x00;
+-    FMDBRetain(self);
++    WFMDBRetain(self);
+     dispatch_sync(_queue, ^() { 
+         
+         NSString *name = [NSString stringWithFormat:@"savePoint%ld", savePointIdx++];
+@@ -279,35 +279,35 @@ - (NSError*)inSavePoint:(__attribute__((noescape)) void (^)(FMDatabase *db, BOOL
+             
+         }
+     });
+-    FMDBRelease(self);
++    WFMDBRelease(self);
+     return err;
+ #else
+-    NSString *errorMessage = NSLocalizedStringFromTable(@"Save point functions require SQLite 3.7", @"FMDB", nil);
++    NSString *errorMessage = NSLocalizedStringFromTable(@"Save point functions require SQLite 3.7", @"WFMDB", nil);
+     if (_db.logsErrors) NSLog(@"%@", errorMessage);
+-    return [NSError errorWithDomain:@"FMDatabase" code:0 userInfo:@{NSLocalizedDescriptionKey : errorMessage}];
++    return [NSError errorWithDomain:@"WFMDatabase" code:0 userInfo:@{NSLocalizedDescriptionKey : errorMessage}];
+ #endif
+ }
+ 
+-- (BOOL)checkpoint:(FMDBCheckpointMode)mode error:(NSError * __autoreleasing *)error
++- (BOOL)checkpoint:(WFMDBCheckpointMode)mode error:(NSError * __autoreleasing *)error
+ {
+     return [self checkpoint:mode name:nil logFrameCount:NULL checkpointCount:NULL error:error];
+ }
+ 
+-- (BOOL)checkpoint:(FMDBCheckpointMode)mode name:(NSString *)name error:(NSError * __autoreleasing *)error
++- (BOOL)checkpoint:(WFMDBCheckpointMode)mode name:(NSString *)name error:(NSError * __autoreleasing *)error
+ {
+     return [self checkpoint:mode name:name logFrameCount:NULL checkpointCount:NULL error:error];
+ }
+ 
+-- (BOOL)checkpoint:(FMDBCheckpointMode)mode name:(NSString *)name logFrameCount:(int * _Nullable)logFrameCount checkpointCount:(int * _Nullable)checkpointCount error:(NSError * __autoreleasing _Nullable * _Nullable)error
++- (BOOL)checkpoint:(WFMDBCheckpointMode)mode name:(NSString *)name logFrameCount:(int * _Nullable)logFrameCount checkpointCount:(int * _Nullable)checkpointCount error:(NSError * __autoreleasing _Nullable * _Nullable)error
+ {
+     __block BOOL result;
+     __block NSError *blockError;
+     
+-    FMDBRetain(self);
++    WFMDBRetain(self);
+     dispatch_sync(_queue, ^() {
+         result = [self.database checkpoint:mode name:name logFrameCount:NULL checkpointCount:NULL error:&blockError];
+     });
+-    FMDBRelease(self);
++    WFMDBRelease(self);
+     
+     if (error) {
+         *error = blockError;
+diff --git a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMResultSet.h b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMResultSet.h
+similarity index 94%
+rename from node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMResultSet.h
+rename to node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMResultSet.h
+index 2bbc766..f7792c8 100644
+--- a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMResultSet.h
++++ b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMResultSet.h
+@@ -14,19 +14,19 @@ NS_ASSUME_NONNULL_BEGIN
+ #endif
+ #endif
+ 
+-@class FMDatabase;
+-@class FMStatement;
++@class WFMDatabase;
++@class WFMStatement;
+ 
+-/** Represents the results of executing a query on an `<FMDatabase>`.
++/** Represents the results of executing a query on an `<WFMDatabase>`.
+  
+  ### See also
+  
+- - `<FMDatabase>`
++ - `<WFMDatabase>`
+  */
+ 
+-@interface FMResultSet : NSObject
++@interface WFMResultSet : NSObject
+ 
+-@property (nonatomic, retain, nullable) FMDatabase *parentDB;
++@property (nonatomic, retain, nullable) WFMDatabase *parentDB;
+ 
+ ///-----------------
+ /// @name Properties
+@@ -40,24 +40,24 @@ NS_ASSUME_NONNULL_BEGIN
+ 
+ @property (readonly) NSMutableDictionary *columnNameToIndexMap;
+ 
+-/** `FMStatement` used by result set. */
++/** `WFMStatement` used by result set. */
+ 
+-@property (atomic, retain, nullable) FMStatement *statement;
++@property (atomic, retain, nullable) WFMStatement *statement;
+ 
+ ///------------------------------------
+ /// @name Creating and closing a result set
+ ///------------------------------------
+ 
+-/** Create result set from `<FMStatement>`
++/** Create result set from `<WFMStatement>`
+  
+- @param statement A `<FMStatement>` to be performed
++ @param statement A `<WFMStatement>` to be performed
+  
+- @param aDB A `<FMDatabase>` to be used
++ @param aDB A `<WFMDatabase>` to be used
+  
+- @return A `FMResultSet` on success; `nil` on failure
++ @return A `WFMResultSet` on success; `nil` on failure
+  */
+ 
+-+ (instancetype)resultSetWithStatement:(FMStatement *)statement usingParentDatabase:(FMDatabase*)aDB;
+++ (instancetype)resultSetWithStatement:(WFMStatement *)statement usingParentDatabase:(WFMDatabase*)aDB;
+ 
+ /** Close result set */
+ 
+diff --git a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMResultSet.m b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMResultSet.m
+similarity index 94%
+rename from node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMResultSet.m
+rename to node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMResultSet.m
+index 13f226f..619e6f2 100644
+--- a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/FMResultSet.m
++++ b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/FMDB/src/fmdb/WFMResultSet.m
+@@ -1,27 +1,27 @@
+-#import "FMResultSet.h"
+-#import "FMDatabase.h"
++#import "WFMResultSet.h"
++#import "WFMDatabase.h"
+ #import <unistd.h>
+ 
+-#if FMDB_SQLITE_STANDALONE
++#if WFMDB_SQLITE_STANDALONE
+ #import <sqlite3/sqlite3.h>
+ #else
+ #import <sqlite3.h>
+ #endif
+ 
+-@interface FMDatabase ()
+-- (void)resultSetDidClose:(FMResultSet *)resultSet;
++@interface WFMDatabase ()
++- (void)resultSetDidClose:(WFMResultSet *)resultSet;
+ @end
+ 
+-@interface FMResultSet () {
++@interface WFMResultSet () {
+     NSMutableDictionary *_columnNameToIndexMap;
+ }
+ @end
+ 
+-@implementation FMResultSet
++@implementation WFMResultSet
+ 
+-+ (instancetype)resultSetWithStatement:(FMStatement *)statement usingParentDatabase:(FMDatabase*)aDB {
+++ (instancetype)resultSetWithStatement:(WFMStatement *)statement usingParentDatabase:(WFMDatabase*)aDB {
+     
+-    FMResultSet *rs = [[FMResultSet alloc] init];
++    WFMResultSet *rs = [[WFMResultSet alloc] init];
+     
+     [rs setStatement:statement];
+     [rs setParentDB:aDB];
+@@ -29,7 +29,7 @@ + (instancetype)resultSetWithStatement:(FMStatement *)statement usingParentDatab
+     NSParameterAssert(![statement inUse]);
+     [statement setInUse:YES]; // weak reference
+     
+-    return FMDBReturnAutoreleased(rs);
++    return WFMDBReturnAutoreleased(rs);
+ }
+ 
+ #if ! __has_feature(objc_arc)
+@@ -42,10 +42,10 @@ - (void)finalize {
+ - (void)dealloc {
+     [self close];
+     
+-    FMDBRelease(_query);
++    WFMDBRelease(_query);
+     _query = nil;
+     
+-    FMDBRelease(_columnNameToIndexMap);
++    WFMDBRelease(_columnNameToIndexMap);
+     _columnNameToIndexMap = nil;
+     
+ #if ! __has_feature(objc_arc)
+@@ -55,7 +55,7 @@ - (void)dealloc {
+ 
+ - (void)close {
+     [_statement reset];
+-    FMDBRelease(_statement);
++    WFMDBRelease(_statement);
+     _statement = nil;
+     
+     // we don't need this anymore... (i think)
+@@ -116,7 +116,7 @@ - (NSDictionary *)resultDict {
+             [dict setObject:objectValue forKey:columnName];
+         }
+         
+-        return FMDBReturnAutoreleased([dict copy]);
++        return WFMDBReturnAutoreleased([dict copy]);
+     }
+     else {
+         NSLog(@"Warning: There seem to be no columns in this set.");
+@@ -191,7 +191,7 @@ - (BOOL)nextWithError:(NSError **)outErr {
+                 // If 'next' or 'nextWithError' is called after the result set is closed,
+                 // we need to return the appropriate error.
+                 NSDictionary* errorMessage = [NSDictionary dictionaryWithObject:@"parentDB does not exist" forKey:NSLocalizedDescriptionKey];
+-                *outErr = [NSError errorWithDomain:@"FMDatabase" code:SQLITE_MISUSE userInfo:errorMessage];
++                *outErr = [NSError errorWithDomain:@"WFMDatabase" code:SQLITE_MISUSE userInfo:errorMessage];
+             }
+             
+         }
+diff --git a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/SupportingFiles/Bridging.h b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/SupportingFiles/Bridging.h
+index a09e5cf..4b0ac71 100644
+--- a/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/SupportingFiles/Bridging.h
++++ b/node_modules/@nozbe/watermelondb/native/ios/WatermelonDB/SupportingFiles/Bridging.h
+@@ -1,7 +1,7 @@
+-#if __has_include("FMDB.h")
+-#import "FMDB.h"
++#if __has_include("WFMDB.h")
++#import "WFMDB.h"
+ #else
+-#import "../FMDB/src/fmdb/FMDB.h"
++#import "../FMDB/src/fmdb/WFMDB.h"
+ #endif
+ 
+ #import <React/RCTBridgeModule.h>

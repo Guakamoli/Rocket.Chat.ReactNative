@@ -12,20 +12,21 @@ export function isUploadActive(path) {
 }
 
 export async function cancelUpload(item) {
+
+	try {
+		await item.cancel();
+	} catch {
+		// Do nothing
+	}
+	try {
+		const db = database.active;
+		await db.action(async () => {
+			await item.destroyPermanently();
+		});
+	} catch (e) {
+		log(e);
+	}
 	if (uploadQueue[item.path]) {
-		try {
-			await uploadQueue[item.path].cancel();
-		} catch {
-			// Do nothing
-		}
-		try {
-			const db = database.active;
-			await db.action(async () => {
-				await item.destroyPermanently();
-			});
-		} catch (e) {
-			log(e);
-		}
 		delete uploadQueue[item.path];
 	}
 }

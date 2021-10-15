@@ -101,7 +101,7 @@ class UploadProgress extends Component {
 			.get('uploads')
 			.query(
 				Q.where('rid', rid),
-				// Q.where('description', Q.like(`%paiyapost%`)),
+				Q.where('description', Q.like(`%paiyapost%`)),
 				Q.experimentalTake(1)
 
 			)

@@ -15,12 +15,12 @@ const { cameraFlipPng, captureButtonPng, closePng, musicPng, beautifyPng, beauty
 import RocketChat from '../../../../../lib/rocketchat';
 
 const StoryCamera = (props) => {
-  const { server, user } = props;
+  const { server, user, item } = props;
   const sendfile = async (data) => {
     // console.info('getUploadFilesss-----------', data[0]?.title_link);
     try {
-      await RocketChat.sendFileMessage(
-        'uZynTfjX42EboTRhz',
+      RocketChat.sendFileMessage(
+        item.rid || item.row.rid,
         {
           name: data[0]?.title_link,
           description: `paiyastory: `,

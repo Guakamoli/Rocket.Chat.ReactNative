@@ -93,7 +93,8 @@ const filterIsDiscussion = s => s.prid;
 const { width, height } = Dimensions.get('window');
 const shouldUpdateState = [
 	'messages',
-	'storyMessages'
+	'storyMessages',
+	'dataList'
 ]
 const shouldUpdateProps = [
 	'searchText',
@@ -589,6 +590,7 @@ class RoomsListView extends React.Component {
 			.observe();
 		this.messagesStorySubscription = this.messagesStoryObservable
 			.subscribe(async (messages) => {
+				console.info("发生了打打的改变", messages)
 				try {
 					messages = messages.filter(m => m.attachments[0].attachments[0] === undefined);
 					let storyReadMap = await AsyncStorage.getItem("storyReadMap")
@@ -651,10 +653,32 @@ class RoomsListView extends React.Component {
 
 						this.uploadsSubscription = this.uploadsObservable
 							.subscribe((uploads) => {
+								let hasUpdate = false
+								console.info(uploads, 'uploadsuploadsuploads')
+								uploads.forEach(async (u) => {
+									if (!RocketChat.isUploadActive(u.path) && !u.error) {
+										hasUpdate = true
+										try {
+
+											const db = database.active;
+											await db.action(async () => {
+												await u.update(() => {
+													u.error = true;
+												});
+											});
+										} catch (e) {
+											log(e);
+										}
+									}
+								});
+								if (hasUpdate) return
 								const uploadItem = uploads[0]
-								console.info(uploadItem, 'uploadItem', uploads)
+
 								if (uploadItem) {
-									dataList[0].stories.push({
+									dataList[0].hasUnread = true
+
+									dataList[0].stories = dataList[0].stories.filter(i => !(i.row && i.row.description && i.row.description.startsWith('paiyastory:')))
+									dataList[0].stories.unshift({
 										id: item.path,
 										row: uploadItem,
 										url: uploadItem.path,
@@ -662,6 +686,11 @@ class RoomsListView extends React.Component {
 										isRead: true,
 									})
 									this.setState({ dataList }, () => this.update());
+								} else if (dataList[0] && dataList[0].stories[0] && dataList[0].stories[0].row.description) {
+									dataList[0].stories = dataList[0].stories.filter(i => !(i.row && i.row.description && i.row.description.startsWith('paiyastory:')))
+									this.setState({ dataList }, () => this.update());
+
+
 								}
 
 

@@ -113,7 +113,7 @@ const ChannelCircle = (props) => {
                 visible={StoryCameraOpen}
                 style={styles.modal}
             >
-                <StoryCamera onCloseCamera={() => { setStoryCamert(false) }} />
+                <StoryCamera onCloseCamera={() => { setStoryCamert(false) }} item={data[0]} />
             </Modal>
             <FlatList
                 horizontal={true}

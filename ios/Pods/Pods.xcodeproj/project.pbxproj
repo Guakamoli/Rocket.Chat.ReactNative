@@ -33579,7 +33579,7 @@
 			buildConfigurationList = 232251D5359F43E67642CF78ED76AD00 /* Build configuration list for PBXNativeTarget "FBReactNativeSpec" */;
 			buildPhases = (
 				6D71AD478AEE3B2917729B71F468513B /* Headers */,
-				EE91DBDD15E7F3AEE78E89EDECD2A044 /* [CP-User] Generate Specs */,
+				A2F30D1F0DF460FCD712C85C870D428E /* [CP-User] Generate Specs */,
 				B7A41B1DD4FA02AA7A4DBE924977D937 /* Sources */,
 				1F5BEFBFCBEA858C53ABFEE0353BFC96 /* Frameworks */,
 			);
@@ -34790,6 +34790,24 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/JitsiMeetSDK/JitsiMeetSDK-xcframeworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		A2F30D1F0DF460FCD712C85C870D428E /* [CP-User] Generate Specs */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"/Users/a1234/Desktop/appwork2/Rocket.Chat.ReactNative/node_modules/react-native/scripts/../Libraries",
+			);
+			name = "[CP-User] Generate Specs";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/codegen-FBReactNativeSpec.log",
+				"/Users/a1234/Desktop/appwork2/Rocket.Chat.ReactNative/node_modules/react-native/scripts/../React/FBReactNativeSpec/FBReactNativeSpec/FBReactNativeSpec.h",
+				"/Users/a1234/Desktop/appwork2/Rocket.Chat.ReactNative/node_modules/react-native/scripts/../React/FBReactNativeSpec/FBReactNativeSpec/FBReactNativeSpec-generated.mm",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -o pipefail\n\nbash -l -c 'SRCS_DIR=/Users/a1234/Desktop/appwork2/Rocket.Chat.ReactNative/node_modules/react-native/scripts/../Libraries CODEGEN_MODULES_OUTPUT_DIR=/Users/a1234/Desktop/appwork2/Rocket.Chat.ReactNative/node_modules/react-native/scripts/../React/FBReactNativeSpec/FBReactNativeSpec CODEGEN_MODULES_LIBRARY_NAME=FBReactNativeSpec /Users/a1234/Desktop/appwork2/Rocket.Chat.ReactNative/node_modules/react-native/scripts/generate-specs.sh' 2>&1 | tee \"${SCRIPT_OUTPUT_FILE_0}\"";
+		};
 		E05E4F5ABDA800A058B12B2B7D079F19 /* Copy generated compatibility header */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -34830,24 +34848,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/hermes-engine/hermes-engine-copy-dsyms.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		EE91DBDD15E7F3AEE78E89EDECD2A044 /* [CP-User] Generate Specs */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"/Users/mac/Projects/Rocket.Chat.ReactNative/node_modules/react-native/scripts/../Libraries",
-			);
-			name = "[CP-User] Generate Specs";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/codegen-FBReactNativeSpec.log",
-				"/Users/mac/Projects/Rocket.Chat.ReactNative/node_modules/react-native/scripts/../React/FBReactNativeSpec/FBReactNativeSpec/FBReactNativeSpec.h",
-				"/Users/mac/Projects/Rocket.Chat.ReactNative/node_modules/react-native/scripts/../React/FBReactNativeSpec/FBReactNativeSpec/FBReactNativeSpec-generated.mm",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "set -o pipefail\n\nbash -l -c 'SRCS_DIR=/Users/mac/Projects/Rocket.Chat.ReactNative/node_modules/react-native/scripts/../Libraries CODEGEN_MODULES_OUTPUT_DIR=/Users/mac/Projects/Rocket.Chat.ReactNative/node_modules/react-native/scripts/../React/FBReactNativeSpec/FBReactNativeSpec CODEGEN_MODULES_LIBRARY_NAME=FBReactNativeSpec /Users/mac/Projects/Rocket.Chat.ReactNative/node_modules/react-native/scripts/generate-specs.sh' 2>&1 | tee \"${SCRIPT_OUTPUT_FILE_0}\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 

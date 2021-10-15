@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unused-prop-types */
 import React, { useEffect, useRef, useState } from 'react';
-import { Dimensions, StyleSheet, View, Pressable, Text, TouchableOpacity, Alert } from 'react-native';
+import { Dimensions, StyleSheet, View, Pressable, PermissionsAndroid, Text, TouchableWithoutFeedback, Alert, Platform } from 'react-native';
 import RBSheet from "react-native-raw-bottom-sheet"
 import ImageMap from "../../../images"
 import I18n from '../../../../../i18n';
@@ -13,12 +13,17 @@ import { request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import CameraRoll from '@react-native-community/cameraroll';
 import ProgressCircle from 'react-native-progress-circle';
 import { Button, Image } from 'react-native-elements';
+import { formatAttachmentUrl } from '../../../../../lib/utils.js';
+import SHA256 from 'js-sha256';
+import * as mime from 'react-native-mime-types';
+import RNFetchBlob from 'rn-fetch-blob';
+import database from '../../../../../lib/database';
 
 import { FileSystem } from 'react-native-unimodules';
-
+const { width, height } = Dimensions.get("window")
 const { downLoadingGif, successPng } = ImageMap
 
-const UploadResult = React.memo(props => {
+const UploadResult = React.memo((props) => {
     const { setOpen, setPercent } = props;
     return (
         <>
@@ -29,10 +34,10 @@ const UploadResult = React.memo(props => {
                     backgroundColor: 'transparent',
                 }}
             />
-            <Text style={styles.statusText}>{t('downloadSuccess')}</Text>
+            <Text style={styles.statusText}>{I18n.t('saved_to_gallery')}</Text>
             <Button
                 buttonStyle={styles.reuploadButton}
-                title={I18n.t('confirm')}
+                title={'确定'}
                 titleStyle={{ fontSize: 16, fontWeight: '500' }}
                 onPress={() => {
                     setPercent(0);
@@ -44,7 +49,7 @@ const UploadResult = React.memo(props => {
 });
 const ProgressBox = React.memo(props => {
     const { open, percent, setOpen, setPercent } = props;
-    if (!open) return null;
+    if (!open && !percent) return null;
     const RenderProgress = () => {
         if (percent < 100) {
             return (
@@ -81,31 +86,24 @@ const ProgressBox = React.memo(props => {
     );
 });
 
-const UpLoadControl = (props) => {
-    const { item, onPause } = props
+const UpLoadControl = React.memo((props) => {
+    const { item, onPause, stories, index } = props
+    console.info(item.row, 'hahahahah', stories, index)
+
     const sheetRef = useRef(null)
     const [open, setOpen] = useState(false)
     const [percent, setPercent] = useState(0);
-
+    const pauseSelfControlRef = useRef(false)
     const [uploadState, setUploadState] = useState(null)
     const getUploadingState = async () => {
         const data = await AsyncStorage.getItem(item.id)
     }
     useEffect(() => {
-        const callBack = (e) => {
+        setButtonByState()
+    }, [item])
 
-            setUploadState(e.state)
-            setButtonByState(e.state)
-        }
-        EventEmitter.addEventListener('storyUpload', callBack)
-        return () => {
-            EventEmitter.removeListener('storyUpload', callBack)
-
-        }
-    }, [])
-
-    const setButtonByState = (state) => {
-        const isFail = state === 'fail'
+    const setButtonByState = () => {
+        const isFail = item.row.error
         setButtons([{
             name: "main",
             list: [
@@ -116,37 +114,56 @@ const UpLoadControl = (props) => {
         }, {
             name: "bottom",
             list: [
-                { name: "取消", func: saveToLocal, style: {} },
+                { name: "取消", func: close, style: {} },
             ]
         }])
     }
 
     const cancelUpload = () => {
         // 取消上传
+        pauseSelfControlRef.current = true
+        sheetRef.current.close();
         Alert.alert(
             '取消上传这条快拍',
+            '',
             [
                 {
                     text: I18n.t('Cancel'),
-                    style: 'cancel'
+                    style: 'cancel',
+                    onPress: () => {
+                        onPause(false)
+                        pauseSelfControlRef.current = false
+                    }
                 },
                 {
-                    text: I18n.t('Delete'),
+                    text: I18n.t('Confirm'),
                     style: 'destructive',
                     onPress: async () => {
                         try {
-                            await RocketChat.cancelUpload(item.row.id, message.row.rid);
+                            console.info("指向性了 ", item)
+                            pauseSelfControlRef.current = false
+
+                            await RocketChat.cancelUpload(item.row);
+
+
                         } catch (e) {
+                            pauseSelfControlRef.current = false
+                            onPause(false)
+
                             log(e);
+
+                            console.info(e, '取消错误')
                         }
                     }
                 }
             ],
-            { cancelable: false }
+            { cancelable: true }
         )
+
     }
     const deleteItem = () => {
         // 这里删除内容 只有已经发布的才会有删除内容
+        pauseSelfControlRef.current = true
 
         sheetRef.current.close();
         Alert.alert(
@@ -157,6 +174,8 @@ const UpLoadControl = (props) => {
                     text: I18n.t('Cancel'),
                     style: 'cancel',
                     onPress: () => {
+                        pauseSelfControlRef.current = true
+
                         onPause(false)
 
                     }
@@ -166,6 +185,7 @@ const UpLoadControl = (props) => {
                     style: 'destructive',
                     onPress: async () => {
                         try {
+                            pauseSelfControlRef.current = false
 
                             logEvent(events.ROOM_MSG_ACTION_DELETE);
                             await RocketChat.deleteMessage(item.row.id, item.row.rid);
@@ -173,6 +193,7 @@ const UpLoadControl = (props) => {
 
                         } catch (e) {
                             onPause(false)
+                            pauseSelfControlRef.current = false
 
                             logEvent(events.ROOM_MSG_ACTION_DELETE_F);
                             log(e);
@@ -180,39 +201,72 @@ const UpLoadControl = (props) => {
                     }
                 }
             ],
-            { cancelable: false }
+            { cancelable: true }
         )
     }
     const close = () => {
-        onPause(false)
+        if (!pauseSelfControlRef.current) {
+            onPause(false)
+
+        }
 
         sheetRef.current.close();
     }
     const saveToLocal = async () => {
-        const result = await request(
-            Platform.OS === 'ios' ? PERMISSIONS.IOS.PHOTO_LIBRARY : PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
-        );
+        pauseSelfControlRef.current = true
         try {
-            if (result === RESULTS.GRANTED) {
-                const mediaAttachment = item.row.path
-                setOpen(true);
-                const resumable = FileSystem.createDownloadResumable(mediaAttachment, mediaAttachment, {}, e => {
-                    setPercent(parseFloat((e.totalBytesWritten / e.totalBytesExpectedToWrite) * 100).toFixed(2));
-                });
-                const { uri } = await resumable.downloadAsync(mediaAttachment, file);
-                await CameraRoll.save(uri, { album: 'Paiya' });
+            const { baseUrl, selfUser: user } = props;
+            let url = item.row.path
+            const image_type = item.row?.attachments?.[0]?.image_type
+            const video_type = item.row?.attachments?.[0]?.video_type
 
-            } else if (result === RESULTS.BLOCKED) {
-                Alert.alert('请先允许App获得访问相册权限', '', [
-                    {
-                        text: '确定',
-                        onPress: () => console.log('Cancel Pressed'),
-                        style: 'cancel',
-                    },
-                ]);
+            if (!url) {
+
+                url = item.row.attachments[0].video_url || item.row.attachments[0].image_url
+                if (url) {
+
+                    url = formatAttachmentUrl(url, user.id, user.token, baseUrl);
+
+                }
             }
+
+            const mediaAttachment = formatAttachmentUrl(url, user.id, user.token, baseUrl);
+
+            if (Platform.OS !== 'ios') {
+                const rationale = {
+                    title: I18n.t('Write_External_Permission'),
+                    message: I18n.t('Write_External_Permission_Message')
+                };
+                const result = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE, rationale);
+                if (!(result || result === PermissionsAndroid.RESULTS.GRANTED)) {
+                    return;
+                }
+            }
+            setOpen(true);
+
+            sheetRef.current.close();
+            const extension = image_type ? `.${mime.extension(image_type) || 'jpg'}` : `.${mime.extension(video_type) || 'mp4'}`;
+            const documentDir = `${RNFetchBlob.fs.dirs.DocumentDir}/`;
+            const path = `${documentDir + SHA256(url) + extension}`;
+            const file = await RNFetchBlob.config({ path }).fetch('GET', mediaAttachment).progress((received, total) => {
+                console.info('progress', received / total)
+                setPercent(parseFloat((received / total) * 100).toFixed(2));
+
+            }).then((resp) => {
+                // ...
+                setPercent(100);
+
+            });
+            await CameraRoll.save(path, { album: 'Rocket.Chat' });
+            await file.flush();
+            pauseSelfControlRef.current = false
+            onPause(false)
+
         } catch (e) {
-            console.log(e, '错误信息');
+            pauseSelfControlRef.current = false
+            onPause(false)
+
+            console.info(e, '错误信息');
         }
 
 
@@ -234,6 +288,7 @@ const UpLoadControl = (props) => {
             });
             await RocketChat.sendFileMessage(row.rid, row, undefined, server, user);
         } catch (e) {
+            console.info('重试错误', e)
             log(e);
         }
     }
@@ -247,14 +302,12 @@ const UpLoadControl = (props) => {
     }, {
         name: "bottom",
         list: [
-            { name: "取消", func: saveToLocal, style: {} },
+            { name: "取消", func: close, style: {} },
         ]
     }])
 
     const LoadingBlock = () => {
-        const isFail = uploadState === 'fail'
-
-        if (uploadState === 'uploading') {
+        if (item.row.error === false) {
             return (
                 <View style={styles.loadingBox}>
                     <Image source={downLoadingGif} style={{ width: 17, height: 17, }} resizeMode={'contain'}
@@ -266,11 +319,11 @@ const UpLoadControl = (props) => {
             )
         }
         return (
-            <View style={[styles.dotContainer, isFail ? {
+            <View style={[styles.dotContainer, item.row.error ? {
                 backgroundColor: "#FF445FFF"
             } : {}]} >
                 {
-                    isFail ? (
+                    item.row.error ? (
                         <View style={styles.textBox}>
                             <Text style={styles.failText}>上传失败。</Text>
                             <Text style={styles.tryText} onPress={tryAgain}>再试试呗</Text>
@@ -281,7 +334,7 @@ const UpLoadControl = (props) => {
 
                 <Pressable onPress={openModal} style={styles.dotBox}>
                     {[1, 2, 3].map((i) => {
-                        return <View style={[styles.dot, isFail ? styles.failDot : {}]}></View>
+                        return <View style={[styles.dot, item.row.error ? styles.failDot : {}]}></View>
                     })}
                 </Pressable>
             </View>)
@@ -328,7 +381,7 @@ const UpLoadControl = (props) => {
             </RBSheet>
         </View>
     );
-};
+});
 
 
 const styles = StyleSheet.create({
@@ -357,6 +410,13 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         flex: 1,
     },
+    circle: {
+        color: "#836BFFFF",
+        shadowColor: '#999',
+        backgroundColor: '#fff',
+        borderRadius: 35,
+        borderWidth: 5,
+    },
     uploadingText: {
         fontSize: 14,
         fontWeight: "400",
@@ -377,7 +437,8 @@ const styles = StyleSheet.create({
     },
     dotBox: {
         flexDirection: "row",
-        height: 100,
+        height: 40,
+        width: 60,
         justifyContent: "center",
         alignItems: "center",
     },
@@ -426,6 +487,61 @@ const styles = StyleSheet.create({
         fontWeight: "400",
         lineHeight: 24,
         color: "#000000FF"
+    },
+    overlayBox: {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        top: -400,
+        zIndex: 1000,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    overlayBoxInner: {
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+    },
+    popoverback: {
+        position: 'absolute',
+        width: width,
+        height: height,
+        zIndex: 999,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    progress: {
+        fontSize: 14,
+    },
+    popoverbackInner: {
+        width: '100%',
+        height: '100%',
+        zIndex: 999,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(255,255,255, 0.3)',
+    },
+    popoverroot: {
+        position: 'absolute',
+
+        zIndex: 1000,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(255, 255, 255, .9)',
+        // height: 170,
+        padding: 30,
+        width: 225,
+        borderRadius: 10,
+    },
+    reuploadButton: {
+        backgroundColor: '#836BFFFF',
+        borderRadius: 5,
+        marginTop: 28,
+        width: 124,
+        height: 40,
+    },
+    popover: {
+        paddingTop: (25),
     },
 });
 
