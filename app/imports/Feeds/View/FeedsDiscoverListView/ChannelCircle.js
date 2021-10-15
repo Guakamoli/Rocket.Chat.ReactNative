@@ -9,16 +9,17 @@ import {
     RefreshControl,
     StyleSheet,
     Pressable,
+    Dimensions,
 
 } from 'react-native';
-import { Image } from "react-native-elements"
+import { Image, Button } from "react-native-elements"
 import LinearGradient from "react-native-linear-gradient"
 import ImageMap from "../../images"
 import Avatar from '../../../../containers/Avatar';
 import ImagePicker from 'react-native-image-crop-picker';
 import I18n from '../../../../i18n';
-
-const { shootPng } = ImageMap
+const { width } = Dimensions.get("window")
+const { rightIconPng } = ImageMap
 const colors = ['#E383DDFF', '#E383DDFF', '#7A83F5FF']
 const silentColors = ['#C7C7C7FF', '#C7C7C7FF']
 
@@ -27,6 +28,7 @@ const ChannelCircle = (props) => {
     const [data, setData] = useState([])
 
     const generateData = () => {
+        // 要在这里做初次过滤
         setData(dataList)
     }
     useEffect(() => {
@@ -68,27 +70,37 @@ const ChannelCircle = (props) => {
             }
             onStorySelect(index - 1, item)
         }
+        const onSubscribe = () => {
+
+        }
         return (
-            <Pressable onPress={onPress}>
-                <View style={styles.itemWrapper}>
+            <View style={styles.itemWrapper}>
 
-                    <Avatar
+                <Avatar
 
-                        size={66}
-                        type={item.t}
-                        text={item.name}
-                        style={styles.avatar}
-                        rid={item.rid} // 先用房间的头像
-                        // avatar={item?.avatar}
-                        borderRadius={66}
+                    size={66}
+                    type={item.t}
+                    text={item.name}
+                    style={styles.avatar}
+                    rid={item.rid} // 先用房间的头像
+                    // avatar={item?.avatar}
+                    borderRadius={66}
 
-                    />
-                    <Text style={styles.title}>{item.name}</Text>
-                    <Text style={styles.subTitle}>paiya官方账户</Text>
+                />
+                <Text style={styles.title}>{item.name}</Text>
+                <Text style={styles.subTitle}>paiya官方账户</Text>
+                <Button
+                    variant="contained"
+                    onPress={() => { onSubscribe() }}
+                    titleStyle={[styles.btnTitleStyle, !item.hasSubscribe ? styles.activeBtnTitleStyle : {}]}
 
+                    buttonStyle={[styles.btnButtonStyle, !item.hasSubscribe ? styles.activeBtnButtonStyle : {}]}
+                    containerStyle={styles.btnButtonContainerStyle}
 
-                </View>
-            </Pressable>
+                    title={!item.hasSubscribe ? `${('订阅')}` : "已订阅"}
+                />
+
+            </View>
         )
     }
     return (
@@ -101,6 +113,12 @@ const ChannelCircle = (props) => {
                 contentContainerStyle={styles.contentContainerStyle}
                 keyExtractor={(item, index) => index}
                 renderItem={renderItem}
+                ListEmptyComponent={
+                    <View style={styles.emptyBox}>
+                        <Image source={rightIconPng} style={styles.rightIcon} placeholderStyle={{ backgroundColor: "transparent" }} resizeMode={'contain'} />
+                        <Text style={styles.noMore}>没有更多新推荐了</Text>
+                    </View>
+                }
             ></FlatList>
         </View >)
 }
@@ -114,13 +132,36 @@ const styles = StyleSheet.create({
     contentContainerStyle: {
         justifyContent: "center",
         paddingVertical: 10,
-        paddingHorizontal: 15,
+        marginHorizontal: 15,
+
+    },
+    noMore: {
+        marginTop: 20,
+        fontSize: 20,
+        fontWeight: '400',
+        color: '#000000FF',
+        lineHeight: 28,
     },
     itemWrapper: {
         justifyContent: "center",
         alignItems: "center",
         marginRight: 14,
-        position: "relative"
+        position: "relative",
+        borderWidth: 0.2,
+        borderColor: "#DDDDDDFF",
+        paddingHorizontal: 19,
+        paddingVertical: 12,
+    },
+    emptyBox: {
+        width: width - 15 * 2,
+        paddingVertical: 50,
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    rightIcon: {
+        width: 80,
+        height: 80,
     },
     avatar: {
         width: 66,
@@ -155,6 +196,30 @@ const styles = StyleSheet.create({
         fontWeight: '400',
         color: '#8E8E8EFF',
         lineHeight: 17,
+    },
+    btnButtonStyle: {
+        backgroundColor: "#836BFFFF",
+        paddingVertical: 2,
+    },
+    activeBtnButtonStyle: {
+        backgroundColor: "white",
+        borderColor: "#836BFFFF",
+        borderWidth: 1
+    },
+    btnButtonContainerStyle: {
+        marginTop: 15,
+        width: "100%"
+    },
+    btnTitleStyle: {
+        fontSize: 14,
+        fontWeight: '500',
+        color: '#FFFFFFFF',
+        lineHeight: 20,
+        marginLeft: 5,
+    },
+    activeBtnTitleStyle: {
+        color: '#836BFFFF',
+
     },
 })
 export default ChannelCircle

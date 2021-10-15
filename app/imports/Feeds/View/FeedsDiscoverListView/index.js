@@ -73,6 +73,8 @@ import AllStories from '../FeedsStoriesView/constants/AllStories';
 import StoryContainer from '../FeedsStoriesView/components/StoryContainer';
 import { formatDateDetail } from "../../../../utils/room"
 import InputBar from "./InputBar"
+import Banner from "./Banner"
+
 const screenOptions = {
 	title: /** @type {string} */ (null),
 	headerShadowVisible: false,
@@ -91,7 +93,7 @@ const screenOptions = {
 		lineHeight: 25,
 	},
 	headerLeft: null,
-	headerShown: true,
+	headerShown: false,
 	contentStyle: {
 		backgroundColor: 'white',
 	},
@@ -1239,6 +1241,7 @@ class RoomsListView extends React.Component {
 
 		return (
 			<>
+				<Banner {...this.props} />
 				<ChannelCircle onStorySelect={onStorySelect} storyMessages={storyMessages} user={user} dataList={dataList} navigation={navigation} />
 				<Modal
 					animationType="slide"

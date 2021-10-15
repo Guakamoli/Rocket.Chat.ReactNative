@@ -5,6 +5,7 @@ import {
 import { Image } from 'react-native-elements';
 import I18n from '../../../../i18n';
 import ImageMap from "../../images";
+import Carousel, { Pagination } from 'react-native-snap-carousel';
 
 const { searchInputPng, inputClearPng } = ImageMap
 
@@ -24,7 +25,7 @@ const SearchInput = React.memo((props) => {
     }
     const [text, setText] = useState('')
     return (
-        <View style={styles.searchBox} key={'inputbar2'}>
+        <Pressable style={styles.searchBox} key={'inputbar2'} onPress={onPress}>
             <SearchBar
                 clearButtonMode="never"
                 inputContainerStyle={{
@@ -77,7 +78,7 @@ const SearchInput = React.memo((props) => {
                 }}
             />
 
-        </View>
+        </Pressable>
     )
 })
 const styles = StyleSheet.create({
