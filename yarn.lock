@@ -4061,12 +4061,12 @@
     query-string "^7.0.0"
     react-is "^16.13.0"
 
-"@react-navigation/core@^6.0.3":
-  version "6.0.3"
-  resolved "https://registry.yarnpkg.com/@react-navigation/core/-/core-6.0.3.tgz#f60924c2fb52002532526a25683909abfd0946fc"
-  integrity sha512-Kan/mpsCsb4NS1A+yIVpWfj6BITM051QAaQM8osWB5AfEsANhG+fCjSKL4Zv5idXpF0vxDbudj6CfnwJTnja6Q==
+"@react-navigation/core@^6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@react-navigation/core/-/core-6.1.0.tgz#95fbf54d78ad0ed976cb73219f0c0199775a1d26"
+  integrity sha512-LyZqD/ZCXSK9+ES8KiH+0tU+7aL84jUw1N9OxZfEuns/OcnSXKC3sOO+9NQ9XRowB1wLUfJhmqZ8G8rUlg33fQ==
   dependencies:
-    "@react-navigation/routers" "^6.0.2"
+    "@react-navigation/routers" "^6.1.0"
     escape-string-regexp "^4.0.0"
     nanoid "^3.1.23"
     query-string "^7.0.0"
@@ -4086,17 +4086,17 @@
   resolved "https://registry.yarnpkg.com/@react-navigation/elements/-/elements-1.1.0.tgz#483155ccf5a8f18d015db283bed34cc2255e2e9e"
   integrity sha512-jZncciZPGuoP6B6f+Wpf6MYSSYy86B2HJDbFTCtT5xZV0w6V9GgCeqvSTOEAxifZrmKl8uDxsr0GrIxgQE8NxA==
 
-"@react-navigation/elements@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@react-navigation/elements/-/elements-1.2.0.tgz#e0069fd2d34f53a39594833d1bf249e71988c60d"
-  integrity sha512-0eraS7Gj39CD26aAyUyZdyoCe1XBEa9CbHoFHCv3N5/+FSfX+HYdPzkOi3KPT3nEdNx7GD4rTWN2y0qZ7yUiaA==
+"@react-navigation/elements@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@react-navigation/elements/-/elements-1.2.1.tgz#86f19781c6f34a5c9dd25dca99915e0306f477d1"
+  integrity sha512-EnmAbKMsptrliRKf95rdgS6BhMjML+mIns06+G1Vdih6BrEo7/0iytThUv3WBf99AI76dyEq/cqLUwHPiFzXWg==
 
 "@react-navigation/native-stack@^6.2.1":
-  version "6.2.3"
-  resolved "https://registry.yarnpkg.com/@react-navigation/native-stack/-/native-stack-6.2.3.tgz#e22576f6a13adf8d751a42a4eb94054ebed869fc"
-  integrity sha512-0me63n2ec3rD6Y882IgVAqyJh8yRH2GzwmVdveuZNOGgRkr9+aLhXp9VGw190xLbcmlxdDx/tj+d8hhtRA6Q+A==
+  version "6.2.4"
+  resolved "https://registry.yarnpkg.com/@react-navigation/native-stack/-/native-stack-6.2.4.tgz#d17e21646e07b9fbb388ad8acface34ed953e6d0"
+  integrity sha512-Z3ymMuJwjtgy4OlGPhz2IMatzBruSP6zZnOunn3Nem6npk+Gl4BoXQn7nhjw/7ntpKY1IBSLAGicxzz8OZc68Q==
   dependencies:
-    "@react-navigation/elements" "^1.2.0"
+    "@react-navigation/elements" "^1.2.1"
     warn-once "^0.1.0"
 
 "@react-navigation/native@6.0.2":
@@ -4109,11 +4109,11 @@
     nanoid "^3.1.23"
 
 "@react-navigation/native@^6.0.4":
-  version "6.0.5"
-  resolved "https://registry.yarnpkg.com/@react-navigation/native/-/native-6.0.5.tgz#565748eadc48881b946a3474c74b42c507edffe8"
-  integrity sha512-e23rhomQS98sNMcldO2mPVFOcpizrkfdZ6d7wK8nXhkd/m43IvhGmzAgpX4Iz7MFbOFsHGlDRzwba3nlYIGm1Q==
+  version "6.0.6"
+  resolved "https://registry.yarnpkg.com/@react-navigation/native/-/native-6.0.6.tgz#0f2577358d73d7b21ff5b2455f0a2d51b1ad2837"
+  integrity sha512-XzL7YPsaRRQgdCQSXbA8PJWLN2I4lhUUvSFoKQPNO4DS6y8eqZI1V8COPYlJg8+tsetGV5J8jt+jVjWL7h6ZrQ==
   dependencies:
-    "@react-navigation/core" "^6.0.3"
+    "@react-navigation/core" "^6.1.0"
     escape-string-regexp "^4.0.0"
     nanoid "^3.1.23"
 
@@ -4124,10 +4124,10 @@
   dependencies:
     nanoid "^3.1.23"
 
-"@react-navigation/routers@^6.0.2":
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/@react-navigation/routers/-/routers-6.0.2.tgz#7b0bf01e9327e8ffc7ef2d188ea6cfec3cb8cca6"
-  integrity sha512-VEyBlpY+TBMTKE7qaWll/CUYcRctCrJAFx6jIgzkSxncsCOtgEeDEsDLggkGQEVAwOnftAiuXeVRlHkRswIXiw==
+"@react-navigation/routers@^6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@react-navigation/routers/-/routers-6.1.0.tgz#d5682be88f1eb7809527c48f9cd3dedf4f344e40"
+  integrity sha512-8xJL+djIzpFdRW/sGlKojQ06fWgFk1c5jER9501HYJ12LF5DIJFr/tqBI2TJ6bk+y+QFu0nbNyeRC80OjRlmkA==
   dependencies:
     nanoid "^3.1.23"
 
@@ -15429,8 +15429,8 @@ react-lifecycles-compat@^3.0.4:
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
 react-native-aliavkit@Guakamoli/react-native-aliavkit#feat/postUI:
-  version "1.0.2"
-  resolved "https://codeload.github.com/Guakamoli/react-native-aliavkit/tar.gz/9836c2936fc1d86e993b62ce27d8345259898d76"
+  version "1.2.0"
+  resolved "https://codeload.github.com/Guakamoli/react-native-aliavkit/tar.gz/efdcb9162c8ad964f9eadd1dfe9b611505e1ae91"
   dependencies:
     "@react-native-community/cameraroll" Guakamoli/react-native-cameraroll#feat/request-photo-access
     "@react-navigation/native" "^6.0.4"
@@ -15441,6 +15441,7 @@ react-native-aliavkit@Guakamoli/react-native-aliavkit#feat/postUI:
     react-native-snap-carousel "^3.9.1"
     react-native-super-grid "^4.1.3"
     react-native-svg "^12.1.1"
+    react-native-trimmer Guakamoli/react-native-trimmer#kameoappCamera
     react-native-video "^5.1.1"
 
 react-native-animatable@1.3.3, react-native-animatable@^1.1.0, react-native-animatable@^1.3.3:
@@ -15910,6 +15911,10 @@ react-native-tooltips@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/react-native-tooltips/-/react-native-tooltips-1.0.3.tgz#e0fe0789aa890f27ab6eacb1fc02b7ddcc7c5c9d"
   integrity sha512-f2XEL23FlPMpIq11t6EIYGf1sl1FoWCwQRFIvQB9+6v5Jyod1O61yoKy2lgg91Egz531Szmqac0wTXuxVC9vjw==
+
+react-native-trimmer@Guakamoli/react-native-trimmer#kameoappCamera:
+  version "1.1.2-patch2"
+  resolved "https://codeload.github.com/Guakamoli/react-native-trimmer/tar.gz/a766e025ae64c33bde9e572ea5eb327a9f4bd945"
 
 react-native-ui-lib@RocketChat/react-native-ui-lib#minor-improvements:
   version "4.2.1"

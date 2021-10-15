@@ -9,7 +9,7 @@ import {
     RefreshControl,
     StyleSheet,
     Pressable,
-
+    Modal,
 } from 'react-native';
 import { Image } from "react-native-elements"
 import LinearGradient from "react-native-linear-gradient"
@@ -17,7 +17,7 @@ import ImageMap from "../../images"
 import Avatar from '../../../../containers/Avatar';
 import ImagePicker from 'react-native-image-crop-picker';
 import I18n from '../../../../i18n';
-
+import StoryCamera from '../FeedsStoriesView/components/StoryCamera'
 const { shootPng } = ImageMap
 const colors = ['#E383DDFF', '#E383DDFF', '#7A83F5FF']
 const silentColors = ['#C7C7C7FF', '#C7C7C7FF']
@@ -25,6 +25,7 @@ const silentColors = ['#C7C7C7FF', '#C7C7C7FF']
 const ChannelCircle = (props) => {
     const { onStorySelect, dataList, user, storyMessages, navigation } = props
     const [data, setData] = useState([])
+    const [StoryCameraOpen, setStoryCamert] = useState(false)
 
     const generateData = () => {
         setData(dataList)
@@ -34,24 +35,25 @@ const ChannelCircle = (props) => {
     }, [dataList])
     const renderItem = ({ item, index }) => {
         const takeVideo = async () => {
-            let videoPickerConfig = {
-                mediaType: 'video'
-            };
-            const libPickerLabels = {
-                cropperChooseText: I18n.t('Choose'),
-                cropperCancelText: I18n.t('Cancel'),
-                loadingLabelText: I18n.t('Processing')
-            };
-            videoPickerConfig = {
-                ...videoPickerConfig,
-                ...libPickerLabels
-            };
-            try {
-                const video = await ImagePicker.openCamera(videoPickerConfig);
-                navigation.navigate('FeedsPublishView', { room: item, attachments: [video], type: "video" });
+            //     let videoPickerConfig = {
+            //         mediaType: 'video'
+            //     };
+            //     const libPickerLabels = {
+            //         cropperChooseText: I18n.t('Choose'),
+            //         cropperCancelText: I18n.t('Cancel'),
+            //         loadingLabelText: I18n.t('Processing')
+            //     };
+            //     videoPickerConfig = {
+            //         ...videoPickerConfig,
+            //         ...libPickerLabels
+            //     };
+            //     try {
+            //         const video = await ImagePicker.openCamera(videoPickerConfig);
+            //         navigation.navigate('FeedsPublishView', { room: item, attachments: [video], type: "video" });
 
-            } catch (e) {
-            }
+            //     } catch (e) {
+            //     }
+            setStoryCamert(true);
         }
         const onPress = () => {
 
@@ -105,6 +107,14 @@ const ChannelCircle = (props) => {
     }
     return (
         <View style={styles.root}>
+            <Modal
+                animationType="slide"
+                transparent={false}
+                visible={StoryCameraOpen}
+                style={styles.modal}
+            >
+                <StoryCamera onCloseCamera={() => { setStoryCamert(false) }} />
+            </Modal>
             <FlatList
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
