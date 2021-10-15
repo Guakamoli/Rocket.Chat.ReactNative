@@ -72,7 +72,7 @@ import CubeNavigationHorizontal from '../FeedsStoriesView/cubicTransForm';
 import AllStories from '../FeedsStoriesView/constants/AllStories';
 import StoryContainer from '../FeedsStoriesView/components/StoryContainer';
 import { formatDateDetail } from "../../../../utils/room"
-
+import UploadProgress from "./UploadProgress"
 const { searchPng, companyTitlePng } = ImageMap
 const INITIAL_NUM_TO_RENDER = isTablet ? 20 : 12;
 const CHATS_HEADER = 'Chats';
@@ -1148,7 +1148,8 @@ class RoomsListView extends React.Component {
 		const { searching, storyMessages, channelsDataMap, channelsData, dataList } = this.state;
 		const {
 			sortBy, queueSize, inquiryEnabled, encryptionBanner, user,
-			navigation
+			navigation,
+			baseUrl,
 		} = this.props;
 		const [isModelOpen, setModel] = useState(false);
 		const [currentUserIndex, setCurrentUserIndex] = useState(0);
@@ -1224,6 +1225,7 @@ class RoomsListView extends React.Component {
 		return (
 			<>
 				<ChannelCircle onStorySelect={onStorySelect} storyMessages={storyMessages} user={user} dataList={dataList} navigation={navigation} />
+				{dataList[0]?.rid && user.username === dataList[0]?.name ? <UploadProgress rid={dataList[0].rid} user={user} baseUrl={baseUrl} width={width} /> : null}
 				<Modal
 					animationType="slide"
 					transparent={false}

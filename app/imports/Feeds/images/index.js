@@ -41,6 +41,7 @@ const ImageMap = {
   downLoadingGif: require('../public/images/downLoading.gif'),
 
   rightIconPng: require('../public/images/rightIcon.png'),
+  closeSmallPng: require('../public/images/closeSmall.png'),
 
 }
 export default ImageMap

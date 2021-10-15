@@ -19,7 +19,7 @@ import Avatar from '../../../../containers/Avatar';
 import ImagePicker from 'react-native-image-crop-picker';
 import I18n from '../../../../i18n';
 const { width } = Dimensions.get("window")
-const { rightIconPng } = ImageMap
+const { rightIconPng, closeSmallPng } = ImageMap
 const colors = ['#E383DDFF', '#E383DDFF', '#7A83F5FF']
 const silentColors = ['#C7C7C7FF', '#C7C7C7FF']
 
@@ -73,8 +73,17 @@ const ChannelCircle = (props) => {
         const onSubscribe = () => {
 
         }
+        const hideUser = () => {
+            // 
+        }
         return (
             <View style={styles.itemWrapper}>
+                <Image source={closeSmallPng}
+                    onPress={hideUser}
+                    style={styles.closeSmall}
+                    containerStyle={styles.closeSmallWrapper}
+                    placeholderStyle={{ backgroundColor: "transparent" }}
+                    resizeMode={'contain'} />
 
                 <Avatar
 
@@ -126,8 +135,7 @@ const styles = StyleSheet.create({
     root: {
         justifyContent: "center",
         paddingVertical: 10,
-        borderBottomColor: "#DCDDDCFF",
-        borderBottomWidth: 1
+
     },
     contentContainerStyle: {
         justifyContent: "center",
@@ -162,6 +170,16 @@ const styles = StyleSheet.create({
     rightIcon: {
         width: 80,
         height: 80,
+    },
+    closeSmall: {
+        width: 8,
+        height: 8,
+
+    },
+    closeSmallWrapper: {
+        position: "absolute",
+        right: 12,
+        top: 12
     },
     avatar: {
         width: 66,
@@ -198,12 +216,12 @@ const styles = StyleSheet.create({
         lineHeight: 17,
     },
     btnButtonStyle: {
-        backgroundColor: "#836BFFFF",
+        backgroundColor: "#7166F9FF",
         paddingVertical: 2,
     },
     activeBtnButtonStyle: {
         backgroundColor: "white",
-        borderColor: "#836BFFFF",
+        borderColor: "#7166F9FF",
         borderWidth: 1
     },
     btnButtonContainerStyle: {
@@ -218,7 +236,7 @@ const styles = StyleSheet.create({
         marginLeft: 5,
     },
     activeBtnTitleStyle: {
-        color: '#836BFFFF',
+        color: '#7166F9FF',
 
     },
 })
