@@ -112,6 +112,7 @@ export function sendFileMessage(rid, fileInfo, tmid, server, user) {
 						log(e);
 					}
 				} else {
+
 					try {
 						await db.action(async () => {
 							await uploadRecord.update((u) => {
@@ -131,6 +132,7 @@ export function sendFileMessage(rid, fileInfo, tmid, server, user) {
 
 			uploadQueue[fileInfo.path].catch(async (error) => {
 				try {
+
 					await db.action(async () => {
 						await uploadRecord.update((u) => {
 							u.error = true;
@@ -138,6 +140,7 @@ export function sendFileMessage(rid, fileInfo, tmid, server, user) {
 					});
 				} catch (e) {
 					log(e);
+					console.info("上传错误", e)
 				}
 				reject(error);
 			});
