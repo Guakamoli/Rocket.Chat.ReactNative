@@ -114,6 +114,7 @@ class RoomView extends React.Component {
 		const room = props.route.params?.room ?? {
 			rid: this.rid, t: this.t, name, fname, prid
 		};
+
 		this.jumpToMessageId = props.route.params?.jumpToMessageId;
 		const roomUserId = props.route.params?.roomUserId ?? RocketChat.getUidDirectMessage(room);
 		this.state = {
@@ -134,7 +135,6 @@ class RoomView extends React.Component {
 			roomUserId
 		};
 		this.setHeader();
-
 		if (room && room.observe) {
 			this.observeRoom(room);
 		} else if (this.rid) {
@@ -199,6 +199,12 @@ class RoomView extends React.Component {
 		const stateUpdated = stateAttrsUpdate.some(key => nextState[key] !== state[key]);
 		if (stateUpdated) {
 			return true;
+		}
+		if (nextProps.open !== this.props.open && nextProps.open) {
+			// 
+			console.info('this.flatList', this.flatList)
+			this.flatList.current?.showModal?.()
+			return false
 		}
 		if (!dequal(nextProps.insets, insets)) {
 			return true;
@@ -300,7 +306,7 @@ class RoomView extends React.Component {
 		const t = room?.t;
 		const { id: userId, token } = user;
 		const avatar = room?.name;
-		if (!room?.rid) {
+		if (!room?.rid || this.props.mode) {
 			return;
 		}
 		navigation.setOptions({
@@ -790,7 +796,7 @@ class RoomView extends React.Component {
 		const {
 			joined, room, selectedMessage, editing, replying, replyWithMention, readOnly
 		} = this.state;
-		const { navigation, theme, user } = this.props;
+		const { navigation, theme, user, mode } = this.props;
 
 		if (!this.rid) {
 			return null;
@@ -836,6 +842,7 @@ class RoomView extends React.Component {
 				replyCancel={this.onReplyCancel}
 				getCustomEmoji={this.getCustomEmoji}
 				navigation={navigation}
+				mode={mode}
 			/>
 		);
 	};
@@ -855,32 +862,33 @@ class RoomView extends React.Component {
 		} = room;
 
 		return (
-			<SafeAreaView
-				style={{ backgroundColor: themes[theme].backgroundColor }}
-				testID='room-view'
-			>
+			<
+
+				>
 				<StatusBar />
 
 				<List
 					ref={this.list}
 					listRef={this.flatList}
 					rid={rid}
-
+					mode={this.props.mode}
 					tmid={this.tmid}
 					theme={theme}
 					tunread={room?.tunread}
 					ignored={room?.ignored}
 					renderRow={this.renderItem}
 					loading={loading}
+					animatedPosition={this.props.animatedPosition}
 					navigation={navigation}
 					hideSystemMessages={Array.isArray(sysMes) ? sysMes : Hide_System_Messages}
 					showMessageInMainThread={false}
+					renderFooter={this.renderFooter}
 				/>
-				{this.renderFooter()}
+				{!this.props.mode && this.renderFooter()}
 				{this.renderActions()}
 
 				{/* <Loading visible={showingBlockingLoader} /> */}
-			</SafeAreaView>
+			</>
 		);
 	}
 }

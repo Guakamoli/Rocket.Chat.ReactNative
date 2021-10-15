@@ -13,6 +13,7 @@ import Story from './Story';
 import UserView from './UserView';
 import ProgressArray from './ProgressArray';
 import AsyncStorage from '@react-native-community/async-storage';
+import UpLoadControl from "../../FeedsStoriesView/components/UpLoadControl"
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -188,10 +189,12 @@ const StoryContainer = (props) => {
               length={stories.map((_, i) => i)}
               progress={{ id: currentIndex }}
             />
-            <UserView name={user.name} user={user} onClosePress={props.onClose} currentIndex={currentIndex} />
+            <UserView name={user.name} user={user} onClosePress={props.onClose} currentIndex={currentIndex} {...props} />
 
 
           </OpacityContainer>
+          <UpLoadControl key='UpLoadControl' currentIndex={currentIndex} item={stories[index]} onPause={onPause} />
+
         </View>
 
 

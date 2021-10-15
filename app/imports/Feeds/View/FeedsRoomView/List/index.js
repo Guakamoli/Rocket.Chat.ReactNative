@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createRef, forwardRef, useImperativeHandle } from 'react';
 import { RefreshControl, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { Q } from '@nozbe/watermelondb';
@@ -17,6 +17,7 @@ import List from './List';
 import NavBottomFAB from './NavBottomFAB';
 import debounce from '../../../../../utils/debounce';
 import styles from '../styles';
+import { useActionSheet } from '../../../../../containers/FeedsActionSheet';
 
 const QUERY_SIZE = 50;
 
@@ -31,6 +32,21 @@ const onScroll = ({ y }) => event(
 	{ useNativeDriver: true }
 );
 
+const FeedsActions = React.memo(forwardRef((props, ref) => {
+	const { showActionSheet, hideActionSheet } = useActionSheet();
+
+	const showModal = (data, renderItem, renderFooter, animatedPosition) => {
+		console.info('hahahah')
+		showActionSheet({
+			data,
+			renderItem,
+			renderFooter,
+			animatedPosition
+		});
+	}
+	useImperativeHandle(ref, () => ({ showModal }));
+	return null
+}))
 class ListContainer extends React.Component {
 	static propTypes = {
 		renderRow: PropTypes.func,
@@ -66,6 +82,7 @@ class ListContainer extends React.Component {
 		if (showList) {
 			this.query();
 		}
+		this.actionRef = createRef()
 		this.unsubscribeFocus = props.navigation.addListener('focus', () => {
 			this.animated = true;
 		});
@@ -77,6 +94,11 @@ class ListContainer extends React.Component {
 
 	componentDidMount() {
 		this.mounted = true;
+		if (this.props.listRef) {
+			this.props.listRef.current = this
+
+		}
+
 		// try {
 
 		// 	if (this.props.listRef.current) {
@@ -342,9 +364,16 @@ class ListContainer extends React.Component {
 		})
 		this.query()
 	}
+
+	showModal = () => {
+		// 打开弹出窗口
+		console.info(this.actionRef, 'this.actionRef')
+		this.actionRef?.showModal?.(this.state.messages, this.renderItem, this.props.renderFooter, this.props.animatedPosition)
+
+	}
 	render() {
 		console.count(`${this.constructor.name}.render calls`);
-		const { rid, tmid, listRef, item } = this.props;
+		const { rid, tmid, listRef, item, nochild } = this.props;
 		const { messages, refreshing } = this.state;
 		const { theme } = this.props;
 		return (
@@ -354,16 +383,18 @@ class ListContainer extends React.Component {
 				{this.state.showList ? (
 					<List
 						onScroll={this.onScroll}
-
+						mode={this.props.mode}
 						scrollEventThrottle={16}
 						listRef={listRef}
 						data={messages}
+						theme={theme}
+						nochild={nochild}
 						renderItem={this.renderItem}
 						onEndReached={this.onEndReached}
 						ListFooterComponent={this.renderFooter}
 						onScrollToIndexFailed={this.handleScrollToIndexFailed}
 						onViewableItemsChanged={this.onViewableItemsChanged}
-						viewabilityConfig={this.viewabilityConfig}
+						// viewabilityConfig={this.viewabilityConfig}
 						refreshControl={(
 							<RefreshControl
 								refreshing={refreshing}
@@ -373,7 +404,8 @@ class ListContainer extends React.Component {
 						)}
 					/>
 				) : null}
-
+				<FeedsActions data={messages} ref={ref => this.actionRef = ref}
+				/>
 				{/* <NavBottomFAB y={this.y} onPress={this.jumpToBottom} isThread={!!tmid} /> */}
 			</>
 		);

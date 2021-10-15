@@ -367,7 +367,6 @@ class MessageContainer extends React.Component {
 			message = getMessageTranslation(item, autoTranslateLanguage) || message;
 		}
 		message = `   ${message}`
-		console.info(message, 'messagemessage', item)
 		return (
 			<MessageContext.Provider
 				value={{

@@ -63,7 +63,7 @@ import { E2E_BANNER_TYPE } from '../../../../lib/encryption/constants';
 
 import { getInquiryQueueSelector } from '../../../../ee/omnichannel/selectors/inquiry';
 import { changeLivechatStatus, isOmnichannelStatusAvailable } from '../../../../ee/omnichannel/lib';
-import FeedsItem from "./Item"
+import FeedsItem from "../FeedsListView/Item"
 import { Image, Avatar } from "react-native-elements"
 import ImageMap from "../../images"
 import { lessThan } from 'react-native-reanimated';
@@ -72,7 +72,30 @@ import CubeNavigationHorizontal from '../FeedsStoriesView/cubicTransForm';
 import AllStories from '../FeedsStoriesView/constants/AllStories';
 import StoryContainer from '../FeedsStoriesView/components/StoryContainer';
 import { formatDateDetail } from "../../../../utils/room"
-
+import InputBar from "./InputBar"
+const screenOptions = {
+	title: /** @type {string} */ (null),
+	headerShadowVisible: false,
+	headerTransparent: true,
+	statusBarTranslucent: true,
+	statusBarStyle: 'light',
+	statusBarColor: 'transparent',
+	headerStyle: {
+		backgroundColor: 'transparent',
+	},
+	headerTintColor: 'rgba(255,255,255,1)',
+	headerTitleStyle: {
+		color: 'rgba(255,255,255,1)',
+		fontSize: 18,
+		fontWeight: '500',
+		lineHeight: 25,
+	},
+	headerLeft: null,
+	headerShown: true,
+	contentStyle: {
+		backgroundColor: 'white',
+	},
+}
 const { searchPng, companyTitlePng } = ImageMap
 const INITIAL_NUM_TO_RENDER = isTablet ? 20 : 12;
 const CHATS_HEADER = 'Chats';
@@ -396,22 +419,16 @@ class RoomsListView extends React.Component {
 		const { navigation, isMasterDetail, insets } = this.props;
 		const headerTitlePosition = getHeaderTitlePosition({ insets, numIconsRight: searching ? 0 : 3 });
 		return {
-			headerLeft: () => (
-				<Image source={companyTitlePng}
-					style={styles.companyTitlePng} resizeMode={'contain'}
-					placeholderStyle={{ backgroundColor: "transparent" }} />
-			),
+			headerLeft: () => null,
 			headerStyle: {
 				backgroundColor: "white"
 			},
+			headerShown: true,
 			headerLeftContainerStyle: { paddingLeft: 15 },
 			headerRightContainerStyle: { paddingRight: 15 },
 			headerTitle: () => null,
 			headerCenter: () => null,
-			headerRight: () => (
-				<Image source={searchPng} style={styles.searchPng} resizeMode={'contain'}
-					placeholderStyle={{ backgroundColor: "transparent" }}
-					onPress={this.toSearchView} />)
+			headerRight: () => null
 		};
 	}
 	toSearchView = () => {
@@ -422,8 +439,7 @@ class RoomsListView extends React.Component {
 	}
 	setHeader = () => {
 		const { navigation } = this.props;
-		const options = this.getHeader();
-		navigation.setOptions(options);
+
 	}
 
 	internalSetState = (...args) => {
@@ -1408,9 +1424,10 @@ class RoomsListView extends React.Component {
 
 		return (
 			<>
-				<SafeAreaView testID='rooms-list-view' style={{ backgroundColor: "white" }}>
+				<SafeAreaView vertical={false} style={{ backgroundColor: "white" }}>
 					<StatusBar />
-					{this.renderHeader()}
+					<InputBar {...this.props} />
+
 					{this.renderScroll()}
 
 				</SafeAreaView>
@@ -1452,4 +1469,7 @@ const mapDispatchToProps = dispatch => ({
 	closeServerDropdown: () => dispatch(closeServerDropdownAction())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withDimensions(withTheme(withSafeAreaInsets(RoomsListView))));
+export default {
+	component: connect(mapStateToProps, mapDispatchToProps)(withDimensions(withTheme(withSafeAreaInsets(RoomsListView)))),
+	options: screenOptions,
+}

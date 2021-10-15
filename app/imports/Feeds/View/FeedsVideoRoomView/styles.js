@@ -4,7 +4,11 @@ import sharedStyles from '../../../../views/Styles';
 
 export default StyleSheet.create({
 	container: {
-		flex: 1
+		flex: 1,
+		backgroundColor: "black",
+	},
+	contentContainerStyle: {
+
 	},
 	safeAreaView: {
 		flex: 1

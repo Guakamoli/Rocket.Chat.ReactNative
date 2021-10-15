@@ -934,7 +934,7 @@ class MessageBox extends Component {
 		console.count(`${this.constructor.name}.render calls`);
 		const { showEmojiKeyboard } = this.state;
 		const {
-			user, baseUrl, theme, iOSScrollBehavior
+			user, baseUrl, theme, iOSScrollBehavior, mode
 		} = this.props;
 		return (
 			<MessageboxContext.Provider
@@ -953,11 +953,12 @@ class MessageBox extends Component {
 					onKeyboardResigned={this.onKeyboardResigned}
 					onItemSelected={this.onEmojiSelected}
 					trackInteractive
-					// revealKeyboardInteractive
-					// requiresSameParentToManageScrollView
+
+					revealKeyboardInteractive={!!mode}
+					requiresSameParentToManageScrollView={!!mode}
 					addBottomView
 					bottomViewColor={themes[theme].messageboxBackground}
-					iOSScrollBehavior={iOSScrollBehavior}
+				// iOSScrollBehavior={iOSScrollBehavior}
 				/>
 			</MessageboxContext.Provider>
 		);
