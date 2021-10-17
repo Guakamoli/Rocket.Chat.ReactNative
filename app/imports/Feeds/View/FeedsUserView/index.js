@@ -40,6 +40,8 @@ import Avatar from '../../../../containers/Avatar';
 import StatusBar from '../../../../containers/StatusBar';
 import log, { logEvent, events } from '../../../../utils/log';
 import ServicePage from "./ServicePage"
+import PostPage from "./PostPage"
+
 import ComponentPage from "./ComponentPage"
 
 const { verifiedPng,
@@ -74,7 +76,7 @@ const screenOptions = {
 
 const BottomComponents = (props) => {
     // 在这里获取用户的作品信息
-    const { navigation, componentTop, scrollY, scrollRef } = props
+    const { navigation, componentTop, scrollY, scrollRef, user } = props
     const { userInfo = { username: "", rid: "" }, type } = props.route.params || {}
 
     const headerHeight = useHeaderHeight();
@@ -83,12 +85,13 @@ const BottomComponents = (props) => {
     const [countMap, setCountMap] = useState({
         component: 0,
         service: 0,
+        post: 0,
     })
     const getCountData = async () => {
         const db = database.active;
         try {
             const whereClause = [
-                Q.where('rid', Q.eq(userInfo.rid)),
+                Q.where('rid', Q.eq(user.rid)),
                 Q.where('tmid', null),
                 Q.where('t', Q.eq('discussion-created')),
 
@@ -101,15 +104,32 @@ const BottomComponents = (props) => {
                     )
                 ),
             ];
+            const whereStoryClause = [
+                Q.where('rid', Q.eq(user.rid)),
+                Q.and(
+                    Q.where('attachments', Q.like(`%paiyastory:%`)),
+
+
+                ),
+            ]
             const componentCount = await db
                 .get('messages')
                 .query(...whereClause)
                 .fetchCount()
+            const postCount = await db
+                .get('messages')
+                .query(...whereStoryClause)
+                .fetchCount()
             setCountMap({
                 component: componentCount,
-                service: 1
+                service: 1,
+                post: postCount
             })
-            console.info("loading", true)
+            console.info("loading", true, {
+                component: componentCount,
+                service: 1,
+                post: postCount
+            }, user.rid, 'B ')
             setLoaded(true)
         }
         catch (e) {
@@ -118,8 +138,11 @@ const BottomComponents = (props) => {
 
     }
     useEffect(() => {
-        getCountData()
-    }, [])
+        if (user.rid) {
+            getCountData()
+
+        }
+    }, [user])
     const changeTabIndex = async index => {
         setActiveindex(index);
     };
@@ -178,7 +201,10 @@ const BottomComponents = (props) => {
 
     >
         <ComponentPage tabLabel={`作品 ${countMap.component ? countMap.component : ''}`} {...props} loaded={loaded} key="ComponentPage" />
-        <ServicePage tabLabel={`服务 ${countMap.component ? countMap.service : ''}`} {...props} loaded={loaded} key="ServicePage" />
+        {type ? <ServicePage tabLabel={`服务 ${countMap.service ? countMap.service : ''}`} {...props} loaded={loaded} key="ServicePage" /> : (
+            <PostPage tabLabel={`快拍 ${countMap.post ? countMap.post : ''}`} {...props} loaded={loaded} key="PostPage" />
+
+        )}
 
     </ScrollableTabView>)
 }
@@ -197,28 +223,49 @@ const UserView = (props) => {
     const onPress = useCallback(() => navigation.goBack());
     const [componentTop, setComponentTop] = useState(1);
     const [hasSubscribe, setHasSubscribe] = useState(null)
-    const getUserData = async (userInfo) => {
+    const getUserData = async () => {
         // 先查找有没有房间，没有房间就用用户信息
-        const db = database.active;
-        const roomCollection = db.get('rooms');
+        try {
 
-        const [roomRecord] = await roomCollection.query(Q.where('id', Q.eq(userInfo.rid))).fetch();
-        console.info(roomRecord, 'roomRecord', {
-            username: roomRecord?.username || userInfo.username || selfUser.username,
-            rid: roomRecord?.id,
-        })
-        if (roomRecord) {
+
+            const db = database.active;
+            const roomCollection = db.get('subscriptions');
+            let whereClause = [
+                Q.where('rid', Q.eq(userInfo.rid))
+
+            ]
+            let roomRecord = null
+            if (type) {
+                roomRecord = (await roomCollection.query(...whereClause).fetch())[0]
+                if (!roomRecord) {
+                    roomRecord = (await RocketChat.search({ text: userInfo.username || user.username, filterUsers: false }))[0]
+
+                }
+            } else {
+                roomRecord = (await roomCollection.query(Q.where('fname', Q.eq(user.username))).fetch())[0]
+
+            }
+
+            console.info(roomRecord, 'roomRecord', userInfo, user)
             channelRef.current = {
-                rid: roomRecord?.id,
+                rid: userInfo?.rid,
                 t: "c"
             }
+            if (roomRecord) {
+                channelRef.current = {
+                    rid: roomRecord?.id,
+                    t: "c"
+                }
+            }
+            setUser({
+                username: roomRecord?.username || userInfo.username || selfUser.username,
+                rid: roomRecord?.id,
+            })
+        } catch (w) {
+            console.info("错误", w)
         }
-        setUser({
-            username: roomRecord?.username || userInfo.username || selfUser.username,
-            rid: roomRecord?.id,
-        })
     }
-    const getHasSubscribe = async (userInfo) => {
+    const getHasSubscribe = async () => {
         if (!userInfo.username) return
         const db = database.active;
 
@@ -269,9 +316,12 @@ const UserView = (props) => {
     }
     useEffect(() => {
         setHeader()
-        getHasSubscribe(userInfo)
-        getUserData(userInfo)
+        getHasSubscribe()
+        getUserData()
     }, [])
+    const onRefresh = () => {
+        getUserData()
+    }
     // const scale = useRef(new Animated.Value(1)).current;
     const scrollY = useRef(new Animated.Value(0)).current;
     const onSubscribe = async () => {
@@ -425,6 +475,7 @@ const UserView = (props) => {
                     channelsDataMap={{
                         [`${user.rid}`]: { rid: user.rid, name: user.username }
                     }}
+                    user={user}
                     scrollRef={scrollRef}
                     componentTop={componentTop}
                     scrollY={scrollY} />
@@ -450,7 +501,8 @@ const UserView = (props) => {
             <Animated.FlatList showsVerticalScrollIndicator={false}
                 ref={scrollRef}
                 onScroll={onScroll}
-
+                onRefresh={onRefresh}
+                refreshing={false}
                 ListHeaderComponent={renderHeader}
                 scrollEventThrottle={16}
 

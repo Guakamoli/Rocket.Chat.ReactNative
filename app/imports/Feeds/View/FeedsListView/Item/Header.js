@@ -18,6 +18,7 @@ const { searchPng, companyTitlePng } = ImageMap
 const Header = React.memo((props) => {
     const { username, item, navigation, channelsDataMap } = props
     const onPress = useCallback(() => {
+        console.info("电脑", item,)
         navigation.push("FeedsUserView", { userInfo: { username: channelsDataMap?.[item.rid]?.name, rid: item.rid, }, type: "pop" })
     });
     return (

@@ -590,7 +590,7 @@ class RoomsListView extends React.Component {
 			.observe();
 		this.messagesStorySubscription = this.messagesStoryObservable
 			.subscribe(async (messages) => {
-				console.info("发生了打打的改变", messages)
+				console.info("story的信息", messages)
 				try {
 					messages = messages.filter(m => m.attachments[0].attachments[0] === undefined);
 					let storyReadMap = await AsyncStorage.getItem("storyReadMap")
@@ -654,7 +654,6 @@ class RoomsListView extends React.Component {
 						this.uploadsSubscription = this.uploadsObservable
 							.subscribe((uploads) => {
 								let hasUpdate = false
-								console.info(uploads, 'uploadsuploadsuploads')
 								uploads.forEach(async (u) => {
 									if (!RocketChat.isUploadActive(u.path) && !u.error) {
 										hasUpdate = true
@@ -732,7 +731,6 @@ class RoomsListView extends React.Component {
 			.observe();
 		this.messagesSubscription = this.messagesObservable
 			.subscribe((messages) => {
-				console.info('postmessage', messages)
 				messages = messages.filter(m => m.attachments[0].attachments[0] !== undefined);
 				if (this.mounted) {
 					this.setState({ messages }, () => this.update());
@@ -744,7 +742,6 @@ class RoomsListView extends React.Component {
 			});
 		this.querySubscription = observable.subscribe((data) => {
 			let tempChats = [];
-			// console.info(data, "daaratatat")
 			let chats = data;
 			let chatsUpdate = [];
 			if (showUnread) {
@@ -1319,7 +1316,6 @@ class RoomsListView extends React.Component {
 			width
 
 		} = this.props;
-		console.info(item, 'itemasas')
 		const username = user.username
 		const id = this.getUidDirectMessage(item);
 		return (

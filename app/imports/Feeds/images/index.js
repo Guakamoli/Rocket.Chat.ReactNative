@@ -60,5 +60,7 @@ const ImageMap = {
   rightIconPng: require('../public/images/rightIcon.png'),
   closeSmallPng: require('../public/images/closeSmall.png'),
 
+  noComponentPng: require('../public/images/noComponent.png'),
+  noShootPng: require('../public/images/noShoot.png'),
 }
 export default ImageMap
