@@ -88,7 +88,6 @@ const ProgressBox = React.memo(props => {
 
 const UpLoadControl = React.memo((props) => {
     const { item, onPause, stories, index } = props
-    console.info(item.row, 'hahahahah', stories, index)
 
     const sheetRef = useRef(null)
     const [open, setOpen] = useState(false)
@@ -249,7 +248,6 @@ const UpLoadControl = React.memo((props) => {
             const documentDir = `${RNFetchBlob.fs.dirs.DocumentDir}/`;
             const path = `${documentDir + SHA256(url) + extension}`;
             const file = await RNFetchBlob.config({ path }).fetch('GET', mediaAttachment).progress((received, total) => {
-                console.info('progress', received / total)
                 setPercent(parseFloat((received / total) * 100).toFixed(2));
 
             }).then((resp) => {

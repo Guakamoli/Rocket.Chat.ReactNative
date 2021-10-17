@@ -5,7 +5,9 @@ import {
     Animated,
     Dimensions,
     StyleSheet,
-    Platform
+    Platform,
+    Easing
+
 } from 'react-native';
 import {
     PanGestureHandler, State, TapGestureHandler
@@ -33,34 +35,34 @@ export default class CubeNavigationHorizontal extends React.Component {
         this._animatedValue.setValue({ x: this.pages[this.state.currentPage], y: 0 });
         this._value = { x: this.pages[this.state.currentPage], y: 0 };
         this._onGestureEvent = Animated.event(
-            [{ nativeEvent: { translationX: this._animatedValue.x } }], {
+            [{ nativeEvent: {} }], {
             useNativeDriver: true,
-
+            listener: (e) => {
+                this._animatedValue.x.setOffset(e.nativeEvent.translationX)
+            }
         }
         );
-        this._animatedValue.addListener(value => {
-            // console.info(value.x, 'asdasd')
-            this._value = value;
-        });
+
 
         const onDoneSwiping = (e) => {
             if (this.props.callbackOnSwipe) {
                 this.props.callbackOnSwipe(false);
             }
-            let mod = e.nativeEvent.translationX > 0 ? 100 : -100;
-            const currentPage = this._closest(this._value.x + mod)
-            console.info(this._value.x, '哈哈哈', currentPage, e.nativeEvent.translationX)
-
+            let mod = 0
+            if (e.nativeEvent.translationX > 60) {
+                mod = -1
+            } else if (e.nativeEvent.translationX < -60) {
+                mod = 1
+            }
+            const currentPage = Math.max(Math.min(this.state.currentPage + (mod), this.pages.length - 1), 0)
             let goTo = this.pages[currentPage];
-            this._animatedValue.flattenOffset({
-                x: this._value.x,
-                y: this._value.y
-            });
+            this._value.x = goTo
+            this._animatedValue.flattenOffset();
 
             Animated.timing(this._animatedValue, {
                 toValue: { x: goTo, y: 0 },
-                friction: 3,
-                tension: 0.6,
+                easing: Easing.linear,
+                duration: 200,
                 useNativeDriver: true
             }).start();
 
@@ -74,11 +76,10 @@ export default class CubeNavigationHorizontal extends React.Component {
             }, 500);
         }
         this._onHandlerStateChangeBegin = (gestureState) => {
-            this._animatedValue.stopAnimation();
-            this._animatedValue.setOffset({ x: this._value.x, y: this._value.y, },);
+            // this._animatedValue.stopAnimation();
+            // this._animatedValue.setOffset({ x: this._value.x, y: this._value.y, },);
         }
         this._onHandlerStateChange = (e) => {
-            console.info("技术了", e,)
 
             onDoneSwiping(e);
 
@@ -99,7 +100,6 @@ export default class CubeNavigationHorizontal extends React.Component {
     */
     scrollTo(page, animated) {
         animated = animated == undefined ? true : animated;
-        console.info(animated, 'animated')
         if (animated) {
 
             Animated.spring(this._animatedValue, {
@@ -198,7 +198,6 @@ export default class CubeNavigationHorizontal extends React.Component {
         let expandStyle = this.props.expandView
             ? { paddingTop: 100, paddingBottom: 100, height: height + 200 }
             : { width, height };
-        console.info("nikanana")
         let style = [child.props.style, expandStyle];
         let props = {
             i,
@@ -228,7 +227,6 @@ export default class CubeNavigationHorizontal extends React.Component {
         let ans;
         for (i in array) {
             let m = Math.abs(num - array[i]);
-            console.info(m, num, array[i], i, this.pages, minDiff)
             if (m < minDiff) {
                 minDiff = m;
                 ans = i;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import {
     View,
@@ -16,121 +16,101 @@ import { Image, Button } from "react-native-elements"
 import LinearGradient from "react-native-linear-gradient"
 import ImageMap from "../../images"
 import Avatar from '../../../../containers/Avatar';
-import ImagePicker from 'react-native-image-crop-picker';
 import I18n from '../../../../i18n';
+import database from '../../../../lib/database';
+import { Q } from '@nozbe/watermelondb';
+
 const { width } = Dimensions.get("window")
 const { rightIconPng, closeSmallPng } = ImageMap
-const colors = ['#E383DDFF', '#E383DDFF', '#7A83F5FF']
-const silentColors = ['#C7C7C7FF', '#C7C7C7FF']
-
-const ChannelCircle = (props) => {
-    const { onStorySelect, dataList, user, storyMessages, navigation } = props
+const AvatarSize = 62
+const Subscription = React.memo((props) => {
+    const { user } = props
     const [data, setData] = useState([])
-
-    const generateData = () => {
+    const subRef = useRef(null)
+    const db = database.active;
+    const [toggle, setToggle] = useState(false)
+    const generateData = async () => {
         // 要在这里做初次过滤
-        setData(dataList)
+        const defaultWhereClause = [
+            Q.where('archived', false),
+            Q.where('open', true),
+            Q.where("t", "c"),
+        ];
+        const observable = await db.collections
+            .get('subscriptions')
+            .query(
+                ...defaultWhereClause,
+
+                Q.experimentalSkip(0),
+                Q.experimentalTake(1000)
+            )
+            .observe();
+        subRef.current = observable.subscribe((subscriptions) => {
+            console.info(subscriptions, '我的额订阅')
+            setData(subscriptions)
+
+        })
+    }
+    const unsubscribe = () => {
+        if (subRef.current && subRef.current.unsubscribe) {
+            subRef.current.unsubscribe();
+        }
     }
     useEffect(() => {
         generateData()
-    }, [dataList])
+        return () => {
+            unsubscribe()
+        }
+    }, [])
+    const handleToggle = () => {
+        // 
+        setToggle(!toggle)
+    }
     const renderItem = ({ item, index }) => {
-        const takeVideo = async () => {
-            let videoPickerConfig = {
-                mediaType: 'video'
-            };
-            const libPickerLabels = {
-                cropperChooseText: I18n.t('Choose'),
-                cropperCancelText: I18n.t('Cancel'),
-                loadingLabelText: I18n.t('Processing')
-            };
-            videoPickerConfig = {
-                ...videoPickerConfig,
-                ...libPickerLabels
-            };
-            try {
-                const video = await ImagePicker.openCamera(videoPickerConfig);
-                navigation.navigate('FeedsPublishView', { room: item, attachments: [video], type: "video" });
 
-            } catch (e) {
-            }
-        }
-        const onPress = () => {
 
-            if (item.isSelf) {
-                // 根据情况而定
-                if (item.stories.length > 0) {
-                    return onStorySelect(index, item)
-                } else {
-                    // 跳转界面'
-                    takeVideo()
-                    return
-
-                }
-            }
-            onStorySelect(index - 1, item)
-        }
         const onSubscribe = () => {
 
         }
-        const hideUser = () => {
-            // 
-        }
+
         return (
             <View style={styles.itemWrapper}>
-                <Image source={closeSmallPng}
-                    onPress={hideUser}
-                    style={styles.closeSmall}
-                    containerStyle={styles.closeSmallWrapper}
-                    placeholderStyle={{ backgroundColor: "transparent" }}
-                    resizeMode={'contain'} />
 
                 <Avatar
 
-                    size={66}
+                    size={AvatarSize}
                     type={item.t}
                     text={item.name}
                     style={styles.avatar}
                     rid={item.rid} // 先用房间的头像
                     // avatar={item?.avatar}
-                    borderRadius={66}
+                    borderRadius={AvatarSize}
 
                 />
-                <Text style={styles.title}>{item.name}</Text>
-                <Text style={styles.subTitle}>paiya官方账户</Text>
-                <Button
-                    variant="contained"
-                    onPress={() => { onSubscribe() }}
-                    titleStyle={[styles.btnTitleStyle, !item.hasSubscribe ? styles.activeBtnTitleStyle : {}]}
-
-                    buttonStyle={[styles.btnButtonStyle, !item.hasSubscribe ? styles.activeBtnButtonStyle : {}]}
-                    containerStyle={styles.btnButtonContainerStyle}
-
-                    title={!item.hasSubscribe ? `${('订阅')}` : "已订阅"}
-                />
-
+                <Text style={styles.title} numberOfLines={1} ellipsizeMode={'tail'}>{item.name}</Text>
             </View>
         )
     }
     return (
         <View style={styles.root}>
-            <Text style={styles.blockTitle}>推荐达人</Text>
-            <FlatList
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                data={data}
-                contentContainerStyle={styles.contentContainerStyle}
-                keyExtractor={(item, index) => index}
-                renderItem={renderItem}
-                ListEmptyComponent={
-                    <View style={styles.emptyBox}>
-                        <Image source={rightIconPng} style={styles.rightIcon} placeholderStyle={{ backgroundColor: "transparent" }} resizeMode={'contain'} />
-                        <Text style={styles.noMore}>没有更多新推荐了</Text>
-                    </View>
-                }
-            ></FlatList>
+            <View style={styles.headerBox} key={'header'}>
+                <Text style={styles.blockTitle}>我的订阅</Text>
+                <Pressable onPress={handleToggle}><Text>{toggle ? '展开' : '收齐'}</Text></Pressable>
+            </View>
+            {!toggle ? (
+                <FlatList
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    data={data}
+                    contentContainerStyle={styles.contentContainerStyle}
+                    keyExtractor={(item, index) => index}
+                    renderItem={renderItem}
+
+                ></FlatList>
+            ) : null}
+
         </View >)
-}
+})
 const styles = StyleSheet.create({
     root: {
         justifyContent: "center",
@@ -139,9 +119,14 @@ const styles = StyleSheet.create({
     },
     contentContainerStyle: {
         justifyContent: "center",
-        paddingVertical: 10,
+        paddingVertical: 20,
         marginHorizontal: 15,
 
+    },
+    headerBox: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        paddingHorizontal: 15,
     },
     noMore: {
         marginTop: 20,
@@ -155,10 +140,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginRight: 14,
         position: "relative",
-        borderWidth: StyleSheet.hairlineWidth,
-        borderColor: "#DDDDDDFF",
-        paddingHorizontal: 19,
-        paddingVertical: 12,
     },
     emptyBox: {
         width: width - 15 * 2,
@@ -171,19 +152,10 @@ const styles = StyleSheet.create({
         width: 80,
         height: 80,
     },
-    closeSmall: {
-        width: 8,
-        height: 8,
 
-    },
-    closeSmallWrapper: {
-        position: "absolute",
-        right: 12,
-        top: 12
-    },
     avatar: {
-        width: 66,
-        height: 66,
+        width: AvatarSize,
+        height: AvatarSize,
         // borderWidth: 3,
         borderColor: "white",
         // borderRadius: 70,
@@ -201,43 +173,18 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         color: '#000000FF',
         lineHeight: 22,
-        marginLeft: 15,
     },
     title: {
-        fontSize: 14,
-        fontWeight: '500',
-        color: '#000000FF',
-        lineHeight: 20,
-    },
-    subTitle: {
         fontSize: 12,
         fontWeight: '400',
-        color: '#8E8E8EFF',
+        color: '#000000FF',
         lineHeight: 17,
+        width: 100,
+        marginTop: 2,
+        textAlign: "center"
     },
-    btnButtonStyle: {
-        backgroundColor: "#7166F9FF",
-        paddingVertical: 2,
-    },
-    activeBtnButtonStyle: {
-        backgroundColor: "white",
-        borderColor: "#7166F9FF",
-        borderWidth: 1
-    },
-    btnButtonContainerStyle: {
-        marginTop: 15,
-        width: "100%"
-    },
-    btnTitleStyle: {
-        fontSize: 14,
-        fontWeight: '500',
-        color: '#FFFFFFFF',
-        lineHeight: 20,
-        marginLeft: 5,
-    },
-    activeBtnTitleStyle: {
-        color: '#7166F9FF',
 
-    },
+
+
 })
-export default ChannelCircle
+export default Subscription

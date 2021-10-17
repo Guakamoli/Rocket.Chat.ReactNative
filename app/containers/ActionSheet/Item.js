@@ -20,7 +20,10 @@ export const Item = React.memo(({ item, hide, theme }) => {
 			theme={theme}
 			testID={item.testID}
 		>
-			<CustomIcon name={item.icon} size={20} color={item.danger ? themes[theme].dangerColor : themes[theme].bodyText} />
+			{item.image ? item.image() : (
+				<CustomIcon name={item.icon} size={20} color={item.danger ? themes[theme].dangerColor : themes[theme].bodyText} />
+
+			)}
 			<View style={styles.titleContainer}>
 				<Text
 					numberOfLines={1}
@@ -33,7 +36,7 @@ export const Item = React.memo(({ item, hide, theme }) => {
 				<View style={styles.rightContainer}>
 					{item.right ? item.right() : null}
 				</View>
-			) : null }
+			) : null}
 		</Button>
 	);
 });

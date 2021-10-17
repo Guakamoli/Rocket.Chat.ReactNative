@@ -36,13 +36,13 @@ import database from '../../../../lib/database';
 import Avatar from '../../../../containers/Avatar';
 import StatusBar from '../../../../containers/StatusBar';
 import log, { logEvent, events } from '../../../../utils/log';
+const { noComponentPng } = ImageMap
 const CountList = (props) => {
-    const { loaded, setType } = props
+    const { loaded, setType, user } = props
 
-    const { userInfo = null } = props.route.params || {}
 
     useEffect(() => {
-        if (loaded && userInfo && userInfo.rid) {
+        if (loaded && user.rid) {
             getDataCountList()
         }
     }, [loaded])
@@ -56,7 +56,7 @@ const CountList = (props) => {
     const getDataCountList = async () => {
 
         const whereClause = [
-            Q.where('rid', Q.eq(userInfo.rid)),
+            Q.where('rid', Q.eq(user.rid)),
             Q.where('tmid', null),
             Q.where('t', Q.eq('discussion-created')),
 
@@ -111,8 +111,7 @@ const CountList = (props) => {
 }
 const QUERY_SIZE = 10
 const ComponentPage = React.memo((props) => {
-    const { selfUser: user, baseUrl, theme, channelsDataMap, loaded } = props
-    const { userInfo = null } = props.route.params || {}
+    const { selfUser, user, baseUrl, theme, channelsDataMap, loaded, } = props
     const [data, setData] = useState([])
     const [noMore, setNoMore] = useState(false)
     const [type, _setType] = useState(null)
@@ -126,7 +125,7 @@ const ComponentPage = React.memo((props) => {
         try {
 
             const whereClause = [
-                Q.where('rid', Q.eq(userInfo.rid)),
+                Q.where('rid', Q.eq(user.rid)),
                 Q.where('t', Q.eq('discussion-created')),
 
                 Q.where('tmid', null),
@@ -165,7 +164,7 @@ const ComponentPage = React.memo((props) => {
             if ((messages?.length || 0) < QUERY_SIZE) {
                 setNoMore(true)
             }
-            console.info('结果', messages, type)
+            console.info('结果你看啊', messages, type)
         } catch (e) {
             console.info(e, '错误')
         }
@@ -173,17 +172,17 @@ const ComponentPage = React.memo((props) => {
 
     }
     useEffect(() => {
-        if (loaded && userInfo && userInfo.rid) {
+        if (loaded && user?.rid) {
             getData()
         }
-    }, [loaded])
+    }, [loaded, user])
     const renderItem = ({ item, index }) => {
         return <FeedsItem
             {...props}
             item={item}
             theme={theme}
             baseUrl={baseUrl}
-            user={user}
+            user={selfUser}
             type={item.t}
             index={index}
             autoPlay={false}
@@ -205,7 +204,13 @@ const ComponentPage = React.memo((props) => {
             scrollEventThrottle={16}
             style={styles.flatListStyle}
             ListHeaderComponent={<CountList {...props} setType={setType} />}
-            ListFooterComponent={noMore ? <Text style={styles.noMoreText}>没有更多了</Text> : null}
+            ListEmptyComponent={noMore ? <View
+                style={{ alignItems: "center", paddingTop: 53, }}>
+                <Image source={noComponentPng} style={styles.noMoreImage}
+
+                    placeholderStyle={{ backgroundColor: "transparent" }} />
+                <Text style={styles.noMoreText}>还没有作品</Text>
+            </View> : null}
             contentContainerStyle={[styles.contentContainerStyle,]}
             data={data}
             keyExtractor={item => item.id}
@@ -251,11 +256,16 @@ const styles = StyleSheet.create({
         marginRight: 10,
         // paddingVertical: 12,
     },
+    noMoreImage: {
+        width: 85,
+        height: 85,
+        marginBottom: 18
+    },
     noMoreText: {
-        color: '#8E8E8EFF',
-        fontSize: 12,
-        fontWeight: '400',
-        lineHeight: 20,
+        color: '#000000FF',
+        fontSize: 18,
+        fontWeight: '500',
+        lineHeight: 25,
         textAlign: "center"
     },
 })

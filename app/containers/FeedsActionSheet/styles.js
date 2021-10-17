@@ -9,6 +9,7 @@ export default StyleSheet.create({
 		overflow: "hidden",
 		borderTopLeftRadius: 16,
 		borderTopRightRadius: 16,
+		paddingBottom: 130,
 	},
 	item: {
 		paddingHorizontal: 16,

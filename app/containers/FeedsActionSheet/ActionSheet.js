@@ -153,6 +153,11 @@ const ActionSheet = React.memo(forwardRef(({ children, theme }, ref) => {
 		outputRange: [0, themes[theme].backdropOpacity],
 		extrapolate: Extrapolate.CLAMP
 	});
+	const transY = interpolate(data?.animatedPosition?.current, {
+		inputRange: [0, 1],
+		outputRange: [130, 0],
+		extrapolate: Extrapolate.CLAMP
+	});
 	// animatedPosition
 	return (
 		<>
@@ -195,7 +200,6 @@ const ActionSheet = React.memo(forwardRef(({ children, theme }, ref) => {
 						keyExtractor={item => item.title}
 						style={{ backgroundColor: themes[theme].focusedBackground }}
 						contentContainerStyle={[styles.content]}
-						ListFooterComponent={data?.renderFooter}
 						ListFooterComponentStyle={{
 							// position: "absolute",
 							height: 80,
@@ -206,8 +210,18 @@ const ActionSheet = React.memo(forwardRef(({ children, theme }, ref) => {
 						// getItemLayout={getItemLayout}
 						removeClippedSubviews={isIOS}
 					/>
+					<Animated.View style={{
+						transform: [
+							{
+								translateY: transY
+							}
+						]
+					}}>
+						{data?.renderFooter()}
+					</Animated.View>
 				</>
-			)}
+			)
+			}
 		</>
 	);
 }));

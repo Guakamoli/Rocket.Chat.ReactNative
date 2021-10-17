@@ -73,7 +73,7 @@ import AllStories from '../FeedsStoriesView/constants/AllStories';
 import StoryContainer from '../FeedsStoriesView/components/StoryContainer';
 import { formatDateDetail } from "../../../../utils/room"
 import UploadProgress from "./UploadProgress"
-const { searchPng, companyTitlePng } = ImageMap
+const { searchPng, companyTitlePng, rightIconPng } = ImageMap
 const INITIAL_NUM_TO_RENDER = isTablet ? 20 : 12;
 const CHATS_HEADER = 'Chats';
 const UNREAD_HEADER = 'Unread';
@@ -465,6 +465,7 @@ class RoomsListView extends React.Component {
 				this.hadGetNewMessage = true
 				resolve()
 			} catch (e) {
+				console.info("错误千万", e)
 				this.retryFindCount = this.retryFindCount + 1 || 1;
 				if (this.retryFindCount <= 10) {
 					this.retryFindTimeout = setTimeout(() => {
@@ -1260,7 +1261,6 @@ class RoomsListView extends React.Component {
 					onShow={() => {
 
 					}}
-
 					onRequestClose={onStoryClose}
 				>
 					{/* eslint-disable-next-line max-len */}
@@ -1364,6 +1364,9 @@ class RoomsListView extends React.Component {
 		}
 
 	}
+	toDiscover = () => {
+		this.props.navigation.navigate('Discover')
+	}
 	renderSectionHeader = (header) => {
 		const { theme } = this.props;
 		return (
@@ -1393,7 +1396,6 @@ class RoomsListView extends React.Component {
 			<FlatList
 				ref={this.getScrollRef}
 				data={messages}
-				extraData={messages}
 				keyExtractor={keyExtractor}
 				style={[styles.list, { backgroundColor: "white" }]}
 				renderItem={this.renderItem}
@@ -1413,6 +1415,17 @@ class RoomsListView extends React.Component {
 						tintColor={themes[theme].auxiliaryText}
 					/>
 				)}
+				ListEmptyComponent={() => {
+					return (
+						<View style={styles.emptyBox}>
+							<Image source={rightIconPng} style={styles.rightIcon} placeholderStyle={{ backgroundColor: "transparent" }} resizeMode={'contain'} />
+							<Text style={styles.noMore}>没有更多新内容了</Text>
+							<Text style={styles.noMore1}>你关注的达人还未发布作品动态</Text>
+							<Text style={styles.noMore2} onPress={this.toDiscover}>前往发现</Text>
+
+						</View>
+					)
+				}}
 				windowSize={9}
 				onEndReached={this.onEndReached}
 				onEndReachedThreshold={0.5}

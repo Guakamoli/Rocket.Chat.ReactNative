@@ -11,6 +11,7 @@ import {
     Pressable,
     ScrollView,
     Animated,
+    Image as RNImage,
     ImageBackground,
 
 } from 'react-native';
@@ -39,14 +40,23 @@ import database from '../../../../lib/database';
 import Avatar from '../../../../containers/Avatar';
 import StatusBar from '../../../../containers/StatusBar';
 import log, { logEvent, events } from '../../../../utils/log';
+import { useActionSheet } from '../../../../containers/ActionSheet';
+
 import ServicePage from "./ServicePage"
 import PostPage from "./PostPage"
+import Subscription from "./Subscription"
 
 import ComponentPage from "./ComponentPage"
 
 const { verifiedPng,
     plusSmallPng,
-    shareUserPng, } = ImageMap
+    shareUserPng,
+    moreSettingsPng,
+    settingOrderPng,
+    settingSubscriptionPng,
+    settingCustomPng,
+    settingWalletPng,
+    settingSettingPng } = ImageMap
 const screenOptions = {
     title: /** @type {string} */ (null),
     headerShadowVisible: false,
@@ -155,7 +165,7 @@ const BottomComponents = (props) => {
 
     const onChangeTab = (value) => {
         // 切换了以后返回最上面
-        if (value.from === 0 && value.i === 1) {
+        if (value.from === 0 && value.i === 1 && type) {
             setContentHeight(400)
         } else if (value.from === 1 && value.i === 0) {
             setContentHeight('auto')
@@ -216,6 +226,7 @@ const UserView = (props) => {
         rid: userInfo.rid,
     })
     const headerHeight = useHeaderHeight();
+    const { showActionSheet, hideActionSheet } = useActionSheet();
 
     const channelRef = useRef(null)
     const scrollRef = useRef(null)
@@ -280,7 +291,49 @@ const UserView = (props) => {
 
     }
     const toTopDist = componentTop + 175 - headerHeight
+    const toPage = () => {
 
+    }
+    const getOptions = () => {
+        let options = [
+            {
+                title: '我的订单',
+                image: () => <RNImage style={styles.optionIcon} source={settingOrderPng} resizeMode={'contain'} />,
+                onPress: () => toPage('order')
+            },
+            {
+                title: '我的钱包',
+                image: () => <RNImage style={styles.optionIcon} source={settingWalletPng} resizeMode={'contain'} />,
+                onPress: () => toPage('wallet')
+            },
+            {
+                title: '我的订阅',
+                image: () => <RNImage style={styles.optionIcon} source={settingSubscriptionPng} resizeMode={'contain'} />,
+                onPress: () => toPage('subscription')
+            },
+            {
+                title: '我的定制',
+                image: () => <RNImage style={styles.optionIcon} source={settingCustomPng} resizeMode={'contain'} />,
+                onPress: () => toPage('custome')
+            },
+            {
+                title: '设置',
+                image: () => <RNImage style={styles.optionIcon} source={settingSettingPng} resizeMode={'contain'} />,
+                onPress: () => toPage('setting')
+            },
+
+        ];
+
+
+
+        return options;
+    };
+    const openMoreSettings = () => {
+        showActionSheet({
+            options: getOptions(),
+
+        });
+    }
     const setHeader = () => {
         navigation.setOptions({
             headerTitleAlign: 'center',
@@ -310,6 +363,14 @@ const UserView = (props) => {
 
                     ) : null
             ),
+            headerRight: () => {
+                if (type) return null
+                return <Image source={moreSettingsPng} style={{ width: 32, height: 32, marginRight: 15 }}
+                    // placeholderStyle={{backgroundColor:"transparent"}}
+                    onPress={openMoreSettings}
+                    PlaceholderContent={null}
+                />
+            }
 
 
         })
@@ -467,6 +528,10 @@ const UserView = (props) => {
                 )}
 
             </View>
+            {
+                !type ? (<Subscription user={selfUser} {...props} key={'Subscription'} />) : null
+            }
+
             <View onLayout={(a, b) => {
                 setComponentTop(a.nativeEvent.layout.y)
             }}>
@@ -690,6 +755,10 @@ const styles = StyleSheet.create({
         fontSize: 14,
         lineHeight: 20,
         fontWeight: "500"
+    },
+    optionIcon: {
+        width: 18,
+        height: 19
     },
 })
 const mapStateToProps = state => ({
