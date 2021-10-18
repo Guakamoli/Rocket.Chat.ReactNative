@@ -248,6 +248,7 @@ const UserView = (props) => {
             let roomRecord = null
             if (type) {
                 roomRecord = (await roomCollection.query(...whereClause).fetch())[0]
+                console.info("嗷嗷的", roomRecord)
                 if (!roomRecord) {
                     roomRecord = (await RocketChat.search({ text: userInfo.username || user.username, filterUsers: false }))[0]
 
@@ -257,14 +258,13 @@ const UserView = (props) => {
 
             }
 
-            console.info(roomRecord, 'roomRecord', userInfo, user)
             channelRef.current = {
                 rid: userInfo?.rid,
                 t: "c"
             }
-            if (roomRecord) {
+            if (roomRecord && !channelRef.current?.rid) {
                 channelRef.current = {
-                    rid: roomRecord?.id,
+                    rid: roomRecord?.rid || userInfo?.rid,
                     t: "c"
                 }
             }
@@ -389,6 +389,7 @@ const UserView = (props) => {
         // 加入和退出房间
         // logEvent(events.ROOM_JOIN);
         try {
+            console.info('bikjan', channelRef.current, hasSubscribe)
             if (!channelRef.current) {
                 return
             }
@@ -401,7 +402,7 @@ const UserView = (props) => {
             }
 
             // 搜索网络。然后加入
-
+            console.info('channelRef.current.rid,', channelRef.current.rid,)
             await RocketChat.joinRoom(channelRef.current.rid, null, null);
             await AsyncStorage.setItem("subscribeRoomInfo", JSON.stringify({ type: 1, rid: channelRef.current.rid }))
 
@@ -409,7 +410,7 @@ const UserView = (props) => {
 
 
         } catch (e) {
-            console.info(e);
+            console.info(e, '关注错误');
         }
     }
     const setLeftButtonAndTitle = (color, title) => {

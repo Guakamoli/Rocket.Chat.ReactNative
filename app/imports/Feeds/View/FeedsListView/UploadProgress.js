@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
-	View, Text, StyleSheet, TouchableOpacity, ScrollView
+	View, Text, StyleSheet, TouchableOpacity, ScrollView,
+	Image as RNIMage
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { Q } from '@nozbe/watermelondb';
@@ -16,7 +17,7 @@ import ImageMap from "../../images"
 import Video from 'react-native-video';
 import { Image, } from 'react-native-elements';
 
-const { selectedPng, imageTypeIconPng, videoTypeIconPng } = ImageMap
+const { selectedPng, imageTypeIconPng, videoTypeIconPng, closeSmallPng, reUploadPng, closeUploadPng } = ImageMap
 
 const TypeIcon = (props) => {
 	const { isVideo, item } = props
@@ -195,16 +196,22 @@ class UploadProgress extends Component {
 			);
 		}
 		return (
-			<View style={styles.row}>
-				<TypeIcon isVideo={isVideo} item={item} />
-				<View style={styles.descriptionContainer}>
-					<Text style={[styles.descriptionText, { color: themes[theme].auxiliaryText }]} numberOfLines={1}>{I18n.t('Error_uploading')} {item.name}</Text>
-					<TouchableOpacity onPress={() => this.tryAgain(item)}>
-						<Text style={[styles.tryAgainButtonText, { color: themes[theme].tintColor }]}>{I18n.t('Try_again')}</Text>
-					</TouchableOpacity>
+			<>
+				<View style={styles.row}>
+					<TypeIcon isVideo={isVideo} item={item} />
+					<View style={styles.descriptionContainer}>
+						<Text style={[styles.descriptionText, { color: themes[theme].auxiliaryText }]} numberOfLines={1}>{'我们会在网络信号改善时重试。'}</Text>
+						{/* <TouchableOpacity onPress={() => this.tryAgain(item)}>
+							<Text style={[styles.tryAgainButtonText, { color: themes[theme].tintColor }]}>{I18n.t('Try_again')}</Text>
+						</TouchableOpacity> */}
+					</View>
+					<Image source={reUploadPng} style={{ width: 18, height: 18, marginRight: 23 }} onPress={() => this.tryAgain(item)} />
+
+					<Image source={closeUploadPng} style={{ width: 16, height: 16 }} onPress={() => this.deleteUpload(item)} />
+					{/* <CustomIcon name='close' size={20} color={themes[theme].auxiliaryText} onPress={() => this.deleteUpload(item)} /> */}
 				</View>
-				<CustomIcon name='close' size={20} color={themes[theme].auxiliaryText} onPress={() => this.deleteUpload(item)} />
-			</View>
+				<View key='progress' style={[styles.progress, { width: "100%", backgroundColor: '#FF3450FF', zIndex: 0 }]} />
+			</>
 		);
 	}
 

@@ -203,7 +203,7 @@ class VideoPlayer extends React.Component {
   render() {
     const { playing, muted, duration } = this.state
     const { uri, likeCount, item, navigation } = this.props
-    const resizeMode = 'cover'
+    const resizeMode = 'contain'
     const videoProps = {
       objectFit: resizeMode,
       source: { uri },
@@ -243,32 +243,16 @@ class VideoPlayer extends React.Component {
             </View>
           </View>
           <Animated.View style={[styles.videoBox, {
+            height: interpolate(this.props?.animatedPositionCurate?.current, {
+              inputRange: [0, 0.1, 1],
+              outputRange: [windowWidth / 3 * 5.5, windowHeight * 0.9, 0],
+              extrapolate: Extrapolate.CLAMP
+            }),
             transform: [
-              // {
-              //   translateX: interpolate(this.props?.animatedPosition?.current, {
-              //     inputRange: [0, 1],
-              //     outputRange: [0, -windowWidth],
-              //     extrapolate: Extrapolate.CLAMP
-              //   })
-              // },
-              // {
-              //   translateY: interpolate(this.props?.animatedPosition?.current, {
-              //     inputRange: [0, 1],
-              //     outputRange: [0, -windowWidth / 2,],
-              //     extrapolate: Extrapolate.CLAMP
 
-              //   })
-              // },
-              // {
-              //   scale: interpolate(this.props?.animatedPosition?.current, {
-              //     inputRange: [0, 1],
-              //     outputRange: [1, 0],
-              //     extrapolate: Extrapolate.CLAMP
-              //   })
-              // }
             ]
           }]}>
-            <Video {...videoProps} style={styles.video} ref={this.video} />
+            <Video {...videoProps} style={styles.video}></Video>
           </Animated.View>
         </View>
         <VideoTools playing={playing} playOrStopVideo={this.playOrStopVideo} duration={duration} seekTime={this.seekTime} />
@@ -281,7 +265,7 @@ const VideoPlayerWrapper = props => {
   return <VideoPlayer {...props} isFocused={isFocused} />;
 };
 
-const windowWidth = Dimensions.get('window').width;
+const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
 
 let styles = StyleSheet.create({
   root: {
@@ -296,13 +280,13 @@ let styles = StyleSheet.create({
   },
   video: {
 
+    width: "100%",
+    height: "100%",
+  },
+  videoBox: {
     width: windowWidth,
     height: windowWidth / 3 * 5.5,
     position: 'relative',
-  },
-  videoBox: {
-    position: 'relative',
-    justifyContent: "flex-start",
 
   },
   controlTools: {

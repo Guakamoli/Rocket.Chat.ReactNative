@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, createRef } from 'react';
 import PropTypes from 'prop-types';
 import {
 	View,
@@ -73,6 +73,7 @@ import AllStories from '../FeedsStoriesView/constants/AllStories';
 import StoryContainer from '../FeedsStoriesView/components/StoryContainer';
 import { formatDateDetail } from "../../../../utils/room"
 import UploadProgress from "./UploadProgress"
+import RBSheetModal from "./RBSheetModal"
 const { searchPng, companyTitlePng, rightIconPng } = ImageMap
 const INITIAL_NUM_TO_RENDER = isTablet ? 20 : 12;
 const CHATS_HEADER = 'Chats';
@@ -173,6 +174,7 @@ class RoomsListView extends React.Component {
 		this.retryFindCount = 0
 		this.hadGetNewMessage = false;
 		this.channelsDataIds = []
+		this.BRSRef = createRef(null)
 		this.state = {
 			searching: false,
 			search: [],
@@ -1170,6 +1172,7 @@ class RoomsListView extends React.Component {
 	}
 
 	getScrollRef = ref => (this.scroll = ref);
+	getBRSRef = ref => (this.BRSRef = ref);
 
 	renderListHeader = () => {
 		const { searching, storyMessages, channelsDataMap, channelsData, dataList } = this.state;
@@ -1330,6 +1333,8 @@ class RoomsListView extends React.Component {
 				index={index}
 				channelsDataMap={channelsDataMap}
 				onPress={this.onPressItem}
+				openEditModal={this.openEditModal}
+
 			/>
 		)
 
@@ -1382,6 +1387,9 @@ class RoomsListView extends React.Component {
 
 
 	};
+	openEditModal = () => {
+		this.BRSRef.current?.openEditModal?.()
+	}
 	renderScroll = () => {
 		const {
 			loading, chats, search, searching, messages
@@ -1452,7 +1460,7 @@ class RoomsListView extends React.Component {
 					<StatusBar />
 					{this.renderHeader()}
 					{this.renderScroll()}
-
+					<RBSheetModal ref={this.getBRSRef} />
 				</SafeAreaView>
 
 			</>

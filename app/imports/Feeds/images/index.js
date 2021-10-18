@@ -68,6 +68,7 @@ const ImageMap = {
   settingCustomPng: require('../public/images/settingCustom.png'),
   settingWalletPng: require('../public/images/settingWallet.png'),
   settingSettingPng: require('../public/images/settingSetting.png'),
-
+  reUploadPng: require('../public/images/reUpload.png'),
+  closeUploadPng: require('../public/images/closeUpload.png'),
 }
 export default ImageMap

@@ -35,13 +35,13 @@ const onScroll = ({ y }) => event(
 const FeedsActions = React.memo(forwardRef((props, ref) => {
 	const { showActionSheet, hideActionSheet } = useActionSheet();
 
-	const showModal = (data, renderItem, renderFooter, animatedPosition) => {
-		console.info('hahahah')
+	const showModal = (data, renderItem, renderFooter, animatedPosition, animatedPositionCurate) => {
 		showActionSheet({
 			data,
 			renderItem,
 			renderFooter,
-			animatedPosition
+			animatedPosition,
+			animatedPositionCurate
 		});
 	}
 	useImperativeHandle(ref, () => ({ showModal }));
@@ -368,7 +368,7 @@ class ListContainer extends React.Component {
 	showModal = () => {
 		// 打开弹出窗口
 		console.info(this.actionRef, 'this.actionRef')
-		this.actionRef?.showModal?.(this.state.messages, this.renderItem, this.props.renderFooter, this.props.animatedPosition)
+		this.actionRef?.showModal?.(this.state.messages, this.renderItem, this.props.renderFooter, this.props.animatedPosition, this.props.animatedPositionCurate)
 
 	}
 	render() {

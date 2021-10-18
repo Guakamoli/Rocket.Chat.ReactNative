@@ -96,6 +96,7 @@ const VideoRoomViewInner = (props) => {
 	const { item } = props.route.params
 	const { theme } = props
 	const animatedPosition = useRef(new Value(0));
+	const animatedPositionCurate = useRef(new Value(0));
 
 	useEffect(() => {
 		const i = item.reactions.find((i) => i.emoji === ':+1:')
@@ -120,11 +121,12 @@ const VideoRoomViewInner = (props) => {
 
 			<VideoPlayer {...props} item={item} autoplay={true}
 				animatedPosition={animatedPosition}
+				animatedPositionCurate={animatedPositionCurate}
 				showComments={showComments}
 				likeCount={likeCount}
 				setLikeCount={setLikeCount}
 				uri={'https://video-message-003.paiyaapp.com/32eedd8c0dd84631a455ce170a21162a/8cd4fdd8ed2745539c021dd7772f25a1-d7f33bb2cf9375ac00b4911db56938d8-sd.mp4'} />
-			<FeedsRoomView  {...props} mode={'modal'} open={open} animatedPosition={animatedPosition} />
+			<FeedsRoomView  {...props} mode={'modal'} open={open} animatedPosition={animatedPosition} animatedPositionCurate={animatedPositionCurate} />
 
 		</View>
 	)
