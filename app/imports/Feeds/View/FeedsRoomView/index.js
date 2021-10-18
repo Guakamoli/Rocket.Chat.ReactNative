@@ -855,7 +855,8 @@ class RoomView extends React.Component {
 			room, reactionsModalVisible, selectedMessage, loading, reacting, showingBlockingLoader
 		} = this.state;
 		const {
-			user, baseUrl, theme, navigation, Hide_System_Messages, width, height
+			user, baseUrl, theme, navigation, Hide_System_Messages, width, height,
+			mode
 		} = this.props;
 		const {
 			rid, t, sysMes, bannerClosed, announcement
@@ -865,7 +866,7 @@ class RoomView extends React.Component {
 			<
 
 				>
-				<StatusBar />
+				<StatusBar barStyle={mode ? 'light-content' : null} />
 
 				<List
 					ref={this.list}
@@ -879,6 +880,7 @@ class RoomView extends React.Component {
 					renderRow={this.renderItem}
 					loading={loading}
 					animatedPosition={this.props.animatedPosition}
+					animatedPositionCurate={this.props.animatedPositionCurate}
 					navigation={navigation}
 					hideSystemMessages={Array.isArray(sysMes) ? sysMes : Hide_System_Messages}
 					showMessageInMainThread={false}

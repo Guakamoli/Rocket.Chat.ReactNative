@@ -11,6 +11,7 @@ import {
     Pressable,
     ScrollView,
     Animated,
+    Image as RNImage,
     ImageBackground,
 
 } from 'react-native';
@@ -39,12 +40,23 @@ import database from '../../../../lib/database';
 import Avatar from '../../../../containers/Avatar';
 import StatusBar from '../../../../containers/StatusBar';
 import log, { logEvent, events } from '../../../../utils/log';
+import { useActionSheet } from '../../../../containers/ActionSheet';
+
 import ServicePage from "./ServicePage"
+import PostPage from "./PostPage"
+import Subscription from "./Subscription"
+
 import ComponentPage from "./ComponentPage"
 
 const { verifiedPng,
     plusSmallPng,
-    shareUserPng, } = ImageMap
+    shareUserPng,
+    moreSettingsPng,
+    settingOrderPng,
+    settingSubscriptionPng,
+    settingCustomPng,
+    settingWalletPng,
+    settingSettingPng } = ImageMap
 const screenOptions = {
     title: /** @type {string} */ (null),
     headerShadowVisible: false,
@@ -74,7 +86,7 @@ const screenOptions = {
 
 const BottomComponents = (props) => {
     // 在这里获取用户的作品信息
-    const { navigation, componentTop, scrollY, scrollRef } = props
+    const { navigation, componentTop, scrollY, scrollRef, user } = props
     const { userInfo = { username: "", rid: "" }, type } = props.route.params || {}
 
     const headerHeight = useHeaderHeight();
@@ -83,12 +95,13 @@ const BottomComponents = (props) => {
     const [countMap, setCountMap] = useState({
         component: 0,
         service: 0,
+        post: 0,
     })
     const getCountData = async () => {
         const db = database.active;
         try {
             const whereClause = [
-                Q.where('rid', Q.eq(userInfo.rid)),
+                Q.where('rid', Q.eq(user.rid)),
                 Q.where('tmid', null),
                 Q.where('t', Q.eq('discussion-created')),
 
@@ -101,15 +114,32 @@ const BottomComponents = (props) => {
                     )
                 ),
             ];
+            const whereStoryClause = [
+                Q.where('rid', Q.eq(user.rid)),
+                Q.and(
+                    Q.where('attachments', Q.like(`%paiyastory:%`)),
+
+
+                ),
+            ]
             const componentCount = await db
                 .get('messages')
                 .query(...whereClause)
                 .fetchCount()
+            const postCount = await db
+                .get('messages')
+                .query(...whereStoryClause)
+                .fetchCount()
             setCountMap({
                 component: componentCount,
-                service: 1
+                service: 1,
+                post: postCount
             })
-            console.info("loading", true)
+            console.info("loading", true, {
+                component: componentCount,
+                service: 1,
+                post: postCount
+            }, user.rid, 'B ')
             setLoaded(true)
         }
         catch (e) {
@@ -118,8 +148,11 @@ const BottomComponents = (props) => {
 
     }
     useEffect(() => {
-        getCountData()
-    }, [])
+        if (user.rid) {
+            getCountData()
+
+        }
+    }, [user])
     const changeTabIndex = async index => {
         setActiveindex(index);
     };
@@ -132,7 +165,7 @@ const BottomComponents = (props) => {
 
     const onChangeTab = (value) => {
         // 切换了以后返回最上面
-        if (value.from === 0 && value.i === 1) {
+        if (value.from === 0 && value.i === 1 && type) {
             setContentHeight(400)
         } else if (value.from === 1 && value.i === 0) {
             setContentHeight('auto')
@@ -178,7 +211,10 @@ const BottomComponents = (props) => {
 
     >
         <ComponentPage tabLabel={`作品 ${countMap.component ? countMap.component : ''}`} {...props} loaded={loaded} key="ComponentPage" />
-        <ServicePage tabLabel={`服务 ${countMap.component ? countMap.service : ''}`} {...props} loaded={loaded} key="ServicePage" />
+        {type ? <ServicePage tabLabel={`服务 ${countMap.service ? countMap.service : ''}`} {...props} loaded={loaded} key="ServicePage" /> : (
+            <PostPage tabLabel={`快拍 ${countMap.post ? countMap.post : ''}`} {...props} loaded={loaded} key="PostPage" />
+
+        )}
 
     </ScrollableTabView>)
 }
@@ -190,6 +226,7 @@ const UserView = (props) => {
         rid: userInfo.rid,
     })
     const headerHeight = useHeaderHeight();
+    const { showActionSheet, hideActionSheet } = useActionSheet();
 
     const channelRef = useRef(null)
     const scrollRef = useRef(null)
@@ -197,28 +234,49 @@ const UserView = (props) => {
     const onPress = useCallback(() => navigation.goBack());
     const [componentTop, setComponentTop] = useState(1);
     const [hasSubscribe, setHasSubscribe] = useState(null)
-    const getUserData = async (userInfo) => {
+    const getUserData = async () => {
         // 先查找有没有房间，没有房间就用用户信息
-        const db = database.active;
-        const roomCollection = db.get('rooms');
+        try {
 
-        const [roomRecord] = await roomCollection.query(Q.where('id', Q.eq(userInfo.rid))).fetch();
-        console.info(roomRecord, 'roomRecord', {
-            username: roomRecord?.username || userInfo.username || selfUser.username,
-            rid: roomRecord?.id,
-        })
-        if (roomRecord) {
+
+            const db = database.active;
+            const roomCollection = db.get('subscriptions');
+            let whereClause = [
+                Q.where('rid', Q.eq(userInfo.rid))
+
+            ]
+            let roomRecord = null
+            if (type) {
+                roomRecord = (await roomCollection.query(...whereClause).fetch())[0]
+                console.info("嗷嗷的", roomRecord)
+                if (!roomRecord) {
+                    roomRecord = (await RocketChat.search({ text: userInfo.username || user.username, filterUsers: false }))[0]
+
+                }
+            } else {
+                roomRecord = (await roomCollection.query(Q.where('fname', Q.eq(user.username))).fetch())[0]
+
+            }
+
             channelRef.current = {
-                rid: roomRecord?.id,
+                rid: userInfo?.rid,
                 t: "c"
             }
+            if (roomRecord && !channelRef.current?.rid) {
+                channelRef.current = {
+                    rid: roomRecord?.rid || userInfo?.rid,
+                    t: "c"
+                }
+            }
+            setUser({
+                username: roomRecord?.username || userInfo.username || selfUser.username,
+                rid: roomRecord?.id,
+            })
+        } catch (w) {
+            console.info("错误", w)
         }
-        setUser({
-            username: roomRecord?.username || userInfo.username || selfUser.username,
-            rid: roomRecord?.id,
-        })
     }
-    const getHasSubscribe = async (userInfo) => {
+    const getHasSubscribe = async () => {
         if (!userInfo.username) return
         const db = database.active;
 
@@ -233,7 +291,49 @@ const UserView = (props) => {
 
     }
     const toTopDist = componentTop + 175 - headerHeight
+    const toPage = () => {
 
+    }
+    const getOptions = () => {
+        let options = [
+            {
+                title: '我的订单',
+                image: () => <RNImage style={styles.optionIcon} source={settingOrderPng} resizeMode={'contain'} />,
+                onPress: () => toPage('order')
+            },
+            {
+                title: '我的钱包',
+                image: () => <RNImage style={styles.optionIcon} source={settingWalletPng} resizeMode={'contain'} />,
+                onPress: () => toPage('wallet')
+            },
+            {
+                title: '我的订阅',
+                image: () => <RNImage style={styles.optionIcon} source={settingSubscriptionPng} resizeMode={'contain'} />,
+                onPress: () => toPage('subscription')
+            },
+            {
+                title: '我的定制',
+                image: () => <RNImage style={styles.optionIcon} source={settingCustomPng} resizeMode={'contain'} />,
+                onPress: () => toPage('custome')
+            },
+            {
+                title: '设置',
+                image: () => <RNImage style={styles.optionIcon} source={settingSettingPng} resizeMode={'contain'} />,
+                onPress: () => toPage('setting')
+            },
+
+        ];
+
+
+
+        return options;
+    };
+    const openMoreSettings = () => {
+        showActionSheet({
+            options: getOptions(),
+
+        });
+    }
     const setHeader = () => {
         navigation.setOptions({
             headerTitleAlign: 'center',
@@ -263,21 +363,33 @@ const UserView = (props) => {
 
                     ) : null
             ),
+            headerRight: () => {
+                if (type) return null
+                return <Image source={moreSettingsPng} style={{ width: 32, height: 32, marginRight: 15 }}
+                    // placeholderStyle={{backgroundColor:"transparent"}}
+                    onPress={openMoreSettings}
+                    PlaceholderContent={null}
+                />
+            }
 
 
         })
     }
     useEffect(() => {
         setHeader()
-        getHasSubscribe(userInfo)
-        getUserData(userInfo)
+        getHasSubscribe()
+        getUserData()
     }, [])
+    const onRefresh = () => {
+        getUserData()
+    }
     // const scale = useRef(new Animated.Value(1)).current;
     const scrollY = useRef(new Animated.Value(0)).current;
     const onSubscribe = async () => {
         // 加入和退出房间
         // logEvent(events.ROOM_JOIN);
         try {
+            console.info('bikjan', channelRef.current, hasSubscribe)
             if (!channelRef.current) {
                 return
             }
@@ -290,7 +402,7 @@ const UserView = (props) => {
             }
 
             // 搜索网络。然后加入
-
+            console.info('channelRef.current.rid,', channelRef.current.rid,)
             await RocketChat.joinRoom(channelRef.current.rid, null, null);
             await AsyncStorage.setItem("subscribeRoomInfo", JSON.stringify({ type: 1, rid: channelRef.current.rid }))
 
@@ -298,7 +410,7 @@ const UserView = (props) => {
 
 
         } catch (e) {
-            console.info(e);
+            console.info(e, '关注错误');
         }
     }
     const setLeftButtonAndTitle = (color, title) => {
@@ -417,6 +529,10 @@ const UserView = (props) => {
                 )}
 
             </View>
+            {
+                !type ? (<Subscription user={selfUser} {...props} key={'Subscription'} />) : null
+            }
+
             <View onLayout={(a, b) => {
                 setComponentTop(a.nativeEvent.layout.y)
             }}>
@@ -425,6 +541,7 @@ const UserView = (props) => {
                     channelsDataMap={{
                         [`${user.rid}`]: { rid: user.rid, name: user.username }
                     }}
+                    user={user}
                     scrollRef={scrollRef}
                     componentTop={componentTop}
                     scrollY={scrollY} />
@@ -450,7 +567,8 @@ const UserView = (props) => {
             <Animated.FlatList showsVerticalScrollIndicator={false}
                 ref={scrollRef}
                 onScroll={onScroll}
-
+                onRefresh={onRefresh}
+                refreshing={false}
                 ListHeaderComponent={renderHeader}
                 scrollEventThrottle={16}
 
@@ -638,6 +756,10 @@ const styles = StyleSheet.create({
         fontSize: 14,
         lineHeight: 20,
         fontWeight: "500"
+    },
+    optionIcon: {
+        width: 18,
+        height: 19
     },
 })
 const mapStateToProps = state => ({

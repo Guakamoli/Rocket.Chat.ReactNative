@@ -897,13 +897,14 @@ class MessageBox extends Component {
 						theme={theme}
 						{...isAndroidTablet}
 					/>
-					<RightButtons
+					{showSend ? <Text style={styles.publish} onPress={this.submit}>发布</Text> : null}
+					{/* <RightButtons
 						theme={theme}
 						showSend={showSend}
 						submit={this.submit}
 						showMessageBoxActions={this.showMessageBoxActions}
 						isActionsEnabled={isActionsEnabled}
-					/>
+					/> */}
 				</View>
 
 			</View>

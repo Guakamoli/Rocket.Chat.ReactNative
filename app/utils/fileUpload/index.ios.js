@@ -1,6 +1,7 @@
 class Upload {
 	constructor() {
 		this.xhr = new XMLHttpRequest();
+		this.xhr.timeout = 1000 * 60 * 3;
 		this.formData = new FormData();
 	}
 
@@ -11,6 +12,7 @@ class Upload {
 
 	catch = (callback) => {
 		this.xhr.onerror = callback;
+		this.xhr.ontimeout = callback;
 	}
 
 	uploadProgress = (callback) => {

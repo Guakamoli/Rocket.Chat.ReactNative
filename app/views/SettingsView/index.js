@@ -40,8 +40,8 @@ class SettingsView extends React.Component {
 		headerLeft: () => (isMasterDetail ? (
 			<HeaderButton.CloseModal navigation={navigation} testID='settings-view-close' />
 		) : (
-			<HeaderButton.Drawer navigation={navigation} testID='settings-view-drawer' />
-		)),
+				<HeaderButton.Drawer navigation={navigation} testID='settings-view-drawer' />
+			)),
 		title: I18n.t('Settings')
 	});
 
@@ -59,7 +59,7 @@ class SettingsView extends React.Component {
 		appStart: PropTypes.func
 	}
 
-	checkCookiesAndLogout = async() => {
+	checkCookiesAndLogout = async () => {
 		const { logout, user } = this.props;
 		const db = database.servers;
 		const usersCollection = db.get('users');
@@ -71,7 +71,7 @@ class SettingsView extends React.Component {
 					message: I18n.t('Clear_cookies_desc'),
 					confirmationText: I18n.t('Clear_cookies_yes'),
 					dismissText: I18n.t('Clear_cookies_no'),
-					onPress: async() => {
+					onPress: async () => {
 						await CookieManager.clearAll(true);
 						logout();
 					},
@@ -101,7 +101,7 @@ class SettingsView extends React.Component {
 		showConfirmationAlert({
 			message: I18n.t('This_will_clear_all_your_offline_data'),
 			confirmationText: I18n.t('Clear'),
-			onPress: async() => {
+			onPress: async () => {
 				const {
 					server: { server }, appStart, selectServerRequest
 				} = this.props;
@@ -116,21 +116,21 @@ class SettingsView extends React.Component {
 	}
 
 	navigateToScreen = (screen) => {
-		logEvent(events[`SE_GO_${ screen.replace('View', '').toUpperCase() }`]);
+		logEvent(events[`SE_GO_${screen.replace('View', '').toUpperCase()}`]);
 		const { navigation } = this.props;
 		navigation.navigate(screen);
 	}
 
-	sendEmail = async() => {
+	sendEmail = async () => {
 		logEvent(events.SE_CONTACT_US);
 		const subject = encodeURI('React Native App Support');
 		const email = encodeURI('support@rocket.chat');
 		const description = encodeURI(`
-			version: ${ getReadableVersion }
-			device: ${ getDeviceModel }
+			version: ${getReadableVersion}
+			device: ${getDeviceModel}
 		`);
 		try {
-			await Linking.openURL(`mailto:${ email }?subject=${ subject }&body=${ description }`);
+			await Linking.openURL(`mailto:${email}?subject=${subject}&body=${description}`);
 		} catch (e) {
 			logEvent(events.SE_CONTACT_US_F);
 			showErrorAlert(I18n.t('error-email-send-failed', { message: 'support@rocket.chat' }));
@@ -161,7 +161,7 @@ class SettingsView extends React.Component {
 		this.saveToClipboard(getReadableVersion);
 	}
 
-	saveToClipboard = async(content) => {
+	saveToClipboard = async (content) => {
 		await Clipboard.setString(content);
 		EventEmitter.emit(LISTENER, { message: I18n.t('Copied_to_clipboard') });
 	}
@@ -274,7 +274,7 @@ class SettingsView extends React.Component {
 						<List.Item
 							title={I18n.t('Server_version', { version: server.version })}
 							onPress={this.copyServerVersion}
-							subtitle={`${ server.server.split('//')[1] }`}
+							subtitle={`${server.server.split('//')[1]}`}
 							testID='settings-view-server-version'
 							translateTitle={false}
 							translateSubtitle={false}

@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginRight: 14,
         position: "relative",
-        borderWidth: 0.2,
+        borderWidth: StyleSheet.hairlineWidth,
         borderColor: "#DDDDDDFF",
         paddingHorizontal: 19,
         paddingVertical: 12,

@@ -54,7 +54,8 @@ export default StyleSheet.create({
 		borderColor: "#DBDBDBFF",
 		borderRadius: 23,
 		backgroundColor: "white",
-		flexDirection: "row"
+		flexDirection: "row",
+		alignItems: "center"
 	},
 	actionButton: {
 		alignItems: 'center',
@@ -142,5 +143,11 @@ export default StyleSheet.create({
 		paddingVertical: 8,
 		paddingHorizontal: 18
 	},
-
+	publish: {
+		color: "#836BFFFF",
+		fontSize: 12,
+		fontWeight: "500",
+		lineHeight: 17,
+		marginRight: 14,
+	},
 });

@@ -88,6 +88,7 @@ import FeedsVideoRoomView from "../imports/Feeds/View/FeedsVideoRoomView";
 import FeedsUserView from "../imports/Feeds/View/FeedsUserView";
 import FeedsPublishView from "../imports/Feeds/View/FeedsPublishView";
 import FeedsUnSubscribeView from "../imports/Feeds/View/FeedsUnSubscribeView";
+import FeedsSettingsView from "../imports/Feeds/View/FeedsSettingsView";
 
 import ImageMap from "../imports/Feeds/images"
 
@@ -281,6 +282,11 @@ const ChatsStackNavigator = () => {
 			<ChatsStack.Screen
 				name="FeedsUnSubscribeView"
 				{...FeedsUnSubscribeView}
+
+			/>
+			<ChatsStack.Screen
+				name="FeedsSettingsView"
+				{...FeedsSettingsView}
 
 			/>
 

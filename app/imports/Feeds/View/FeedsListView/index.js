@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, createRef } from 'react';
 import PropTypes from 'prop-types';
 import {
 	View,
@@ -73,7 +73,8 @@ import AllStories from '../FeedsStoriesView/constants/AllStories';
 import StoryContainer from '../FeedsStoriesView/components/StoryContainer';
 import { formatDateDetail } from "../../../../utils/room"
 import UploadProgress from "./UploadProgress"
-const { searchPng, companyTitlePng } = ImageMap
+import RBSheetModal from "./RBSheetModal"
+const { searchPng, companyTitlePng, rightIconPng } = ImageMap
 const INITIAL_NUM_TO_RENDER = isTablet ? 20 : 12;
 const CHATS_HEADER = 'Chats';
 const UNREAD_HEADER = 'Unread';
@@ -93,7 +94,8 @@ const filterIsDiscussion = s => s.prid;
 const { width, height } = Dimensions.get('window');
 const shouldUpdateState = [
 	'messages',
-	'storyMessages'
+	'storyMessages',
+	'dataList'
 ]
 const shouldUpdateProps = [
 	'searchText',
@@ -172,6 +174,7 @@ class RoomsListView extends React.Component {
 		this.retryFindCount = 0
 		this.hadGetNewMessage = false;
 		this.channelsDataIds = []
+		this.BRSRef = createRef(null)
 		this.state = {
 			searching: false,
 			search: [],
@@ -464,6 +467,7 @@ class RoomsListView extends React.Component {
 				this.hadGetNewMessage = true
 				resolve()
 			} catch (e) {
+				console.info("错误千万", e)
 				this.retryFindCount = this.retryFindCount + 1 || 1;
 				if (this.retryFindCount <= 10) {
 					this.retryFindTimeout = setTimeout(() => {
@@ -589,6 +593,7 @@ class RoomsListView extends React.Component {
 			.observe();
 		this.messagesStorySubscription = this.messagesStoryObservable
 			.subscribe(async (messages) => {
+				console.info("story的信息", messages)
 				try {
 					messages = messages.filter(m => m.attachments[0].attachments[0] === undefined);
 					let storyReadMap = await AsyncStorage.getItem("storyReadMap")
@@ -651,10 +656,31 @@ class RoomsListView extends React.Component {
 
 						this.uploadsSubscription = this.uploadsObservable
 							.subscribe((uploads) => {
+								let hasUpdate = false
+								uploads.forEach(async (u) => {
+									if (!RocketChat.isUploadActive(u.path) && !u.error) {
+										hasUpdate = true
+										try {
+
+											const db = database.active;
+											await db.action(async () => {
+												await u.update(() => {
+													u.error = true;
+												});
+											});
+										} catch (e) {
+											log(e);
+										}
+									}
+								});
+								if (hasUpdate) return
 								const uploadItem = uploads[0]
-								console.info(uploadItem, 'uploadItem', uploads)
+
 								if (uploadItem) {
-									dataList[0].stories.push({
+									dataList[0].hasUnread = true
+
+									dataList[0].stories = dataList[0].stories.filter(i => !(i.row && i.row.description && i.row.description.startsWith('paiyastory:')))
+									dataList[0].stories.unshift({
 										id: item.path,
 										row: uploadItem,
 										url: uploadItem.path,
@@ -662,6 +688,11 @@ class RoomsListView extends React.Component {
 										isRead: true,
 									})
 									this.setState({ dataList }, () => this.update());
+								} else if (dataList[0] && dataList[0].stories[0] && dataList[0].stories[0].row.description) {
+									dataList[0].stories = dataList[0].stories.filter(i => !(i.row && i.row.description && i.row.description.startsWith('paiyastory:')))
+									this.setState({ dataList }, () => this.update());
+
+
 								}
 
 
@@ -703,7 +734,6 @@ class RoomsListView extends React.Component {
 			.observe();
 		this.messagesSubscription = this.messagesObservable
 			.subscribe((messages) => {
-				console.info('postmessage', messages)
 				messages = messages.filter(m => m.attachments[0].attachments[0] !== undefined);
 				if (this.mounted) {
 					this.setState({ messages }, () => this.update());
@@ -715,7 +745,6 @@ class RoomsListView extends React.Component {
 			});
 		this.querySubscription = observable.subscribe((data) => {
 			let tempChats = [];
-			// console.info(data, "daaratatat")
 			let chats = data;
 			let chatsUpdate = [];
 			if (showUnread) {
@@ -1143,6 +1172,7 @@ class RoomsListView extends React.Component {
 	}
 
 	getScrollRef = ref => (this.scroll = ref);
+	getBRSRef = ref => (this.BRSRef = ref);
 
 	renderListHeader = () => {
 		const { searching, storyMessages, channelsDataMap, channelsData, dataList } = this.state;
@@ -1234,7 +1264,6 @@ class RoomsListView extends React.Component {
 					onShow={() => {
 
 					}}
-
 					onRequestClose={onStoryClose}
 				>
 					{/* eslint-disable-next-line max-len */}
@@ -1290,7 +1319,6 @@ class RoomsListView extends React.Component {
 			width
 
 		} = this.props;
-		console.info(item, 'itemasas')
 		const username = user.username
 		const id = this.getUidDirectMessage(item);
 		return (
@@ -1305,6 +1333,8 @@ class RoomsListView extends React.Component {
 				index={index}
 				channelsDataMap={channelsDataMap}
 				onPress={this.onPressItem}
+				openEditModal={this.openEditModal}
+
 			/>
 		)
 
@@ -1339,6 +1369,9 @@ class RoomsListView extends React.Component {
 		}
 
 	}
+	toDiscover = () => {
+		this.props.navigation.navigate('Discover')
+	}
 	renderSectionHeader = (header) => {
 		const { theme } = this.props;
 		return (
@@ -1354,6 +1387,9 @@ class RoomsListView extends React.Component {
 
 
 	};
+	openEditModal = () => {
+		this.BRSRef.current?.openEditModal?.()
+	}
 	renderScroll = () => {
 		const {
 			loading, chats, search, searching, messages
@@ -1368,7 +1404,6 @@ class RoomsListView extends React.Component {
 			<FlatList
 				ref={this.getScrollRef}
 				data={messages}
-				extraData={messages}
 				keyExtractor={keyExtractor}
 				style={[styles.list, { backgroundColor: "white" }]}
 				renderItem={this.renderItem}
@@ -1388,6 +1423,17 @@ class RoomsListView extends React.Component {
 						tintColor={themes[theme].auxiliaryText}
 					/>
 				)}
+				ListEmptyComponent={() => {
+					return (
+						<View style={styles.emptyBox}>
+							<Image source={rightIconPng} style={styles.rightIcon} placeholderStyle={{ backgroundColor: "transparent" }} resizeMode={'contain'} />
+							<Text style={styles.noMore}>没有更多新内容了</Text>
+							<Text style={styles.noMore1}>你关注的达人还未发布作品动态</Text>
+							<Text style={styles.noMore2} onPress={this.toDiscover}>前往发现</Text>
+
+						</View>
+					)
+				}}
 				windowSize={9}
 				onEndReached={this.onEndReached}
 				onEndReachedThreshold={0.5}
@@ -1414,7 +1460,7 @@ class RoomsListView extends React.Component {
 					<StatusBar />
 					{this.renderHeader()}
 					{this.renderScroll()}
-
+					<RBSheetModal ref={this.getBRSRef} />
 				</SafeAreaView>
 
 			</>

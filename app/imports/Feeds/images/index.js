@@ -60,5 +60,15 @@ const ImageMap = {
   rightIconPng: require('../public/images/rightIcon.png'),
   closeSmallPng: require('../public/images/closeSmall.png'),
 
+  noComponentPng: require('../public/images/noComponent.png'),
+  noShootPng: require('../public/images/noShoot.png'),
+  moreSettingsPng: require('../public/images/moreSettings.png'),
+  settingOrderPng: require('../public/images/settingOrder.png'),
+  settingSubscriptionPng: require('../public/images/settingSubscription.png'),
+  settingCustomPng: require('../public/images/settingCustom.png'),
+  settingWalletPng: require('../public/images/settingWallet.png'),
+  settingSettingPng: require('../public/images/settingSetting.png'),
+  reUploadPng: require('../public/images/reUpload.png'),
+  closeUploadPng: require('../public/images/closeUpload.png'),
 }
 export default ImageMap

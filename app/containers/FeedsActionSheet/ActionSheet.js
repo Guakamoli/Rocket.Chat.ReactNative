@@ -112,7 +112,7 @@ const ActionSheet = React.memo(forwardRef(({ children, theme }, ref) => {
 		if (isVisible) {
 			Keyboard.dismiss();
 			Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-			bottomSheetRef.current?.snapTo(0);
+			bottomSheetRef.current?.snapTo(1);
 		}
 	}, [isVisible]);
 
@@ -153,6 +153,11 @@ const ActionSheet = React.memo(forwardRef(({ children, theme }, ref) => {
 		outputRange: [0, themes[theme].backdropOpacity],
 		extrapolate: Extrapolate.CLAMP
 	});
+	const transY = interpolate(data?.animatedPosition?.current, {
+		inputRange: [0, 1],
+		outputRange: [130, 0],
+		extrapolate: Extrapolate.CLAMP
+	});
 	// animatedPosition
 	return (
 		<>
@@ -176,13 +181,14 @@ const ActionSheet = React.memo(forwardRef(({ children, theme }, ref) => {
 						ref={bottomSheetRef}
 						componentType='FlatList'
 						// snapPoints={snaps}
-						snapPoints={[height * 0.3, '50%', height]}
+						snapPoints={[0, height * 0.3, '50%', height]}
 						initialSnapIndex={2}
 
 						renderHandle={renderHandle}
-						onSettle={index => (index === 2) && toggleVisible()}
+						onSettle={index => (index === 3) && toggleVisible()}
 
 						animatedPosition={data?.animatedPosition?.current}
+						animatedPositionCurate={data?.animatedPositionCurate?.current}
 						containerStyle={[
 							styles.container,
 
@@ -195,7 +201,6 @@ const ActionSheet = React.memo(forwardRef(({ children, theme }, ref) => {
 						keyExtractor={item => item.title}
 						style={{ backgroundColor: themes[theme].focusedBackground }}
 						contentContainerStyle={[styles.content]}
-						ListFooterComponent={data?.renderFooter}
 						ListFooterComponentStyle={{
 							// position: "absolute",
 							height: 80,
@@ -206,8 +211,18 @@ const ActionSheet = React.memo(forwardRef(({ children, theme }, ref) => {
 						// getItemLayout={getItemLayout}
 						removeClippedSubviews={isIOS}
 					/>
+					<Animated.View style={{
+						transform: [
+							{
+								translateY: transY
+							}
+						]
+					}}>
+						{data?.renderFooter()}
+					</Animated.View>
 				</>
-			)}
+			)
+			}
 		</>
 	);
 }));

@@ -35,24 +35,7 @@ const ChannelCircle = (props) => {
     }, [dataList])
     const renderItem = ({ item, index }) => {
         const takeVideo = async () => {
-            //     let videoPickerConfig = {
-            //         mediaType: 'video'
-            //     };
-            //     const libPickerLabels = {
-            //         cropperChooseText: I18n.t('Choose'),
-            //         cropperCancelText: I18n.t('Cancel'),
-            //         loadingLabelText: I18n.t('Processing')
-            //     };
-            //     videoPickerConfig = {
-            //         ...videoPickerConfig,
-            //         ...libPickerLabels
-            //     };
-            //     try {
-            //         const video = await ImagePicker.openCamera(videoPickerConfig);
-            //         navigation.navigate('FeedsPublishView', { room: item, attachments: [video], type: "video" });
 
-            //     } catch (e) {
-            //     }
             setStoryCamert(true);
         }
         const onPress = () => {
@@ -74,7 +57,7 @@ const ChannelCircle = (props) => {
             <Pressable onPress={onPress}>
                 <View style={styles.itemWrapper}>
                     {item.hasUnread ? <LinearGradient style={styles.backContainer} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} colors={colors} angle={90} useAngle={true}></LinearGradient> : null}
-
+                    <View style={styles.backWhiteBox}></View>
                     <Avatar
 
                         size={66}
@@ -113,7 +96,7 @@ const ChannelCircle = (props) => {
                 visible={StoryCameraOpen}
                 style={styles.modal}
             >
-                <StoryCamera onCloseCamera={() => { setStoryCamert(false) }} />
+                <StoryCamera onCloseCamera={() => { setStoryCamert(false) }} item={data[0]} />
             </Modal>
             <FlatList
                 horizontal={true}
@@ -125,6 +108,8 @@ const ChannelCircle = (props) => {
             ></FlatList>
         </View >)
 }
+const backWidhSize = 71
+const backContainer = 74
 const styles = StyleSheet.create({
     root: {
         justifyContent: "center",
@@ -151,10 +136,18 @@ const styles = StyleSheet.create({
         // borderRadius: 70,
         zIndex: 3,
     },
+    backWhiteBox: {
+        width: backWidhSize,
+        height: backWidhSize,
+        borderRadius: backWidhSize,
+        position: "absolute",
+        zIndex: 0,
+        backgroundColor: "white"
+    },
     backContainer: {
-        width: 74,
-        height: 74,
-        borderRadius: 74,
+        width: backContainer,
+        height: backContainer,
+        borderRadius: backContainer,
         position: "absolute",
         zIndex: 0,
     },

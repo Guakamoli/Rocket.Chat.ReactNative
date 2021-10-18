@@ -68,6 +68,7 @@ const StoryContainer = (props) => {
   //   props.onVideoLoaded(length.duration);
   // };
   useEffect(() => {
+    console.info('chudijinlai de index', index)
     // setIsPause(index !== currentUserIndex)
     if (index !== currentUserIndex) {
       setCurrentIndex(0)
@@ -193,7 +194,12 @@ const StoryContainer = (props) => {
 
 
           </OpacityContainer>
-          <UpLoadControl key='UpLoadControl' currentIndex={currentIndex} item={stories[index]} onPause={onPause} />
+          <UpLoadControl key='UpLoadControl'
+            {...props}
+            stories={stories}
+            index={currentIndex}
+            item={stories[currentIndex]} onPause={onPause}
+          />
 
         </View>
 

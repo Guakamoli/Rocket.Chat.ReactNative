@@ -12,20 +12,21 @@ export function isUploadActive(path) {
 }
 
 export async function cancelUpload(item) {
+
+	try {
+		await item.cancel();
+	} catch {
+		// Do nothing
+	}
+	try {
+		const db = database.active;
+		await db.action(async () => {
+			await item.destroyPermanently();
+		});
+	} catch (e) {
+		log(e);
+	}
 	if (uploadQueue[item.path]) {
-		try {
-			await uploadQueue[item.path].cancel();
-		} catch {
-			// Do nothing
-		}
-		try {
-			const db = database.active;
-			await db.action(async () => {
-				await item.destroyPermanently();
-			});
-		} catch (e) {
-			log(e);
-		}
 		delete uploadQueue[item.path];
 	}
 }
@@ -112,6 +113,7 @@ export function sendFileMessage(rid, fileInfo, tmid, server, user) {
 						log(e);
 					}
 				} else {
+
 					try {
 						await db.action(async () => {
 							await uploadRecord.update((u) => {
@@ -131,6 +133,7 @@ export function sendFileMessage(rid, fileInfo, tmid, server, user) {
 
 			uploadQueue[fileInfo.path].catch(async (error) => {
 				try {
+
 					await db.action(async () => {
 						await uploadRecord.update((u) => {
 							u.error = true;
@@ -138,6 +141,7 @@ export function sendFileMessage(rid, fileInfo, tmid, server, user) {
 					});
 				} catch (e) {
 					log(e);
+					console.info("上传错误", e)
 				}
 				reject(error);
 			});

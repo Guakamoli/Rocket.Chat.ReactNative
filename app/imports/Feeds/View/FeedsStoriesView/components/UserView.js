@@ -29,8 +29,9 @@ const UserView = React.memo((props) => {
       </View>
       <Image source={closeWhitePng}
         onPress={props.onClosePress}
-        containerStyle={styles.close}
+        containerStyle={styles.closeContainer}
         placeholderStyle={{ backgroundColor: "transparent" }}
+        resizeMode={'contain'}
         style={styles.close} />
 
     </View>
@@ -51,6 +52,13 @@ const styles = StyleSheet.create({
   close: {
     width: 23,
     height: 23,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  closeContainer: {
+    top: 10,
+    width: 40,
+    height: 40,
     justifyContent: "center",
     alignItems: "center",
   },

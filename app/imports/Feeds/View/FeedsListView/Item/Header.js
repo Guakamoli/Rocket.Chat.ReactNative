@@ -16,28 +16,43 @@ import Avatar from '../../../../../containers/Avatar';
 
 const { searchPng, companyTitlePng } = ImageMap
 const Header = React.memo((props) => {
-    const { username, item, navigation, channelsDataMap } = props
+    const { username, item, navigation, channelsDataMap, openEditModal } = props
     const onPress = useCallback(() => {
         navigation.push("FeedsUserView", { userInfo: { username: channelsDataMap?.[item.rid]?.name, rid: item.rid, }, type: "pop" })
     });
+    const openModalWrapper = () => {
+        openEditModal?.()
+    }
     return (
-        <Pressable onPress={onPress}>
-            <View style={styles.root}>
-                <Avatar
+        <View style={styles.root}>
+            <Pressable onPress={onPress}>
 
-                    size={32}
-                    type={item.t}
-                    text={item.name}
-                    style={styles.avatar}
+                <View style={styles.leftBox}>
 
-                    rid={item.rid} // 先用房间的头像
-                    // avatar={item?.avatar}
-                    borderRadius={32}
+                    <Avatar
 
-                />
-                <Text style={styles.title}>{channelsDataMap?.[item.rid]?.name || item.name}</Text>
-            </View>
-        </Pressable>
+                        size={32}
+                        type={item.t}
+                        text={item.name}
+                        style={styles.avatar}
+
+                        rid={item.rid} // 先用房间的头像
+                        // avatar={item?.avatar}
+                        borderRadius={32}
+
+                    />
+                    <Text style={styles.title}>{channelsDataMap?.[item.rid]?.name || item.name}</Text>
+
+                </View>
+            </Pressable>
+
+            <Pressable onPress={openModalWrapper} style={styles.dotBox}>
+                {[1, 2, 3].map((i) => {
+                    return <View style={styles.dot}></View>
+                })}
+            </Pressable>
+        </View>
+
     )
 })
 const styles = StyleSheet.create({
@@ -45,8 +60,12 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         paddingHorizontal: 15,
         alignItems: "center",
+        justifyContent: "space-between",
         paddingVertical: 10,
 
+    },
+    leftBox: {
+        flexDirection: "row",
     },
     avatar: {
         width: 32,
@@ -60,6 +79,20 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: '500',
         lineHeight: 20,
+    },
+    dot: {
+        backgroundColor: "#000000FF",
+        width: 3,
+        height: 3,
+        borderRadius: 3,
+        marginLeft: 3,
+    },
+    dotBox: {
+        flexDirection: "row",
+        height: 10,
+        width: 60,
+        justifyContent: "flex-end",
+        alignItems: "center",
     },
 })
 export default Header

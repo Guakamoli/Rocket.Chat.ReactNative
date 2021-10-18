@@ -14,7 +14,7 @@ class FileUpload {
 			return item;
 		});
 
-		return RNFetchBlob.fetch(method, url, headers, formData);
+		return RNFetchBlob.config({ timeout: 1000 * 60 * 3 }).fetch(method, url, headers, formData);
 	}
 }
 
