@@ -28,7 +28,8 @@ export const onNotification = (notification) => {
 					path: `${ types[type] }/${ roomName }`,
 					isCall: messageType === 'jitsi_call_started'
 				};
-				store.dispatch(deepLinkingOpen(params));
+				console.info('onNotification params:', params);
+				// store.dispatch(deepLinkingOpen(params));
 			} catch (e) {
 				console.warn(e);
 			}
