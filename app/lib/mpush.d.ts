@@ -1,0 +1,20 @@
+import { NativeEventEmitter } from 'react-native';
+
+export const EVENT_NOTIFICATION: string;
+export const EVENT_LOCAL_NOTIFICATION: string;
+export const EVENT_MESSAGE_RECEIVED: string;
+export const EVENT_REGISTER_DEVICE_TOKEN: string;
+export const EVENT_REGISTER_DEVICE_TOKEN_ERROR: string;
+export var emitter: NativeEventEmitter;
+export function registerDeviceToken(deviceToken: string): Promise<void>;
+export function getDeviceId(): Promise<string>;
+export function getApnsDeviceToken(): Promise<string>;
+export function syncBadgeNum(badge: number): Promise<string>;
+export function addAccount(account: string): Promise<string>;
+export function removeAccount(): Promise<string>;
+export function addAlias(alias: string): Promise<string>;
+export function removeAlias(alias: string): Promise<string>;
+export function listAliases(): Promise<string>;
+export function addTag(tags: Array<string>): Promise<string>;
+export function removeTag(tags: Array<string>): Promise<string>;
+export function listTags(): Promise<string>;

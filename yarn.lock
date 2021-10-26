@@ -11382,11 +11382,6 @@ iterate-value@^1.0.0:
     es-get-iterator "^1.0.2"
     iterate-iterator "^1.0.1"
 
-jcore-react-native@^1.9.1:
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/jcore-react-native/-/jcore-react-native-1.9.4.tgz#d745b1ad73d1787ccd5d2a137e09b943d17b7a82"
-  integrity sha512-QH3YPjirvjnOH0k+orj1ZsZSLxc3rcSnAV2TScOFITVp4LXTvZgrrhjpjiZQcAtkyxFFyrVEMddHCtu2WhH1GA==
-
 jest-changed-files@^27.0.6:
   version "27.0.6"
   resolved "https://registry.yarnpkg.com/jest-changed-files/-/jest-changed-files-27.0.6.tgz#bed6183fcdea8a285482e3b50a9a7712d49a7a8b"
@@ -12100,11 +12095,6 @@ jpeg-js@^0.4.0:
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/jpeg-js/-/jpeg-js-0.4.3.tgz#6158e09f1983ad773813704be80680550eff977b"
   integrity sha512-ru1HWKek8octvUHFHvE5ZzQ1yAsJmIvRdGWvSoKV52XKyuyYA437QWDttXT8eZXDSbuMpHlLzPDZUPd6idIz+Q==
-
-jpush-react-native@^2.8.2:
-  version "2.8.7"
-  resolved "https://registry.yarnpkg.com/jpush-react-native/-/jpush-react-native-2.8.7.tgz#d43473c1302fedbffb79292db3b9a5e060461986"
-  integrity sha512-jzsWB/X9fu+m09iwBnbuaS96uyRGwpmjmQaba2salmIwpj7OepYLWlCRxT3/thxMv4xBuH4nvuqSU6Id1cxCFQ==
 
 js-base64@3.6.1:
   version "3.6.1"

@@ -26,8 +26,6 @@ def all_pods
   pod 'UMCShare/Social/Sina'
   pod 'UMCShare/Social/Email'
   pod 'UMCShare/Social/SMS'
-  pod 'JPush', :path => '../node_modules/jpush-react-native'
-  pod 'JCore', :path => '../node_modules/jcore-react-native'
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 

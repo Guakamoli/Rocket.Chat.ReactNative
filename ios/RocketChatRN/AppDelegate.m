@@ -26,19 +26,20 @@
 
 // code push
 // #import <CodePush/CodePush.h>
+
 // umeng share
 #import <UMCommon/UMCommon.h>
 #import <UShareUI/UShareUI.h>
 #import "RNUMConfigure.h"
 #import <UIKit/UIKit.h>
 #import "WXApi.h"
+
 // umeng analytics
 #import <UMCommon/UMConfigure.h>
-// jpush
-#import "JPUSHService.h"
-#import <UserNotifications/UserNotifications.h>
-#import "RCTJPushEventQueue.h"
-#import "RCTJPushModule.h"
+
+// 阿里推送
+#import "MPushModule.h"
+
 // expo
 #import <UMCore/UMModuleRegistry.h>
 #import <UMReactNativeAdapter/UMNativeModulesProxy.h>
@@ -91,21 +92,12 @@ static void InitializeFlipper(UIApplication *application) {
     [ReplyNotification configure];
     [self initUMCommon];
   
-    // Required
-    // notice: 3.0.0 及以后版本注册可以这样写，也可以继续用之前的注册方式
-    JPUSHRegisterEntity * entity = [[JPUSHRegisterEntity alloc] init];
-    entity.types = JPAuthorizationOptionAlert|JPAuthorizationOptionBadge|JPAuthorizationOptionSound|JPAuthorizationOptionProvidesAppNotificationSettings;
-    if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
-      // 可以添加自定义 categories
-      // NSSet<UNNotificationCategory *> *categories for iOS10 or later
-      // NSSet<UIUserNotificationCategory *> *categories for iOS8 and iOS9
-    }
-    [JPUSHService registerForRemoteNotificationConfig:entity delegate:self];
-    
-    // 初始化极光sdk
-    [JPUSHService setupWithOption:launchOptions appKey:@"78af9fd1aaa2c2256158466e"
-                          channel:@"App Store"
-                apsForProduction:0];
+    // 初始化阿里推送
+    [[MPushModule make] initPush:application
+                  initWithBridge:bridge
+                  withAppKey:@"333562441"
+                  withAppSecret:@"f987865b298142de8ac28993030215fe"
+                  withLaunchOptions:launchOptions];
     
     //  [WXApi startLogByLevel:WXLogLevelDetail logBlock:^(NSString *log) {
     //      NSLog(@"WeChatSDK: %@", log);
@@ -188,13 +180,17 @@ static void InitializeFlipper(UIApplication *application) {
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
   [RNNotifications didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
-    [JPUSHService registerDeviceToken:deviceToken];
-
+  [[MPushModule make] didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
   [RNNotifications didFailToRegisterForRemoteNotificationsWithError:error];
+  [[MPushModule make] didFailToRegisterForRemoteNotificationsWithError:error];
 }
+
+//- (void) application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+//  [[MPushModule make] didReceiveRemoteNotification:userInfo];
+//}
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
@@ -238,86 +234,6 @@ static void InitializeFlipper(UIApplication *application) {
   }
 
   return result;
-}
-
-#pragma mark- JPUSHRegisterDelegate
-
-// iOS 12 Support
-- (void)jpushNotificationCenter:(UNUserNotificationCenter *)center openSettingsForNotification:(UNNotification *)notification
-{
-  if (notification && [notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
-    //从通知界面直接进入应用
-    NSLog(@"通知");
-  }else{
-    //从通知设置界面进入应用
-    NSLog(@"通知设置");
-  }
-}
-
-
-// iOS 10 前台收到通知
-- (void)jpushNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(NSInteger))completionHandler
-{
-  // Required
-  NSDictionary * userInfo = notification.request.content.userInfo;
-  if([notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
-    // Apns
-    NSLog(@"iOS 10 APNS 前台收到消息");
-    [JPUSHService handleRemoteNotification:userInfo];
-    [[NSNotificationCenter defaultCenter] postNotificationName:J_APNS_NOTIFICATION_ARRIVED_EVENT object:userInfo];
-  } else {
-    // 本地通知 Todo
-    NSLog(@"iOS 10 本地通知 前台收到消息");
-    [[NSNotificationCenter defaultCenter] postNotificationName:J_LOCAL_NOTIFICATION_ARRIVED_EVENT object:userInfo];
-  }
-  // [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-  // [JPUSHService setBadge:0];
-  completionHandler(UNNotificationPresentationOptionBadge | UNNotificationPresentationOptionAlert); // 需要执行这个方法，选择是否提醒用户，有 Badge、Sound、Alert 三种类型可以选择设置
-}
-
-// iOS 10 消息事件回调
-- (void)jpushNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)())completionHandler
-{
-  NSDictionary * userInfo = response.notification.request.content.userInfo;
-  if([response.notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
-    // APNS
-    NSLog(@"APNS 消息事件回调");
-    [JPUSHService handleRemoteNotification:userInfo];
-    // 应用死了以后，用户点击推送消息，打开app以后可以收到点击通知事件
-    [[RCTJPushEventQueue sharedInstance]._notificationQueue insertObject:userInfo atIndex:0];
-    [[NSNotificationCenter defaultCenter] postNotificationName:J_APNS_NOTIFICATION_OPENED_EVENT object:userInfo];
-  } else {
-    // 本地通知
-    NSLog(@"本地通知事件回调");
-    // 应用死了以后，用户点击推送消息，打开app以后可以收到点击通知事件
-    [[RCTJPushEventQueue sharedInstance]._localNotificationQueue insertObject:userInfo atIndex:0];
-    [[NSNotificationCenter defaultCenter] postNotificationName:J_LOCAL_NOTIFICATION_OPENED_EVENT object:userInfo];
-  }
-  // [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-  // [JPUSHService setBadge:0];
-  completionHandler();  // 系统要求执行这个方法
-}
-
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
-{
-  // Required, iOS 7 Support
-  [JPUSHService handleRemoteNotification:userInfo];
-  completionHandler(UIBackgroundFetchResultNewData);
-}
-
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
-{
-  // Required, For systems with less than or equal to iOS 6
-  [JPUSHService handleRemoteNotification:userInfo];
-}
-
-- (void)applicationWillEnterForeground:(UIApplication *)application
-{
-  // NSLog(@"App进入前台");
-  // 每次进入前台，清除所有JPush通知
-  // [JPUSHService removeNotification:nil];
-  // [application setApplicationIconBadgeNumber:0];
-  [application cancelAllLocalNotifications];
 }
 
 @end

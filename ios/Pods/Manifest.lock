@@ -175,11 +175,7 @@ PODS:
   - GoogleUtilities/UserDefaults (6.7.2):
     - GoogleUtilities/Logger
   - hermes-engine (0.7.2)
-  - JCore (1.9.4):
-    - React
   - JitsiMeetSDK (3.6.0)
-  - JPush (2.8.7):
-    - React
   - JSONModel (1.8.0)
   - JWT (3.0.0-beta.14):
     - Base64 (~> 1.1.2)
@@ -713,9 +709,7 @@ DEPENDENCIES:
   - FlipperKit/SKIOSNetworkPlugin (~> 0.75.1)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (~> 0.7.2)
-  - JCore (from `../node_modules/jcore-react-native`)
   - JitsiMeetSDK (from `https://github.com/RocketChat/jitsi-meet-ios-sdk-releases.git`)
-  - JPush (from `../node_modules/jpush-react-native`)
   - KeyCommands (from `../node_modules/react-native-keycommands`)
   - libevent (~> 2.1.12)
   - Permission-Camera (from `../node_modules/react-native-permissions/ios/Camera`)
@@ -904,12 +898,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/React/FBReactNativeSpec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
-  JCore:
-    :path: "../node_modules/jcore-react-native"
   JitsiMeetSDK:
     :git: https://github.com/RocketChat/jitsi-meet-ios-sdk-releases.git
-  JPush:
-    :path: "../node_modules/jpush-react-native"
   KeyCommands:
     :path: "../node_modules/react-native-keycommands"
   Permission-Camera:
@@ -1122,7 +1112,7 @@ SPEC CHECKSUMS:
   EXVideoThumbnails: cd257fc6e07884a704a5674d362a6410933acb68
   EXWebBrowser: d37a5ffdea1b65947352bc001dd9f732463725d4
   FBLazyVector: e686045572151edef46010a6f819ade377dfeb4b
-  FBReactNativeSpec: 70d25bbec0290ad3c9f22ac9447fced060bfaf69
+  FBReactNativeSpec: e7378a19414537f80ef76f12eec21b3c7f352b59
   Firebase: 919186c8e119dd9372a45fd1dd17a8a942bc1892
   FirebaseAnalytics: 5fa308e1b13f838d0f6dc74719ac2a72e8c5afc4
   FirebaseCore: 8cd4f8ea22075e0ee582849b1cf79d8816506085
@@ -1143,9 +1133,7 @@ SPEC CHECKSUMS:
   GoogleDataTransportCCTSupport: 489c1265d2c85b68187a83a911913d190012158d
   GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
   hermes-engine: 7d97ba46a1e29bacf3e3c61ecb2804a5ddd02d4f
-  JCore: b5c4eadf996070ce05748c52851db9bc70eba33b
   JitsiMeetSDK: 476329f72a866f714d2802bafe1729de6d644ccf
-  JPush: a010513626e67900f284aff6db8578b23145a5d9
   JSONModel: 02ab723958366a3fd27da57ea2af2113658762e9
   JWT: ef71dfb03e1f842081e64dc42eef0e164f35d251
   KeyCommands: f66c535f698ed14b3d3a4e58859d79a827ea907e
@@ -1262,6 +1250,6 @@ SPEC CHECKSUMS:
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: d0eb45238f2cd23180dd6e3d6ad6d90a608b8c4e
+PODFILE CHECKSUM: 9b433293321dbdfb8a18fdffd216c78fc18be26b
 
 COCOAPODS: 1.10.1
