@@ -3,6 +3,14 @@ import NotificationsIOS, { NotificationAction, NotificationCategory } from 'reac
 import reduxStore from '../../lib/createStore';
 import I18n from '../../i18n';
 
+import MPush from '../../lib/mpush';
+
+setTimeout(async() => {
+	const deviceId = await MPush.getDeviceId();
+	const apnsDeviceToken = await MPush.getApnsDeviceToken();
+	console.info('MPush deviceId:', deviceId, ', apnsDeviceToken:', apnsDeviceToken);
+}, 1000 * 10);
+
 const replyAction = new NotificationAction({
 	activationMode: 'background',
 	title: I18n.t('Reply'),
@@ -28,6 +36,7 @@ class PushNotification {
 			if (background) {
 				this.onNotification(notification);
 			}
+			console.info('notificationOpened() notification:', notification, background);
 			completion();
 		});
 

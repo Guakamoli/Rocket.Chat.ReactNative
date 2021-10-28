@@ -149,6 +149,15 @@
 		81CED605C467F17CBE46C097 /* libPods-defaults-ShareRocketChatRN.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D4669C70B68F9F6852C2A81 /* libPods-defaults-ShareRocketChatRN.a */; };
 		8CEED27FBE426785BA216C28 /* libPods-defaults-RocketChatRN.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B59FC1F8F8B59C07FB056573 /* libPods-defaults-RocketChatRN.a */; };
 		B6251736AB6739939BFA3242 /* libPods-defaults-NotificationService.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EA6193BCD2A19F98C9A2AFE /* libPods-defaults-NotificationService.a */; };
+		C4C0B40127269E7C005F2C2B /* MPushModule.m in Sources */ = {isa = PBXBuildFile; fileRef = C4C0B40027269E7C005F2C2B /* MPushModule.m */; };
+		C4C0B40D2726A5CC005F2C2B /* AlicloudSender.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4C0B4062726A5C7005F2C2B /* AlicloudSender.framework */; };
+		C4C0B40E2726A5CC005F2C2B /* CloudPushSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4C0B4082726A5C8005F2C2B /* CloudPushSDK.framework */; };
+		C4C0B40F2726A5CC005F2C2B /* AlicloudUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4C0B4092726A5C8005F2C2B /* AlicloudUtils.framework */; };
+		C4C0B4102726A5CC005F2C2B /* EMASRest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4C0B40A2726A5C9005F2C2B /* EMASRest.framework */; };
+		C4C0B4122726A5CC005F2C2B /* UTMini.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4C0B40C2726A5CC005F2C2B /* UTMini.framework */; };
+		C4C0B4142726A5EB005F2C2B /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C4C0B4132726A5EB005F2C2B /* libresolv.tbd */; };
+		C4C0B4162726A5F2005F2C2B /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4C0B4152726A5F2005F2C2B /* CoreTelephony.framework */; };
+		C4C0B4182726A601005F2C2B /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4C0B4172726A601005F2C2B /* SystemConfiguration.framework */; };
 		DD2BA30A89E64F189C2C24AC /* libWatermelonDB.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BA7E862283664608B3894E34 /* libWatermelonDB.a */; };
 /* End PBXBuildFile section */
 
@@ -302,6 +311,16 @@
 		B37C79D9BD0742CE936B6982 /* libc++.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		B59FC1F8F8B59C07FB056573 /* libPods-defaults-RocketChatRN.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-defaults-RocketChatRN.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA7E862283664608B3894E34 /* libWatermelonDB.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libWatermelonDB.a; sourceTree = "<group>"; };
+		C4C0B40027269E7C005F2C2B /* MPushModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MPushModule.m; sourceTree = "<group>"; };
+		C4C0B40227269E8A005F2C2B /* MPushModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MPushModule.h; sourceTree = "<group>"; };
+		C4C0B4062726A5C7005F2C2B /* AlicloudSender.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AlicloudSender.framework; sourceTree = "<group>"; };
+		C4C0B4082726A5C8005F2C2B /* CloudPushSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CloudPushSDK.framework; sourceTree = "<group>"; };
+		C4C0B4092726A5C8005F2C2B /* AlicloudUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AlicloudUtils.framework; sourceTree = "<group>"; };
+		C4C0B40A2726A5C9005F2C2B /* EMASRest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = EMASRest.framework; sourceTree = "<group>"; };
+		C4C0B40C2726A5CC005F2C2B /* UTMini.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = UTMini.framework; sourceTree = "<group>"; };
+		C4C0B4132726A5EB005F2C2B /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
+		C4C0B4152726A5F2005F2C2B /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		C4C0B4172726A601005F2C2B /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		CF4A9DD19BBFC6B2E1D912E9 /* libPods-defaults-Rocket.Chat.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-defaults-Rocket.Chat.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D14C96754465D0CAF6465A91 /* Pods-defaults-NotificationService.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-defaults-NotificationService.release.xcconfig"; path = "Target Support Files/Pods-defaults-NotificationService/Pods-defaults-NotificationService.release.xcconfig"; sourceTree = "<group>"; };
 		E5DA7E2F9A7CE1C6EE7585D4 /* Pods-defaults-ShareRocketChatRN.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-defaults-ShareRocketChatRN.debug.xcconfig"; path = "Target Support Files/Pods-defaults-ShareRocketChatRN/Pods-defaults-ShareRocketChatRN.debug.xcconfig"; sourceTree = "<group>"; };
@@ -313,9 +332,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C4C0B4182726A601005F2C2B /* SystemConfiguration.framework in Frameworks */,
+				C4C0B4162726A5F2005F2C2B /* CoreTelephony.framework in Frameworks */,
+				C4C0B4142726A5EB005F2C2B /* libresolv.tbd in Frameworks */,
 				0C6E2DE448364EA896869ADF /* libc++.tbd in Frameworks */,
+				C4C0B40F2726A5CC005F2C2B /* AlicloudUtils.framework in Frameworks */,
+				C4C0B4102726A5CC005F2C2B /* EMASRest.framework in Frameworks */,
 				1E1EA81A2326CD5100E22452 /* libsqlite3.tbd in Frameworks */,
 				1E1EA8182326CD4B00E22452 /* libc.tbd in Frameworks */,
+				C4C0B40D2726A5CC005F2C2B /* AlicloudSender.framework in Frameworks */,
 				1E1EA8162326CD4500E22452 /* VideoToolbox.framework in Frameworks */,
 				1E1EA8142326CD3E00E22452 /* CoreVideo.framework in Frameworks */,
 				1E1EA8122326CD3900E22452 /* CoreAudio.framework in Frameworks */,
@@ -323,6 +348,8 @@
 				1E1EA80E2326CD2F00E22452 /* CoreGraphics.framework in Frameworks */,
 				1E1EA80C2326CD2800E22452 /* AudioToolbox.framework in Frameworks */,
 				1E1EA80A2326CD2200E22452 /* AVFoundation.framework in Frameworks */,
+				C4C0B40E2726A5CC005F2C2B /* CloudPushSDK.framework in Frameworks */,
+				C4C0B4122726A5CC005F2C2B /* UTMini.framework in Frameworks */,
 				7ACD4897222860DE00442C55 /* JavaScriptCore.framework in Frameworks */,
 				24A2AEF2383D44B586D31C01 /* libz.tbd in Frameworks */,
 				DD2BA30A89E64F189C2C24AC /* libWatermelonDB.a in Frameworks */,
@@ -507,7 +534,6 @@
 				E5DA7E2F9A7CE1C6EE7585D4 /* Pods-defaults-ShareRocketChatRN.debug.xcconfig */,
 				AB143420041E93E0EA08A03D /* Pods-defaults-ShareRocketChatRN.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -554,6 +580,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				C4C0B3FE27269E61005F2C2B /* MPush */,
 				7C0E6EA626E9ECA1000A88BA /* UMReactBridge */,
 				7C0E6E9C26E9EB6B000A88BA /* Core */,
 				1E76CBC425152A7F0067298C /* Shared */,
@@ -602,6 +629,14 @@
 		BB4B591B5FC44CD9986DB2A6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C4C0B4172726A601005F2C2B /* SystemConfiguration.framework */,
+				C4C0B4152726A5F2005F2C2B /* CoreTelephony.framework */,
+				C4C0B4132726A5EB005F2C2B /* libresolv.tbd */,
+				C4C0B4062726A5C7005F2C2B /* AlicloudSender.framework */,
+				C4C0B4092726A5C8005F2C2B /* AlicloudUtils.framework */,
+				C4C0B4082726A5C8005F2C2B /* CloudPushSDK.framework */,
+				C4C0B40A2726A5C9005F2C2B /* EMASRest.framework */,
+				C4C0B40C2726A5CC005F2C2B /* UTMini.framework */,
 				1E1EA8192326CD5100E22452 /* libsqlite3.tbd */,
 				1E1EA8172326CD4B00E22452 /* libc.tbd */,
 				1E1EA8152326CD4500E22452 /* VideoToolbox.framework */,
@@ -620,6 +655,15 @@
 				4D4669C70B68F9F6852C2A81 /* libPods-defaults-ShareRocketChatRN.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C4C0B3FE27269E61005F2C2B /* MPush */ = {
+			isa = PBXGroup;
+			children = (
+				C4C0B40027269E7C005F2C2B /* MPushModule.m */,
+				C4C0B40227269E8A005F2C2B /* MPushModule.h */,
+			);
+			path = MPush;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1311,7 +1355,8 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\n";
+			shellScript = "
+";
 		};
 		8E623C113F64C764A5E9D188 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1445,6 +1490,7 @@
 				1E76CBD325152C770067298C /* Encryption.swift in Sources */,
 				1E76CBC825152C070067298C /* RocketChat.swift in Sources */,
 				1E76CBD725152C840067298C /* HTTPMethod.swift in Sources */,
+				C4C0B40127269E7C005F2C2B /* MPushModule.m in Sources */,
 				1E76CBC725152BFF0067298C /* Payload.swift in Sources */,
 				7C0E6EAF26E9ECA1000A88BA /* UMAnalyticsModule.m in Sources */,
 				7C0E6EAE26E9ECA1000A88BA /* RNUMConfigure.m in Sources */,
@@ -1747,7 +1793,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/rn-extensions-share/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
-					"$PODS_CONFIGURATION_BUILD_DIR/Firebase",
+					$PODS_CONFIGURATION_BUILD_DIR/Firebase,
 				);
 				INFOPLIST_FILE = ShareRocketChatRN/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -1818,7 +1864,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/rn-extensions-share/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
-					"$PODS_CONFIGURATION_BUILD_DIR/Firebase",
+					$PODS_CONFIGURATION_BUILD_DIR/Firebase,
 				);
 				INFOPLIST_FILE = ShareRocketChatRN/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;

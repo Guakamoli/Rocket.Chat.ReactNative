@@ -111,6 +111,7 @@ KCgHEUMsjzWoXdy/Y7BZHIZlFwhqQGuoTYIntpftL9HPHosUW7Vhhn3OHgiviOoX
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
+		<string>remote-notification</string>
 		<string>voip</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
